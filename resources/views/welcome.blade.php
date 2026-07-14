@@ -1618,10 +1618,17 @@
                         <i class="fas fa-plus"></i>
                         E'lon joylashtirish
                     </button>
-                    <button class="btn-login">
-                        <i class="far fa-user-circle" style="font-size: 20px;"></i>
-                        Login
-                    </button>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="btn-login">
+                            <i class="far fa-user-circle" style="font-size: 20px;"></i>
+                            Kabinet
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-login">
+                            <i class="far fa-user-circle" style="font-size: 20px;"></i>
+                            Login
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -1660,10 +1667,12 @@
                 <div class="hero-left-card">
                     <span class="hero-badge">Estora Real Estate</span>
                     <h1 class="hero-title">Ko'chmas mulkning yagona raqamli ekotizimi</h1>
-                    <div class="hero-buttons">
-                        <a href="#" class="btn-hero-dark">KIRISH</a>
-                        <a href="#" class="btn-hero-blue">RO'YXATDAN O'TISH</a>
-                    </div>
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="btn-hero-dark">KABINET</a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn-hero-dark">KIRISH</a>
+                            <a href="{{ route('register') }}" class="btn-hero-blue">RO'YXATDAN O'TISH</a>
+                        @endauth
                 </div>
                 
                 <!-- Floating Search/Filter Form -->

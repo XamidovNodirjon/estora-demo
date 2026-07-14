@@ -25,8 +25,14 @@ class User extends Authenticatable
         'jshshir',
         'email',
         'type',
-        'status'
+        'status',
+        'role_id'
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 
 
     /**
