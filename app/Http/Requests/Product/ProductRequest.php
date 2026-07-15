@@ -40,6 +40,10 @@ class ProductRequest extends FormRequest
             'credit' => 'nullable|boolean',
             'items' => 'nullable|array',
             'items.*' => 'string|max:255',
+            'metros' => 'nullable|array',
+            'metros.*' => 'exists:metros,id',
+            'universities' => 'nullable|array',
+            'universities.*' => 'exists:universities,id',
             'images' => 'nullable|array',
             'images.*' => 'string',
         ];

@@ -76,6 +76,11 @@
                 <span>Kategoriyalar</span>
             </a>
 
+            <a href="{{ route('developer.infrastructure') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('developer.infrastructure*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
+                <i class="fa-solid fa-city text-lg"></i>
+                <span>Infratuzilma</span>
+            </a>
+
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
                 <i class="fa-solid fa-key text-lg"></i>
                 <span>API Kalitlar</span>

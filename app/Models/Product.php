@@ -67,4 +67,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductItem::class);
     }
+
+    public function metros()
+    {
+        return $this->belongsToMany(Metro::class);
+    }
+
+    public function universities()
+    {
+        return $this->belongsToMany(University::class);
+    }
 }

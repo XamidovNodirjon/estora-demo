@@ -37,16 +37,12 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-1">
-                            <a href="{{ route('developer.categories.edit', $category->id) }}" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Tahrirlash">
+                            <button type="button" onclick="openEditModal('category', {{ $category->id }}, '{{ addslashes($category->name) }}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Tahrirlash">
                                 <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <form action="{{ route('developer.categories.delete', $category->id) }}" method="POST" onsubmit="return confirm('Haqiqatdan ham ushbu kategoriyani va uning barcha sub-kategoriyalarini o\'chirmoqchimisiz?');" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all" title="O'chirish">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </form>
+                            </button>
+                            <button type="button" onclick="openDeleteModal('{{ route('developer.categories.delete', $category->id) }}', 'Haqiqatdan ham ushbu kategoriyani va uning barcha sub-kategoriyalarini o\'chirmoqchimisiz?')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all" title="O'chirish">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -59,16 +55,12 @@
                                         <i class="fa-solid fa-hashtag text-gray-400"></i>
                                         <span>{{ $sub->name }}</span>
                                         <div class="flex items-center gap-1 ml-2 border-l border-gray-200 pl-2">
-                                            <a href="{{ route('developer.subcategories.edit', $sub->id) }}" class="text-blue-500 hover:text-blue-700" title="Tahrirlash">
+                                            <button type="button" onclick="openEditModal('subcategory', {{ $sub->id }}, '{{ addslashes($sub->name) }}')" class="text-blue-500 hover:text-blue-700" title="Tahrirlash">
                                                 <i class="fa-solid fa-pen text-[10px]"></i>
-                                            </a>
-                                            <form action="{{ route('developer.subcategories.delete', $sub->id) }}" method="POST" onsubmit="return confirm('Haqiqatdan ham ushbu sub-kategoriyani o\'chirmoqchimisiz?');" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700" title="O'chirish">
-                                                    <i class="fa-solid fa-trash text-[10px]"></i>
-                                                </button>
-                                            </form>
+                                            </button>
+                                            <button type="button" onclick="openDeleteModal('{{ route('developer.subcategories.delete', $sub->id) }}', 'Haqiqatdan ham ushbu sub-kategoriyani o\'chirmoqchimisiz?')" class="text-red-500 hover:text-red-700" title="O'chirish">
+                                                <i class="fa-solid fa-trash text-[10px]"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 @endforeach
@@ -148,4 +140,119 @@
         </div>
     </div>
 </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- O'chirish (Delete) Modali -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-sm mx-4 transform scale-95 transition-transform duration-200">
+        <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-4 text-red-500 text-2xl">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="text-xl font-bold text-center text-[#061c3f] mb-2">Tasdiqlang</h3>
+        <p id="deleteModalMessage" class="text-sm text-center text-gray-500 mb-6">Ushbu elementni rostdan ham o'chirmoqchimisiz?</p>
+        
+        <form id="deleteForm" method="POST" class="flex gap-3">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-colors">
+                Bekor qilish
+            </button>
+            <button type="submit" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold shadow-lg hover:shadow-red-500/30 transition-all">
+                Ha, o'chirish
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Tahrirlash (Edit) Modali -->
+<div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-200">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-[#061c3f] flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-[#0084ff]"></i> Tahrirlash
+            </h3>
+            <button type="button" onclick="closeEditModal()" class="text-gray-400 hover:text-gray-700 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="editForm" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Nomi</label>
+                <input type="text" name="name" id="editNameInput" required
+                    class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
+            </div>
+            
+            <div class="pt-2 flex gap-3">
+                <button type="button" onclick="closeEditModal()" class="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-colors">
+                    Bekor qilish
+                </button>
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-[#0084ff] hover:bg-[#0076e5] text-white font-semibold shadow-lg hover:shadow-cyan-500/30 transition-all">
+                    Saqlash
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal JS -->
+<script>
+    function openDeleteModal(url, message) {
+        document.getElementById('deleteForm').action = url;
+        if(message) document.getElementById('deleteModalMessage').textContent = message;
+        
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            modal.firstElementChild.classList.remove('scale-95');
+            modal.firstElementChild.classList.add('scale-100');
+        }, 10);
+    }
+    
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.firstElementChild.classList.remove('scale-100');
+        modal.firstElementChild.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }, 200);
+    }
+
+    function openEditModal(type, id, currentName) {
+        const form = document.getElementById('editForm');
+        
+        if (type === 'category') {
+            form.action = `/developer/categories/${id}`;
+        } else if (type === 'subcategory') {
+            form.action = `/developer/subcategories/${id}`;
+        }
+        
+        document.getElementById('editNameInput').value = currentName;
+        
+        const modal = document.getElementById('editModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            modal.firstElementChild.classList.remove('scale-95');
+            modal.firstElementChild.classList.add('scale-100');
+        }, 10);
+    }
+    
+    function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        modal.firstElementChild.classList.remove('scale-100');
+        modal.firstElementChild.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }, 200);
+    }
+</script>
+
 @endsection

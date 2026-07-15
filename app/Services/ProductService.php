@@ -45,6 +45,14 @@ class ProductService
             $this->repository->syncItems($product, $dto->items);
         }
 
+        if (!empty($dto->metros)) {
+            $this->repository->syncMetros($product, $dto->metros);
+        }
+
+        if (!empty($dto->universities)) {
+            $this->repository->syncUniversities($product, $dto->universities);
+        }
+
         return $product;
     }
 
@@ -59,6 +67,8 @@ class ProductService
         $updatedProduct = $this->repository->update($product, $data);
 
         $this->repository->syncItems($updatedProduct, $dto->items);
+        $this->repository->syncMetros($updatedProduct, $dto->metros ?? []);
+        $this->repository->syncUniversities($updatedProduct, $dto->universities ?? []);
 
         return $updatedProduct;
     }

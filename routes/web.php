@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 // Welcome page
 Route::get('/', function () {
-    return view('welcome');
+    $regions = \App\Models\Region::with('cities')->get();
+    return view('welcome', compact('regions'));
 });
 
 // Authentication routes (Guest)
@@ -35,21 +36,31 @@ Route::middleware('auth')->group(function () {
         // Roles management
         Route::get('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'roles'])->name('developer.roles');
         Route::post('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'storeRole'])->name('developer.roles.store');
-        Route::get('/developer/roles/{role}/edit', [\App\Http\Controllers\DeveloperController::class, 'editRole'])->name('developer.roles.edit');
         Route::put('/developer/roles/{role}', [\App\Http\Controllers\DeveloperController::class, 'updateRole'])->name('developer.roles.update');
         Route::delete('/developer/roles/{role}', [\App\Http\Controllers\DeveloperController::class, 'deleteRole'])->name('developer.roles.delete');
 
         // Categories & SubCategories management
         Route::get('/developer/categories', [\App\Http\Controllers\DeveloperCategoryController::class, 'index'])->name('developer.categories');
         Route::post('/developer/categories', [\App\Http\Controllers\DeveloperCategoryController::class, 'storeCategory'])->name('developer.categories.store');
-        Route::get('/developer/categories/{category}/edit', [\App\Http\Controllers\DeveloperCategoryController::class, 'editCategory'])->name('developer.categories.edit');
         Route::put('/developer/categories/{category}', [\App\Http\Controllers\DeveloperCategoryController::class, 'updateCategory'])->name('developer.categories.update');
         Route::delete('/developer/categories/{category}', [\App\Http\Controllers\DeveloperCategoryController::class, 'deleteCategory'])->name('developer.categories.delete');
 
         Route::post('/developer/subcategories', [\App\Http\Controllers\DeveloperCategoryController::class, 'storeSubCategory'])->name('developer.subcategories.store');
-        Route::get('/developer/subcategories/{subCategory}/edit', [\App\Http\Controllers\DeveloperCategoryController::class, 'editSubCategory'])->name('developer.subcategories.edit');
         Route::put('/developer/subcategories/{subCategory}', [\App\Http\Controllers\DeveloperCategoryController::class, 'updateSubCategory'])->name('developer.subcategories.update');
         Route::delete('/developer/subcategories/{subCategory}', [\App\Http\Controllers\DeveloperCategoryController::class, 'deleteSubCategory'])->name('developer.subcategories.delete');
+
+        // Infrastructure (Metros & Universities)
+        Route::get('/developer/infrastructure', [\App\Http\Controllers\DeveloperInfrastructureController::class, 'index'])->name('developer.infrastructure');
+        
+        // Metros Actions
+        Route::post('/developer/metros', [\App\Http\Controllers\DeveloperMetroController::class, 'store'])->name('developer.metros.store');
+        Route::put('/developer/metros/{metro}', [\App\Http\Controllers\DeveloperMetroController::class, 'update'])->name('developer.metros.update');
+        Route::delete('/developer/metros/{metro}', [\App\Http\Controllers\DeveloperMetroController::class, 'destroy'])->name('developer.metros.delete');
+
+        // Universities Actions
+        Route::post('/developer/universities', [\App\Http\Controllers\DeveloperUniversityController::class, 'store'])->name('developer.universities.store');
+        Route::put('/developer/universities/{university}', [\App\Http\Controllers\DeveloperUniversityController::class, 'update'])->name('developer.universities.update');
+        Route::delete('/developer/universities/{university}', [\App\Http\Controllers\DeveloperUniversityController::class, 'destroy'])->name('developer.universities.delete');
     });
 
     // Admin & Staff Dashboard
@@ -81,6 +92,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\AdminProductController::class, 'edit'])->name('admin.products.edit');
         Route::put('/admin/products/{product}', [\App\Http\Controllers\AdminProductController::class, 'update'])->name('admin.products.update');
         Route::delete('/admin/products/{product}', [\App\Http\Controllers\AdminProductController::class, 'destroy'])->name('admin.products.delete');
+
+        // Infrastructure
+        Route::get('/admin/infrastructure', [\App\Http\Controllers\AdminInfrastructureController::class, 'index'])->name('admin.infrastructure');
+
+        // Metros management
+        Route::post('/admin/metros', [\App\Http\Controllers\AdminMetroController::class, 'store'])->name('admin.metros.store');
+        Route::put('/admin/metros/{metro}', [\App\Http\Controllers\AdminMetroController::class, 'update'])->name('admin.metros.update');
+        Route::delete('/admin/metros/{metro}', [\App\Http\Controllers\AdminMetroController::class, 'destroy'])->name('admin.metros.delete');
+
+        // Universities management
+        Route::post('/admin/universities', [\App\Http\Controllers\AdminUniversityController::class, 'store'])->name('admin.universities.store');
+        Route::put('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'update'])->name('admin.universities.update');
+        Route::delete('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'destroy'])->name('admin.universities.delete');
     });
 
     // Client Dashboard

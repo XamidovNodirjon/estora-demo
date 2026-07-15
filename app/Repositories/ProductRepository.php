@@ -68,4 +68,14 @@ class ProductRepository
             ]);
         }
     }
+
+    public function syncMetros(Product $product, array $metroIds): void
+    {
+        $product->metros()->sync($metroIds);
+    }
+
+    public function syncUniversities(Product $product, array $universityIds): void
+    {
+        $product->universities()->sync($universityIds);
+    }
 }

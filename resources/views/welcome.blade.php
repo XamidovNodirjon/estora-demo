@@ -120,6 +120,19 @@
             padding: 3px 10px;
             border-radius: 4px;
             font-weight: 500;
+            animation: blink-warning 1.5s infinite;
+        }
+
+        .desktop-center-badge {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        @keyframes blink-warning {
+            0%, 100% { background-color: var(--alert-bg); color: var(--alert-red); }
+            50% { background-color: var(--alert-red); color: #ffffff; }
         }
 
         .top-bar-right {
@@ -1518,14 +1531,74 @@
             .top-bar-right {
                 display: none;
             }
+            .top-bar-left {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 5px;
+            }
+            .desktop-center-badge {
+                position: relative;
+                left: auto;
+                transform: none;
+                width: 100%;
+                justify-content: center;
+            }
             .nav-contacts {
                 display: none;
             }
+            .header-content {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            .sub-navbar {
+                padding: 10px 0;
+            }
+            .sub-navbar-content {
+                height: auto;
+            }
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            .nav-item {
+                height: 36px;
+                padding: 0 15px;
+                border-radius: 18px;
+            }
+            .hero-section {
+                padding: 40px 0 60px 0;
+            }
             .hero-left-card {
-                padding: 25px;
+                padding: 20px;
             }
             .hero-title {
-                font-size: 32px;
+                font-size: 28px;
+            }
+            .hero-buttons {
+                flex-wrap: wrap;
+            }
+            .btn-hero-dark, .btn-hero-blue {
+                width: 100%;
+            }
+            .filter-tabs {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .filter-tab {
+                flex: 1 1 calc(50% - 5px);
+                text-align: center;
+                border-radius: 6px;
+                margin-bottom: 5px;
+            }
+            .filter-box {
+                grid-template-columns: 1fr;
+                border-radius: 8px;
+                padding: 20px;
             }
             .listings-grid {
                 grid-template-columns: 1fr;
@@ -1540,11 +1613,16 @@
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-            .footer-col-right {
-                align-items: flex-start;
+            .footer-col-left, .footer-col-right {
+                align-items: center;
+                text-align: center;
             }
-            .sub-navbar-content {
-                overflow-x: auto;
+            .app-stores {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .map-stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1552,8 +1630,8 @@
 <body>
 
     <!-- TOP BAR -->
-    <div class="top-bar">
-        <div class="container">
+    <div class="top-bar" style="position: relative;">
+        <div class="container" style="position: relative;">
             <div class="top-bar-left">
                 <div class="social-links">
                     <a href="#"><i class="fab fa-instagram"></i></a>
@@ -1562,10 +1640,11 @@
                     <a href="#"><i class="fab fa-telegram"></i></a>
                     <a href="#"><i class="fab fa-x-twitter"></i></a>
                 </div>
-                <div class="test-mode-badge">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>The site works in test mode</span>
-                </div>
+            </div>
+            
+            <div class="test-mode-badge desktop-center-badge">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>The site works in test mode</span>
             </div>
             <div class="top-bar-right">
                 <div class="top-bar-right-item">
@@ -1701,11 +1780,13 @@
                         <div class="filter-field">
                             <label>Viloyat</label>
                             <div class="filter-select-wrapper">
-                                <select>
-                                    <option>Tanlang</option>
-                                    <option>Toshkent shahri</option>
-                                    <option>Toshkent viloyati</option>
-                                    <option>Samarqand</option>
+                                <select name="region_id" id="region_id">
+                                    <option value="">Tanlang</option>
+                                    @if(isset($regions))
+                                        @foreach($regions as $region)
+                                            <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
@@ -1713,11 +1794,15 @@
                         <div class="filter-field">
                             <label>Tuman</label>
                             <div class="filter-select-wrapper">
-                                <select>
-                                    <option>Tanlang</option>
-                                    <option>Mirobod</option>
-                                    <option>Yunusobod</option>
-                                    <option>Qibray</option>
+                                <select name="city_id" id="city_id">
+                                    <option value="">Tanlang</option>
+                                    @if(isset($regions))
+                                        @foreach($regions as $region)
+                                            @foreach($region->cities as $city)
+                                                <option value="{{ $city->id }}" data-region="{{ $region->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        @endforeach
+                                    @endif
                                 </select>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
@@ -2301,5 +2386,48 @@
         <span>Savollaringiz bormi? Biz aloqadamiz.</span>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const regionSelect = document.getElementById('region_id');
+            const citySelect = document.getElementById('city_id');
+            
+            if (regionSelect && citySelect) {
+                // Hamma original optionlarni saqlab qolamiz
+                const originalCityOptions = Array.from(citySelect.options);
+                
+                regionSelect.addEventListener('change', function() {
+                    const selectedRegionId = this.value;
+                    
+                    // Mavjud tumanlarni tozalash
+                    citySelect.innerHTML = '';
+                    
+                    // Default "Tanlang" ni qaytarish
+                    citySelect.appendChild(originalCityOptions[0].cloneNode(true));
+                    
+                    if (selectedRegionId) {
+                        // Agar viloyat tanlangan bo'lsa, faqat shunga tegishli tumanlarni qo'shish
+                        originalCityOptions.forEach(option => {
+                            if (option.value !== "" && option.getAttribute('data-region') === selectedRegionId) {
+                                citySelect.appendChild(option.cloneNode(true));
+                            }
+                        });
+                    } else {
+                        // Agar viloyat tanlanmagan bo'lsa (yoki "Tanlang"ga qaytilsa),
+                        // barcha tumanlarni qaytadan ko'rsatish (yoki bo'sh qoldirish) mumkin.
+                        // Foydalanuvchi qulayligi uchun barcha tumanlarni ko'rsatamiz:
+                        originalCityOptions.forEach(option => {
+                            if (option.value !== "") {
+                                citySelect.appendChild(option.cloneNode(true));
+                            }
+                        });
+                    }
+                });
+
+                // Sahifa yuklanganda viloyat tanlanmagan bo'lsa barcha tumanlarni ko'rsatib turish yoki 
+                // tanlangan viloyatga mos tumanlarni ko'rsatish uchun:
+                regionSelect.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
 </body>
 </html>
