@@ -26,6 +26,8 @@ class ProductDto
         public bool $exchange,
         public bool $pay_in_installments,
         public bool $credit,
+        public ?float $latitude = null,
+        public ?float $longitude = null,
         public array $items = [],
         public array $metros = [],
         public array $universities = []
@@ -58,6 +60,8 @@ class ProductDto
             exchange: filter_var($data['exchange'] ?? false, FILTER_VALIDATE_BOOLEAN),
             pay_in_installments: filter_var($data['pay_in_installments'] ?? false, FILTER_VALIDATE_BOOLEAN),
             credit: filter_var($data['credit'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            latitude: isset($data['latitude']) && $data['latitude'] !== '' ? (float) $data['latitude'] : null,
+            longitude: isset($data['longitude']) && $data['longitude'] !== '' ? (float) $data['longitude'] : null,
             items: $data['items'] ?? [],
             metros: $data['metros'] ?? [],
             universities: $data['universities'] ?? []
@@ -91,6 +95,8 @@ class ProductDto
             'exchange' => $this->exchange,
             'pay_in_installments' => $this->pay_in_installments,
             'credit' => $this->credit,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
         ];
     }
 }

@@ -4,6 +4,10 @@
 @section('header_title', 'Yangi E\'lon Yaratish')
 
 @section('content')
+<!-- Leaflet Map CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <style>
     .grid-parameters {
         display: grid;
@@ -213,7 +217,7 @@
                             class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
                             <option value="">Viloyatni tanlang</option>
                             @foreach($regions as $region)
-                                <option value="{{ $region->id }}" {{ old('region_id') == $region->id ? 'selected' : '' }}>
+                                <option value="{{ $region->id }}" data-lat="{{ $region->lat }}" data-lng="{{ $region->long }}" {{ old('region_id') == $region->id ? 'selected' : '' }}>
                                     {{ $region->name }}
                                 </option>
                             @endforeach
@@ -226,7 +230,7 @@
                             <option value="">Avval viloyatni tanlang</option>
                             @foreach($regions as $region)
                                 @foreach($region->cities as $city)
-                                    <option value="{{ $city->id }}" data-region-id="{{ $region->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }} style="display: none;">
+                                    <option value="{{ $city->id }}" data-region-id="{{ $region->id }}" data-lat="{{ $city->lat }}" data-lng="{{ $city->long }}" {{ old('city_id') == $city->id ? 'selected' : '' }} style="display: none;">
                                         {{ $city->name }}
                                     </option>
                                 @endforeach
@@ -272,6 +276,27 @@
                         <input type="text" name="landmark" id="landmark" value="{{ old('landmark') }}"
                             class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm"
                             placeholder="Masalan: Korzinka yaqinida">
+                    </div>
+                </div>
+
+                <!-- Xarita va Koordinatalar -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Xaritada Joylashuv (O'zbekiston)</label>
+                    <p class="text-xs text-gray-400">Kerakli manzilni aniqlash uchun xaritadan tanlang yoki markerni suring.</p>
+                    <div id="map" class="w-full rounded-2xl border border-gray-200 bg-gray-50 relative z-10 shadow-sm" style="height: 350px;"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="latitude" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kenglik (Latitude)</label>
+                            <input type="text" name="latitude" id="latitude" value="{{ old('latitude') }}" readonly
+                                class="block w-full px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 text-sm focus:outline-none cursor-not-allowed"
+                                placeholder="Xaritadan tanlang">
+                        </div>
+                        <div>
+                            <label for="longitude" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Uzunlik (Longitude)</label>
+                            <input type="text" name="longitude" id="longitude" value="{{ old('longitude') }}" readonly
+                                class="block w-full px-4 py-2.5 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 text-sm focus:outline-none cursor-not-allowed"
+                                placeholder="Xaritadan tanlang">
+                        </div>
                     </div>
                 </div>
 
@@ -409,6 +434,7 @@
     let currentStep = 1;
     const totalSteps = 4;
     let uploadedImages = []; // List of base64 strings
+    let map, marker;
 
     // Render Preview Gallery
     function renderGallery() {
@@ -576,6 +602,11 @@
             setTimeout(() => {
                 nextPane.classList.remove('scale-95', 'opacity-0');
                 nextPane.classList.add('scale-100', 'opacity-100');
+                if (currentStep === 3 && typeof map !== 'undefined') {
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 100);
+                }
             }, 20);
 
             updateStepIndicator();
@@ -686,6 +717,91 @@
             regionSelect.dispatchEvent(new Event('change'));
             citySelect.value = "{{ old('city_id') }}";
         }
+
+        // Leaflet Map Initialization
+        const defaultLat = 41.3775;
+        const defaultLng = 64.5853;
+        const defaultZoom = 6;
+
+        // Leaflet default icon fix
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        });
+
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+
+        const initialLat = latInput.value ? parseFloat(latInput.value) : defaultLat;
+        const initialLng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
+        const initialZoom = latInput.value ? 14 : defaultZoom;
+
+        map = L.map('map').setView([initialLat, initialLng], initialZoom);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        marker = L.marker([initialLat, initialLng], { draggable: true }).addTo(map);
+        
+        // Hide marker initially if no coords selected
+        if (!latInput.value || !lngInput.value) {
+            marker.setOpacity(0);
+        }
+
+        marker.on('dragend', function (e) {
+            const position = e.target.getLatLng();
+            updateCoords(position.lat, position.lng);
+        });
+
+        map.on('click', function (e) {
+            const clickLat = e.latlng.lat;
+            const clickLng = e.latlng.lng;
+            marker.setOpacity(1);
+            marker.setLatLng([clickLat, clickLng]);
+            updateCoords(clickLat, clickLng);
+        });
+
+        function updateCoords(lat, lng) {
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+        }
+
+        // Auto pan when region or city changes
+        regionSelect.addEventListener('change', () => {
+            setTimeout(() => {
+                const selectedOption = regionSelect.options[regionSelect.selectedIndex];
+                if (!selectedOption) return;
+                const lat = selectedOption.getAttribute('data-lat');
+                const lng = selectedOption.getAttribute('data-lng');
+                if (lat && lng) {
+                    const latNum = parseFloat(lat);
+                    const lngNum = parseFloat(lng);
+                    map.setView([latNum, lngNum], 9);
+                    marker.setOpacity(1);
+                    marker.setLatLng([latNum, lngNum]);
+                    updateCoords(latNum, lngNum);
+                }
+            }, 100);
+        });
+
+        citySelect.addEventListener('change', () => {
+            const selectedOption = citySelect.options[citySelect.selectedIndex];
+            if (!selectedOption) return;
+            const lat = selectedOption.getAttribute('data-lat');
+            const lng = selectedOption.getAttribute('data-lng');
+            if (lat && lng) {
+                const latNum = parseFloat(lat);
+                const lngNum = parseFloat(lng);
+                map.setView([latNum, lngNum], 13);
+                marker.setOpacity(1);
+                marker.setLatLng([latNum, lngNum]);
+                updateCoords(latNum, lngNum);
+            }
+        });
 
         // Initialize images from old input if validation failed
         @if(is_array(old('images')))

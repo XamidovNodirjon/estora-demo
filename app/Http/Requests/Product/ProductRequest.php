@@ -46,6 +46,8 @@ class ProductRequest extends FormRequest
             'universities.*' => 'exists:universities,id',
             'images' => 'nullable|array',
             'images.*' => 'string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ];
     }
 }

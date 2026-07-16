@@ -28,6 +28,8 @@ class Product extends Model
         'exchange',
         'pay_in_installments',
         'credit',
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [
@@ -36,6 +38,8 @@ class Product extends Model
         'pay_in_installments' => 'boolean',
         'credit' => 'boolean',
         'price' => 'decimal:2',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function category()

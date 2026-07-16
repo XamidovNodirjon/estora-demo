@@ -106,6 +106,8 @@ class AdminProductTest extends TestCase
             'pay_in_installments' => 0,
             'credit' => 1,
             'items' => ['Lift', 'Balkon'],
+            'latitude' => 41.3111,
+            'longitude' => 69.2797,
         ]);
 
         $response->assertRedirect('/admin/products');
@@ -113,6 +115,8 @@ class AdminProductTest extends TestCase
         $product = Product::where('name', 'Luxury Apartment')->first();
         $this->assertNotNull($product);
         $this->assertEquals(750000000, $product->price);
+        $this->assertEquals(41.3111, $product->latitude);
+        $this->assertEquals(69.2797, $product->longitude);
 
         // Verify product items were duplicated/synced under the product
         $this->assertDatabaseHas('product_items', [
@@ -178,6 +182,8 @@ class AdminProductTest extends TestCase
             'building_floor' => 9,
             'repair' => 'Evro',
             'items' => ['Balkon', 'Parkovka'], // Remove Lift, add Balkon and Parkovka
+            'latitude' => 41.3122,
+            'longitude' => 69.2808,
         ]);
 
         $response->assertRedirect('/admin/products');
@@ -186,6 +192,8 @@ class AdminProductTest extends TestCase
             'id' => $product->id,
             'name' => 'Updated Apartment Title',
             'price' => 800000000,
+            'latitude' => 41.3122,
+            'longitude' => 69.2808,
         ]);
 
         // Verify synced items
