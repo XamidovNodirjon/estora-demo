@@ -2,31 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\CategoryDto;
+use App\DTOs\SubCategoryDto;
+use App\Http\Requests\AdminCategory\StoreAdminCategoryRequest;
+use App\Http\Requests\AdminCategory\UpdateAdminCategoryRequest;
+use App\Http\Requests\AdminCategory\StoreAdminSubCategoryRequest;
+use App\Http\Requests\AdminCategory\UpdateAdminSubCategoryRequest;
 use App\Models\Category;
 use App\Models\SubCategory;
-use Illuminate\Http\Request;
+use App\Services\Admin\AdminCategoryService;
 
 class AdminCategoryController extends Controller
 {
+    public function __construct(
+        protected AdminCategoryService $adminCategoryService
+    ) {}
+
     /**
      * Display a listing of categories and subcategories.
      */
     public function index()
     {
-        $categories = Category::with('subCategories')->withCount('subCategories')->get();
+        $categories = $this->adminCategoryService->getCategories();
         return view('admin.categories.index', compact('categories'));
     }
 
     /**
      * Store a newly created category.
      */
-    public function storeCategory(Request $request)
+    public function storeCategory(StoreAdminCategoryRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-        ]);
-
-        Category::create($data);
+        $dto = CategoryDto::fromArray($request->validated());
+        $this->adminCategoryService->storeCategory($dto);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Kategoriya muvaffaqiyatli yaratildi!');
@@ -43,13 +50,10 @@ class AdminCategoryController extends Controller
     /**
      * Update the category.
      */
-    public function updateCategory(Request $request, Category $category)
+    public function updateCategory(UpdateAdminCategoryRequest $request, Category $category)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-        ]);
-
-        $category->update($data);
+        $dto = CategoryDto::fromArray($request->validated());
+        $this->adminCategoryService->updateCategory($category, $dto);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Kategoriya muvaffaqiyatli yangilandi!');
@@ -60,7 +64,7 @@ class AdminCategoryController extends Controller
      */
     public function deleteCategory(Category $category)
     {
-        $category->delete();
+        $this->adminCategoryService->deleteCategory($category);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Kategoriya va uning barcha sub-kategoriyalari o\'chirildi!');
@@ -69,14 +73,10 @@ class AdminCategoryController extends Controller
     /**
      * Store a newly created subcategory.
      */
-    public function storeSubCategory(Request $request)
+    public function storeSubCategory(StoreAdminSubCategoryRequest $request)
     {
-        $data = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:sub_categories,name',
-        ]);
-
-        SubCategory::create($data);
+        $dto = SubCategoryDto::fromArray($request->validated());
+        $this->adminCategoryService->storeSubCategory($dto);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Sub-kategoriya muvaffaqiyatli yaratildi!');
@@ -87,21 +87,17 @@ class AdminCategoryController extends Controller
      */
     public function editSubCategory(SubCategory $subCategory)
     {
-        $categories = Category::all();
+        $categories = $this->adminCategoryService->getAllCategoriesOnly();
         return view('admin.subcategories.edit', compact('subCategory', 'categories'));
     }
 
     /**
      * Update the subcategory.
      */
-    public function updateSubCategory(Request $request, SubCategory $subCategory)
+    public function updateSubCategory(UpdateAdminSubCategoryRequest $request, SubCategory $subCategory)
     {
-        $data = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255|unique:sub_categories,name,' . $subCategory->id,
-        ]);
-
-        $subCategory->update($data);
+        $dto = SubCategoryDto::fromArray($request->validated());
+        $this->adminCategoryService->updateSubCategory($subCategory, $dto);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Sub-kategoriya muvaffaqiyatli yangilandi!');
@@ -112,7 +108,7 @@ class AdminCategoryController extends Controller
      */
     public function deleteSubCategory(SubCategory $subCategory)
     {
-        $subCategory->delete();
+        $this->adminCategoryService->deleteSubCategory($subCategory);
 
         return redirect()->route('admin.categories')
             ->with('success', 'Sub-kategoriya muvaffaqiyatli o\'chirildi!');
