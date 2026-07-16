@@ -2,35 +2,36 @@
 
 namespace App\Services;
 
+use App\DTOs\RegisterDto;
 use App\Models\User;
 use App\Models\Role;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
+    public function __construct(
+        protected UserRepository $userRepository
+    ) {}
+
     /**
      * Register a new client user.
      *
-     * @param array $data
+     * @param RegisterDto $dto
      * @return User
      */
-    public function register(array $data): User
+    public function register(RegisterDto $dto): User
     {
         $clientRole = Role::where('name', 'client')->first();
         
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'username' => $data['username'] ?? null,
-            'phone' => $data['phone'] ?? null,
-            'passport' => $data['passport'] ?? null,
-            'jshshir' => $data['jshshir'] ?? null,
-            'password' => Hash::make($data['password']),
-            'role_id' => $clientRole ? $clientRole->id : null,
-            'type' => 'client',
-            'status' => 1, // Active by default
-        ]);
+        $data = $dto->toArray();
+        $data['password'] = Hash::make($dto->password);
+        $data['role_id'] = $clientRole ? $clientRole->id : null;
+        $data['type'] = 'client';
+        $data['status'] = 1; // Active by default
+
+        return $this->userRepository->create($data);
     }
 
     /**

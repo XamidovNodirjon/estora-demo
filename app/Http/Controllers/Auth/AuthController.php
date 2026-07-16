@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\DTOs\RegisterDto;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -29,13 +32,9 @@ class AuthController extends Controller
     /**
      * Handle login request.
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'login' => 'required|string',
-            'password' => 'required|string',
-            'remember' => 'nullable|boolean'
-        ]);
+        $credentials = $request->validated();
 
         if ($this->authService->login($credentials)) {
             return redirect()->intended(route('dashboard'))
@@ -61,19 +60,10 @@ class AuthController extends Controller
     /**
      * Handle registration request.
      */
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'username' => 'required|string|max:255|unique:users|alpha_dash',
-            'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'passport' => 'nullable|string|max:20',
-            'jshshir' => 'nullable|string|max:20',
-        ]);
-
-        $user = $this->authService->register($data);
+        $dto = RegisterDto::fromArray($request->validated());
+        $user = $this->authService->register($dto);
 
         // Auto-login after registration
         Auth::login($user);
