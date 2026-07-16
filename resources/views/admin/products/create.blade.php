@@ -237,6 +237,31 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
+                        <label for="metros" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Metrolar (Yaqin)</label>
+                        <select name="metros[]" id="metros" multiple size="4"
+                            class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
+                            @foreach($metros as $metro)
+                                <option value="{{ $metro->id }}" {{ is_array(old('metros')) && in_array($metro->id, old('metros')) ? 'selected' : '' }}>
+                                    {{ $metro->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="universities" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Universitetlar (Yaqin)</label>
+                        <select name="universities[]" id="universities" multiple size="4"
+                            class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
+                            @foreach($universities as $university)
+                                <option value="{{ $university->id }}" {{ is_array(old('universities')) && in_array($university->id, old('universities')) ? 'selected' : '' }}>
+                                    {{ $university->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
                         <label for="phone" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Bog'lanish uchun telefon</label>
                         <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
                             class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm"

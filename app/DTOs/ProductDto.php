@@ -26,7 +26,9 @@ class ProductDto
         public bool $exchange,
         public bool $pay_in_installments,
         public bool $credit,
-        public array $items = []
+        public array $items = [],
+        public array $metros = [],
+        public array $universities = []
     ) {}
 
     /**
@@ -56,7 +58,9 @@ class ProductDto
             exchange: filter_var($data['exchange'] ?? false, FILTER_VALIDATE_BOOLEAN),
             pay_in_installments: filter_var($data['pay_in_installments'] ?? false, FILTER_VALIDATE_BOOLEAN),
             credit: filter_var($data['credit'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            items: $data['items'] ?? []
+            items: $data['items'] ?? [],
+            metros: $data['metros'] ?? [],
+            universities: $data['universities'] ?? []
         );
     }
 

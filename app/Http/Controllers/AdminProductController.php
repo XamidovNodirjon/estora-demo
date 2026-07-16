@@ -34,8 +34,10 @@ class AdminProductController extends Controller
         $regions = Region::with('cities')->get();
         // Load default product items templates (product_id is null)
         $defaultItems = ProductItem::whereNull('product_id')->get();
+        $metros = \App\Models\Metro::all();
+        $universities = \App\Models\University::all();
 
-        return view('admin.products.create', compact('categories', 'regions', 'defaultItems'));
+        return view('admin.products.create', compact('categories', 'regions', 'defaultItems', 'metros', 'universities'));
     }
 
     /**
@@ -64,8 +66,12 @@ class AdminProductController extends Controller
         
         // Get names of checked items
         $selectedItems = $product->items->pluck('name')->toArray();
+        $metros = \App\Models\Metro::all();
+        $universities = \App\Models\University::all();
+        $selectedMetros = $product->metros->pluck('id')->toArray();
+        $selectedUniversities = $product->universities->pluck('id')->toArray();
 
-        return view('admin.products.edit', compact('product', 'categories', 'regions', 'defaultItems', 'selectedItems'));
+        return view('admin.products.edit', compact('product', 'categories', 'regions', 'defaultItems', 'selectedItems', 'metros', 'universities', 'selectedMetros', 'selectedUniversities'));
     }
 
     /**

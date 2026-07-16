@@ -89,14 +89,6 @@ class DeveloperController extends Controller
     }
 
     /**
-     * Show form to edit role.
-     */
-    public function editRole(Role $role)
-    {
-        return view('developer.roles.edit', compact('role'));
-    }
-
-    /**
      * Update the specified role.
      */
     public function updateRole(Request $request, Role $role)
