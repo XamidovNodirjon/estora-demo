@@ -61,6 +61,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/developer/universities', [\App\Http\Controllers\DeveloperUniversityController::class, 'store'])->name('developer.universities.store');
         Route::put('/developer/universities/{university}', [\App\Http\Controllers\DeveloperUniversityController::class, 'update'])->name('developer.universities.update');
         Route::delete('/developer/universities/{university}', [\App\Http\Controllers\DeveloperUniversityController::class, 'destroy'])->name('developer.universities.delete');
+
+        // Product Items Actions (Amenities like Lift, Playground, etc.)
+        Route::post('/developer/product-items', [\App\Http\Controllers\DeveloperProductItemController::class, 'store'])->name('developer.product-items.store');
+        Route::put('/developer/product-items/{productItem}', [\App\Http\Controllers\DeveloperProductItemController::class, 'update'])->name('developer.product-items.update');
+        Route::delete('/developer/product-items/{productItem}', [\App\Http\Controllers\DeveloperProductItemController::class, 'destroy'])->name('developer.product-items.delete');
     });
 
     // Admin & Staff Dashboard

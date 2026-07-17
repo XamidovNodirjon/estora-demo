@@ -185,6 +185,86 @@
     </div>
 </div>
 
+<hr class="border-gray-200 mb-8">
+
+<!-- Qo'shimcha imkoniyatlar qismi -->
+<div class="mb-8">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg shadow-sm">
+            <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div>
+            <h2 class="font-display font-bold text-xl text-[#061c3f]">Qo'shimcha Imkoniyatlar</h2>
+            <p class="text-xs text-gray-500">Obyektga xos qulayliklar (lift, maydoncha va h.k.)</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Product Items List -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-4">ID</th>
+                            <th class="px-6 py-4">Imkoniyat Nomi</th>
+                            <th class="px-6 py-4 text-right">Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 text-sm text-gray-700">
+                        @forelse($productItems as $item)
+                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                <td class="px-6 py-4 font-mono text-gray-500">#{{ $item->id }}</td>
+                                <td class="px-6 py-4 font-semibold text-[#061c3f]">{{ $item->name }}</td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!-- Edit tugmasi -->
+                                        <button type="button" onclick="openEditModal('product-item', {{ $item->id }}, '{{ addslashes($item->name) }}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Tahrirlash">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <!-- O'chirish tugmasi -->
+                                        <button type="button" onclick="openDeleteModal('{{ route('developer.product-items.delete', $item->id) }}', 'Ushbu imkoniyatni rostdan ham o\'chirmoqchimisiz?')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="O'chirish">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="px-6 py-8 text-center text-gray-400 font-medium">
+                                    <i class="fa-solid fa-list-check text-3xl mb-3 block"></i>
+                                    Qo'shimcha imkoniyatlar topilmadi.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Create Product Item Form -->
+        <div>
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <h3 class="font-display font-bold text-lg text-[#061c3f] flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-plus text-[#ff9e0d]"></i> Yangi Imkoniyat
+                </h3>
+                <form action="{{ route('developer.product-items.store') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Imkoniyat Nomi</label>
+                        <input type="text" name="name" required value="{{ old('name') }}"
+                            class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm"
+                            placeholder="Masalan: Bolalar maydonchasi">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-[#0084ff] hover:bg-[#0076e5] text-white font-semibold text-sm transition-all shadow-lg hover:shadow-cyan-500/20">
+                        Saqlash
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ================= MODALS ================= -->
 
 <!-- O'chirish (Delete) Modali -->
@@ -276,6 +356,8 @@
             form.action = `/developer/metros/${id}`;
         } else if (type === 'university') {
             form.action = `/developer/universities/${id}`;
+        } else if (type === 'product-item') {
+            form.action = `/developer/product-items/${id}`;
         }
         
         document.getElementById('editNameInput').value = currentName;
