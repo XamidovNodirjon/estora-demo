@@ -2264,6 +2264,684 @@
         justify-content: center;
     }
 }
+
+/* ================= PRODUCT SHOW PAGE PREMIUM STYLES ================= */
+.breadcrumbs-container {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.breadcrumbs-container a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.breadcrumbs-container a:hover {
+    color: var(--accent-blue);
+}
+
+.product-detail-section {
+    padding: 30px 0 60px 0;
+    background-color: #fcfdfe;
+}
+
+.product-detail-header-block {
+    margin-bottom: 24px;
+}
+
+.detail-header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.header-badges-left {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge-detail {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.kelishiladi-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.ipoteka-badge {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.subsidiya-badge {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.date-badge {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.detail-id-badge {
+    background-color: var(--primary-navy);
+    color: #ffffff;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.detail-title-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 10px;
+}
+
+.detail-header-tags {
+    display: flex;
+    gap: 8px;
+}
+
+.header-tag {
+    background-color: #f1f3f5;
+    color: var(--text-dark);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Two-column layout grid */
+.detail-columns-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Gallery / Carousel Styles */
+.detail-gallery-wrapper {
+    display: flex;
+    gap: 15px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
+    height: 480px;
+}
+
+.gallery-thumbnails {
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.thumb-item {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumb-item.active, .thumb-item:hover {
+    border-color: var(--accent-blue);
+    transform: scale(0.96);
+}
+
+.gallery-main-view {
+    flex: 1;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f3f4f6;
+    height: 100%;
+}
+
+.main-image-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.main-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-top-left-yaxshi {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #10b981;
+    color: white;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    z-index: 10;
+}
+
+.gallery-controls-overlay {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.gallery-index-badge {
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.gallery-fullscreen-btn {
+    background-color: rgba(255,255,255,0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--primary-navy);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gallery-fullscreen-btn:hover {
+    background-color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Address Box & Map Styles */
+.detail-address-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
+}
+
+.detail-address-box h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 12px;
+}
+
+.address-text {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.text-orange {
+    color: var(--accent-orange);
+}
+
+#showMap {
+    height: 280px;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Right Column Owner / Pricing Card */
+.owner-pricing-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.owner-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f3f5;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.owner-avatar-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.owner-avatar {
+    font-size: 40px;
+    color: var(--accent-blue);
+}
+
+.owner-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+.owner-type {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.owner-action-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-owner-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-owner-action:hover {
+    background-color: #f8fafc;
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.phone-and-price-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.detail-phone-wrapper {
+    flex: 1;
+}
+
+.phone-label, .price-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.phone-reveal-container {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 42px;
+    align-items: center;
+    padding-left: 12px;
+}
+
+.phone-masked-num {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-navy);
+    flex: 1;
+}
+
+.btn-reveal-phone {
+    background-color: var(--primary-navy);
+    color: white;
+    border: none;
+    padding: 0 15px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    height: 100%;
+    transition: background-color 0.2s;
+}
+
+.btn-reveal-phone:hover {
+    background-color: var(--secondary-navy);
+}
+
+.detail-price-box {
+    flex: 1;
+}
+
+.price-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    display: block;
+}
+
+.btn-telegram-direct {
+    background-color: #24A1DE;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.btn-telegram-direct:hover {
+    background-color: #208fbe;
+}
+
+/* Parameters Table Box */
+.detail-params-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.detail-params-box h3, .detail-amenities-box h3, .detail-desc-box h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f1f3f5;
+    padding-bottom: 10px;
+}
+
+.params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
+
+.param-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+    border-bottom: 1px dashed #f1f3f5;
+}
+
+.param-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.param-label i {
+    width: 16px;
+    color: var(--accent-blue);
+}
+
+.param-value {
+    color: var(--primary-navy);
+    font-weight: 600;
+}
+
+/* Amenities & Nearby list */
+.detail-amenities-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.amenities-group {
+    margin-bottom: 15px;
+}
+
+.amenities-group:last-child {
+    margin-bottom: 0;
+}
+
+.group-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.group-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.group-tag-item {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: var(--text-dark);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+/* Description Box */
+.detail-desc-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.desc-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* Recommendations styling */
+.recommendations-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 20px;
+}
+
+.recommendations-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.rec-tab-btn {
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.rec-tab-btn:hover {
+    color: var(--accent-blue);
+    background-color: #f1f5f9;
+}
+
+.rec-tab-btn.active {
+    background-color: #e8f4ff;
+    color: var(--accent-blue);
+}
+
+.rec-tab-panel {
+    display: none;
+}
+
+.rec-tab-panel.active {
+    display: block;
+}
+
+.rec-listings-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.rec-listings-grid > .listing-card {
+    flex: 1 1 calc(25% - 20px);
+    min-width: 280px;
+    max-width: 100%;
+}
+
+.rec-empty-message {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 500;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+}
+
+/* Responsive Show page styles */
+@media (max-width: 1200px) {
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 calc(33.333% - 20px);
+    }
+}
+
+@media (max-width: 992px) {
+    .detail-columns-grid {
+        grid-template-columns: 1fr;
+    }
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .detail-gallery-wrapper {
+        flex-direction: column-reverse;
+        height: auto;
+    }
+    
+    .gallery-thumbnails {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        max-height: none;
+        height: 80px;
+        margin-top: 10px;
+        padding-bottom: 5px;
+    }
+    
+    .thumb-item {
+        flex: 0 0 65px;
+        height: 65px;
+    }
+    
+    .gallery-main-view {
+        height: 350px;
+    }
+    
+    .params-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .phone-and-price-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-header-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .detail-id-badge {
+        align-self: flex-start;
+    }
+    
+    .owner-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .owner-action-icons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .gallery-main-view {
+        height: 250px;
+    }
+}
 </style>
 </head>
 <body>
@@ -2380,277 +3058,292 @@
 
     
     <!-- COMPACT FILTERS STRIP -->
-    <div class="compact-filters-strip">
-        <div class="container">
-            <form action="{{ route('maniDashboard') }}" method="GET" class="compact-filter-form">
-                <input type="hidden" name="transaction_type" id="transaction_type" value="{{ request('transaction_type', 'Sotuv') }}">
-                
-                <div class="compact-tabs">
-                    <div class="compact-tab {{ request('transaction_type', 'Sotuv') == 'Sotuv' ? 'active' : '' }}" data-value="Sotuv">Sotuv</div>
-                    <div class="compact-tab {{ request('transaction_type') == 'Ijara' ? 'active' : '' }}" data-value="Ijara">Ijara</div>
-                    <div class="compact-tab {{ request('transaction_type') == 'Xonadosh' ? 'active' : '' }}" data-value="Xonadosh">Xonadosh</div>
-                    <div class="compact-tab {{ request('transaction_type') == 'Tijorat' ? 'active' : '' }}" data-value="Tijorat">Tijorat</div>
-                    <div class="compact-tab {{ request('transaction_type') == 'Dacha' ? 'active' : '' }}" data-value="Dacha">Dacha</div>
-                    <div class="compact-tab {{ request('transaction_type') == 'Xalqaro' ? 'active' : '' }}" data-value="Xalqaro">Xalqaro</div>
-                </div>
-                
-                <div class="compact-fields-row">
-                    <div class="compact-field">
-                        <label>Mulk turi</label>
-                        <select name="property_type">
-                            <option value="Tanlang">Tanlang</option>
-                            <option value="Kvartira" {{ request('property_type') == 'Kvartira' ? 'selected' : '' }}>Kvartira</option>
-                            <option value="Hovli" {{ request('property_type') == 'Hovli' ? 'selected' : '' }}>Hovli</option>
-                            <option value="Ofis" {{ request('property_type') == 'Ofis' ? 'selected' : '' }}>Ofis</option>
-                        </select>
-                    </div>
-                    
-                    <div class="compact-field">
-                        <label>Viloyat</label>
-                        <select name="region_id" id="region_id">
-                            <option value="">Tanlang</option>
-                            @if(isset($regions))
-                                @foreach($regions as $region)
-                                    <option value="{{ $region->id }}" {{ request('region_id') == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
-                    
-                    <div class="compact-field">
-                        <label>Tuman</label>
-                        <select name="city_id" id="city_id">
-                            <option value="">Tanlang</option>
-                            @if(isset($regions))
-                                @foreach($regions as $region)
-                                    @foreach($region->cities as $city)
-                                        <option value="{{ $city->id }}" data-region="{{ $region->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
-                                    @endforeach
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
-                    
-                    <div class="compact-field">
-                        <label>So'ngi e'lonlar</label>
-                        <select name="time_filter">
-                            <option value="Tanlang">Tanlang</option>
-                            <option value="Bugungi" {{ request('time_filter') == 'Bugungi' ? 'selected' : '' }}>Bugungi</option>
-                            <option value="Haftalik" {{ request('time_filter') == 'Haftalik' ? 'selected' : '' }}>Haftalik</option>
-                            <option value="Oylik" {{ request('time_filter') == 'Oylik' ? 'selected' : '' }}>Oylik</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="btn-compact-search">
-                        <i class="fas fa-search"></i>
-                        QIDIRISH
-                    </button>
-                </div>
-            </form>
-        </div>
+
+<!-- BREADCRUMBS -->
+<div class="breadcrumbs-container">
+    <div class="container">
+        <a href="/">Bosh sahifa</a> / 
+        <a href="{{ route('maniDashboard') }}?transaction_type={{ $product->category->name ?? 'Sotuv' }}">{{ $product->category->name ?? 'Sotuv' }}</a> / 
+        <a href="{{ route('maniDashboard') }}?transaction_type={{ $product->category->name ?? 'Sotuv' }}&property_type={{ $product->subCategory->name ?? 'Kvartira' }}">{{ $product->subCategory->name ?? 'Kvartira' }}</a>
     </div>
+</div>
 
-
-    
-    <!-- SEARCH RESULTS SECTION -->
-    <div class="results-container">
-        <div class="container">
-            <div class="results-header-bar">
-                <div class="breadcrumbs">
-                    Bosh sahifa / {{ request('transaction_type', 'Sotuv') }} / {{ request('property_type', 'Kvartira') }}
+<!-- PRODUCT DETAIL CONTENT -->
+<div class="product-detail-section">
+    <div class="container">
+        <!-- Main title & badges -->
+        <div class="product-detail-header-block">
+            <div class="detail-header-top-row">
+                <div class="header-badges-left">
+                    @if($product->exchange)
+                        <span class="badge-detail kelishiladi-badge">Kelishiladi</span>
+                    @endif
+                    @if($product->credit)
+                        <span class="badge-detail ipoteka-badge">Ipoteka</span>
+                    @endif
+                    @if($product->pay_in_installments)
+                        <span class="badge-detail subsidiya-badge">Subsidiya</span>
+                    @endif
+                    <span class="badge-detail date-badge">E'lon joylangan sana: {{ $product->created_at->format('d.m.Y') }}</span>
                 </div>
-                <div class="results-filters-row">
-                    <div class="sort-selector-wrapper">
-                        <span>Saralash turi:</span>
-                        <form id="sortForm" method="GET" action="{{ route('maniDashboard') }}" style="display:inline-block;">
-                            <!-- Carry over existing filters as hidden fields -->
-                            <input type="hidden" name="transaction_type" value="{{ request('transaction_type') }}">
-                            <input type="hidden" name="property_type" value="{{ request('property_type') }}">
-                            <input type="hidden" name="region_id" value="{{ request('region_id') }}">
-                            <input type="hidden" name="city_id" value="{{ request('city_id') }}">
-                            <input type="hidden" name="time_filter" value="{{ request('time_filter') }}">
-                            
-                            <select name="sort_by" onchange="document.getElementById('sortForm').submit();" class="sort-select">
-                                <option value="newest" {{ request('sort_by') == 'newest' ? 'selected' : '' }}>Tanlang (Yangi)</option>
-                                <option value="price_asc" {{ request('sort_by') == 'price_asc' ? 'selected' : '' }}>Arzonroq</option>
-                                <option value="price_desc" {{ request('sort_by') == 'price_desc' ? 'selected' : '' }}>Qimmatroq</option>
-                            </select>
-                        </form>
+                <span class="detail-id-badge">ID {{ 10000 + $product->id }}</span>
+            </div>
+            
+            <h1 class="detail-title-text">{{ $product->subCategory->name ?? 'Kvartira' }} - {{ $product->square }} m², {{ $product->rooms }} xona</h1>
+            
+            <div class="detail-header-tags">
+                <span class="header-tag">{{ $product->category->name ?? 'Sotuv' }}</span>
+                <span class="header-tag">Turar joy</span>
+                <span class="header-tag">{{ $product->subCategory->name ?? 'Kvartira' }}</span>
+            </div>
+        </div>
+
+        <div class="detail-columns-grid">
+            <!-- LEFT COLUMN (Media and Address) -->
+            <div class="detail-left-column">
+                <!-- Gallery Wrapper -->
+                <div class="detail-gallery-wrapper">
+                    @php
+                        $images = $product->images;
+                        if (is_string($images)) {
+                            $images = json_decode($images, true);
+                        }
+                        $images = is_array($images) ? $images : [];
+                    @endphp
+                    
+                    <!-- Thumbnails column -->
+                    <div class="gallery-thumbnails">
+                        @if(count($images) > 0)
+                            @foreach($images as $idx => $img)
+                                <div class="thumb-item {{ $loop->first ? 'active' : '' }}" onclick="switchMainImage(this, '{{ Str::startsWith($img, 'http') ? $img : (Str::startsWith($img, '/storage') ? $img : (Str::startsWith($img, 'storage') ? '/' . $img : '/storage/' . $img)) }}', {{ $loop->index }})">
+                                    <img src="{{ Str::startsWith($img, 'http') ? $img : (Str::startsWith($img, '/storage') ? $img : (Str::startsWith($img, 'storage') ? '/' . $img : '/storage/' . $img)) }}" alt="Thumbnail">
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="thumb-item active">
+                                <img src="/images/apartment1.png" alt="Thumbnail">
+                            </div>
+                        @endif
                     </div>
                     
-                    <div class="layout-toggle">
-                        <button class="btn-layout active" title="Ro'yxat"><i class="fas fa-bars"></i></button>
-                        <button class="btn-layout" title="Setka"><i class="fas fa-th-large"></i></button>
+                    <!-- Main image view -->
+                    <div class="gallery-main-view">
+                        <div class="main-image-wrapper">
+                            @if(count($images) > 0)
+                                <img id="mainGalleryImage" src="{{ Str::startsWith($images[0], 'http') ? $images[0] : (Str::startsWith($images[0], '/storage') ? $images[0] : (Str::startsWith($images[0], 'storage') ? '/' . $images[0] : '/storage/' . $images[0])) }}" alt="{{ $product->name }}">
+                            @else
+                                <img id="mainGalleryImage" src="/images/apartment1.png" alt="Placeholder">
+                            @endif
+                        </div>
+                        <span class="badge-top-left-yaxshi yaxshi-taklif-badge">Yaxshi Taklif</span>
+                        
+                        <div class="gallery-controls-overlay">
+                            <span class="gallery-index-badge" id="galleryIndexText">1/{{ max(count($images), 1) }}</span>
+                            <button class="gallery-fullscreen-btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Address Section -->
+                <div class="detail-address-box">
+                    <h3>Manzil</h3>
+                    <p class="address-text">
+                        <i class="fas fa-map-marker-alt text-orange"></i>
+                        {{ $product->region->name ?? 'Toshkent shahri' }}, {{ $product->city->name ?? 'Chilonzor tumani' }}
+                        @if($product->landmark)
+                            , Mo'ljal: {{ $product->landmark }}
+                        @endif
+                    </p>
+                    
+                    <!-- Leaflet map container -->
+                    <div id="showMap"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN (Pricing, Params, Nearby, Description) -->
+            <div class="detail-right-column">
+                <!-- Owner & Pricing card -->
+                <div class="owner-pricing-card">
+                    <div class="owner-header-row">
+                        <div class="owner-avatar-info">
+                            <div class="owner-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div>
+                                <h4 class="owner-name">{{ $product->user->name ?? 'Surename Name' }}</h4>
+                                <span class="owner-type">Jismoniy shaxs</span>
+                            </div>
+                        </div>
+                        <div class="owner-action-icons">
+                            <button class="btn-owner-action" title="Saralanganlarga qo'shish"><i class="far fa-heart"></i></button>
+                            <button class="btn-owner-action" title="Ulashish"><i class="fas fa-share-alt"></i></button>
+                            <button class="btn-owner-action" title="Chop etish" onclick="window.print();"><i class="fas fa-print"></i></button>
+                            <button class="btn-owner-action" title="Shikoyat qilish"><i class="fas fa-exclamation-triangle"></i></button>
+                        </div>
                     </div>
                     
-                    <a href="{{ route('maniDashboard') }}" class="btn-clear-filters">
-                        <i class="fas fa-times"></i>
-                        Filtrlarni o'chirish
+                    <div class="phone-and-price-row">
+                        <div class="detail-phone-wrapper">
+                            <span class="phone-label">Telefon raqam</span>
+                            <div class="phone-reveal-container">
+                                <span class="phone-masked-num" id="showPhoneText">+998 ** *** ** **</span>
+                                <button class="btn-reveal-phone" id="revealPhoneBtn" onclick="revealProductPhone('{{ $product->phone }}')">To'liq ko'rish</button>
+                            </div>
+                        </div>
+                        <div class="detail-price-box">
+                            <span class="price-label">Narx</span>
+                            <span class="price-value">{{ number_format($product->price) }} USD</span>
+                        </div>
+                    </div>
+                    
+                    <a href="https://t.me/estora_realestate" target="_blank" class="btn-telegram-direct">
+                        <i class="fab fa-telegram-plane"></i>
+                        Telegram orqali yozish
                     </a>
                 </div>
-            </div>
-            
-            <!-- Product Listings -->
-            <div class="search-listings-list">
-                @forelse($products as $product)
-                    <!-- Product Card Row -->
-                    <div class="product-row-card">
-                        <!-- Carousel Block (Left) -->
-                        <div class="product-carousel-container">
-                            @php
-                                $images = $product->images;
-                                if (is_string($images)) {
-                                    $images = json_decode($images, true);
-                                }
-                                $images = is_array($images) ? $images : [];
-                            @endphp
-                            
-                            <a href="{{ route('products.show', $product->id) }}" style="display: block; width: 100%; height: 100%; text-decoration: none; color: inherit;">
-                                <div class="carousel-track-wrapper">
-                                    @if(count($images) > 0)
-                                        @foreach($images as $index => $img)
-                                            <img src="{{ Str::startsWith($img, 'http') ? $img : (Str::startsWith($img, '/storage') ? $img : (Str::startsWith($img, 'storage') ? '/' . $img : '/storage/' . $img)) }}" 
-                                                 class="carousel-slide-img {{ $loop->first ? 'active' : '' }}" 
-                                                 data-index="{{ $loop->index }}" 
-                                                 alt="{{ $product->name }}">
-                                        @endforeach
-                                    @else
-                                        <img src="/images/apartment1.png" class="carousel-slide-img active" alt="Placeholder">
-                                    @endif
-                                </div>
-                            </a>
-                            
-                            <span class="badge-top-left yaxshi-taklif-badge">Yaxshi Taklif</span>
-                            
-                            @if(count($images) > 1)
-                                <button class="carousel-control-btn prev-btn" onclick="moveSlide(this, -1)"><i class="fas fa-chevron-left"></i></button>
-                                <button class="carousel-control-btn next-btn" onclick="moveSlide(this, 1)"><i class="fas fa-chevron-right"></i></button>
-                            @endif
-                            
-                            <span class="carousel-index-badge">1/{{ max(count($images), 1) }}</span>
-                        </div>
-                        
-                        <!-- Meta Info Block (Middle) -->
-                        <div class="product-details-block">
-                            <div class="id-row">
-                                <span class="product-id-badge">ID {{ 10000 + $product->id }}</span>
-                                <span class="negotiable-badge">Kelishiladi</span>
-                            </div>
-                            
-                            <h3 class="product-title-text">
-                                <a href="{{ route('products.show', $product->id) }}" style="color: inherit; text-decoration: none;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='inherit'">
-                                    {{ strtoupper($product->category->name ?? request('transaction_type', 'SOTUV')) }} | {{ strtoupper($product->subCategory->name ?? request('property_type', 'KVARTIRA')) }}
-                                </a>
-                            </h3>
-                            <div class="product-name-subtitle" style="font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px;">
-                                <a href="{{ route('products.show', $product->id) }}" style="color: inherit; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ $product->name }}</a>
-                            </div>
-                            
-                            <div class="product-price-text">
-                                @if($product->price > 0)
-                                    {{ number_format($product->price) }} USD
-                                @else
-                                    Kelishiladi
-                                @endif
-                            </div>
-                            
-                            <div class="product-location-text">
-                                {{ $product->region->name ?? 'Toshkent shahar' }}, {{ $product->city->name ?? 'Yashnobod tumani' }}
-                            </div>
-                            
-                            <div class="location-landmark-meta">
-                                <span class="location-time">
-                                    <i class="fas fa-walking"></i> {{ $product->city->name ?? 'Yashnobod' }} – 20 daqiqa
-                                </span>
-                                @if($product->landmark)
-                                    <span class="landmark-name">
-                                        <i class="fas fa-map-marker-alt"></i> Mo‘ljal: {{ $product->landmark }}
-                                    </span>
-                                @endif
-                            </div>
-                            
-                            <div class="date-published-row">
-                                E'lon joylangan sana: {{ $product->created_at ? $product->created_at->format('d.m.Y') : '16.09.2025' }}
-                            </div>
-                        </div>
-                        
-                        <!-- Action & Specs Block (Right) -->
-                        <div class="product-actions-specs">
-                            <div class="top-meta-icons">
-                                <div class="action-meta-btn wishlist-btn" title="Saralanganlar"><i class="far fa-heart"></i></div>
-                                <div class="action-meta-btn share-btn" title="Ulashish"><i class="far fa-share-square"></i></div>
-                            </div>
-                            
-                            <div class="phone-action-container">
-                                @if($product->phone)
-                                    <button class="phone-reveal-btn" onclick="revealPhone(this, '{{ $product->phone }}')">
-                                        <i class="fas fa-phone-alt"></i> Telefon raqam
-                                    </button>
-                                    <a href="https://t.me/estora_support" target="_blank" class="tg-write-btn">
-                                        <i class="fab fa-telegram-plane"></i> Telegram orqali yozish
-                                    </a>
-                                @else
-                                    <button class="phone-reveal-btn disabled" disabled>
-                                        <i class="fas fa-phone-alt"></i> Telefon raqam yo'q
-                                    </button>
-                                @endif
-                            </div>
-                            
-                            <!-- Specs grid -->
-                            <div class="specs-grid-box">
-                                <span class="spec-tag"><i class="fas fa-layer-group"></i> {{ $product->floor ?? '5' }}/{{ $product->building_floor ?? '7' }} etaj</span>
-                                <span class="spec-tag"><i class="fas fa-door-open"></i> {{ $product->rooms ?? '2' }} xona</span>
-                                <span class="spec-tag"><i class="fas fa-expand-arrows-alt"></i> {{ $product->square ?? '45' }}m²</span>
-                            </div>
-                            
-                            <!-- Quality tags -->
-                            <div class="quality-tags-box">
-                                <span class="quality-tag"><i class="fas fa-tools"></i> {{ $product->repair ?? "Yevro ta'mir" }}</span>
-                                <span class="quality-tag"><i class="fas fa-chair"></i> Mebel bor</span>
-                            </div>
-                            
-                            <!-- Finance Badges -->
-                            <div class="finance-badges-box">
-                                @if($product->credit)
-                                    <span class="finance-badge ipoteka-badge"><i class="fas fa-file-signature"></i> Ipoteka</span>
-                                @endif
-                                @if($product->pay_in_installments)
-                                    <span class="finance-badge subsidiya-badge"><i class="fas fa-hand-holding-usd"></i> Subsidiya</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results-card">
-                        <i class="far fa-folder-open text-4xl mb-3 block" style="font-size: 40px; margin-bottom: 12px; color: var(--text-muted);"></i>
-                        <h3>Siz tanlagan filtrlar bo'yicha e'lonlar topilmadi.</h3>
-                        <p>Iltimos, filtrlarni o'zgartirib qaytadan urinib ko'ring.</p>
-                    </div>
-                @endforelse
-            </div>
-            
-            <!-- Pagination Links -->
-            <div class="search-pagination">
-                {{ $products->links() }}
-            </div>
-        </div>
-    </div>
-<!-- FOOTER LINKS BAR -->
-    <div class="footer-links-bar">
-        <div class="container">
-            <div class="footer-links-content">
-                <a href="#">Biz haqimizda</a>
-                <a href="#">Xizmatlar</a>
-                <a href="#">Narxlar</a>
-                <a href="#">Qo'llanma</a>
-                <a href="#">Ommaviy oferta</a>
-                <a href="#">Hamkorlar</a>
-                <a href="#">Aloqa</a>
-            </div>
-        </div>
-    </div>
 
-    <!-- MAIN FOOTER -->
+                <!-- Parameters Box -->
+                <div class="detail-params-box">
+                    <h3>Parametrlar</h3>
+                    <div class="params-grid">
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-door-open"></i> Xonalar soni:</span>
+                            <span class="param-value">{{ $product->rooms ?? '—' }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-ruler-combined"></i> Umumiy maydon:</span>
+                            <span class="param-value">{{ $product->square ? $product->square . ' m²' : '—' }}</span>
+                        </div>
+                        @if($product->floor)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-building"></i> Yashash qavati:</span>
+                            <span class="param-value">{{ $product->floor }}</span>
+                        </div>
+                        @endif
+                        @if($product->building_floor)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-level-up-alt"></i> Uydagi qavatlar soni:</span>
+                            <span class="param-value">{{ $product->building_floor }}</span>
+                        </div>
+                        @endif
+                        @if($product->repair)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-tools"></i> Ta'mir holati:</span>
+                            <span class="param-value">{{ $product->repair }}</span>
+                        </div>
+                        @endif
+                        @if($product->sotix)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-tree"></i> Sotix:</span>
+                            <span class="param-value">{{ $product->sotix }}</span>
+                        </div>
+                        @endif
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-exchange-alt"></i> Almashish:</span>
+                            <span class="param-value">{{ $product->exchange ? 'Bor' : "Yo'q" }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-credit-card"></i> Bo'lib to'lash:</span>
+                            <span class="param-value">{{ $product->pay_in_installments ? 'Mavjud' : "Yo'q" }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-hand-holding-usd"></i> Kredit (Ipoteka):</span>
+                            <span class="param-value">{{ $product->credit ? 'Mavjud' : "Yo'q" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Items (Amenities / Qulayliklar) Box -->
+                <div class="detail-amenities-box">
+                    <h3>Qo'shimcha</h3>
+                    
+                    @if(count($product->metros) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-subway text-blue"></i> Infratuzilma (Metro):</span>
+                            <div class="group-tags">
+                                @foreach($product->metros as $metro)
+                                    <span class="group-tag-item">{{ $metro->name }} Metro</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(count($product->universities) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-graduation-cap text-orange"></i> Yaqin universitetlar:</span>
+                            <div class="group-tags">
+                                @foreach($product->universities as $uni)
+                                    <span class="group-tag-item">{{ $uni->name }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    @if(count($product->items) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-concierge-bell text-green"></i> Qulayliklar:</span>
+                            <div class="group-tags">
+                                @foreach($product->items as $item)
+                                    <span class="group-tag-item">{{ $item->name }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Description (Tavsif) Box -->
+                <div class="detail-desc-box">
+                    <h3>Tavsif</h3>
+                    <div class="desc-content">
+                        {!! nl2br(e($product->description)) !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECOMMENDATIONS BLOCK -->
+        <div class="recommendations-container py-12">
+            <h2 class="recommendations-title">Sizga qiziqarli bo'lishi mumkin</h2>
+            
+            <div class="recommendations-tabs">
+                <button class="rec-tab-btn active" onclick="switchRecTab(this, 'price')">O'xshash narxli</button>
+                <button class="rec-tab-btn" onclick="switchRecTab(this, 'area')">O'xshash maydonli</button>
+                <button class="rec-tab-btn" onclick="switchRecTab(this, 'location')">Joylashuvga ko'ra o'xshash</button>
+            </div>
+
+            <!-- TAB CONTENT: Price -->
+            <div class="rec-tab-panel active" id="rec-price">
+                <div class="rec-listings-grid">
+                    @forelse($similarPrice as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">O'xshash narxli e'lonlar topilmadi.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: Area -->
+            <div class="rec-tab-panel" id="rec-area">
+                <div class="rec-listings-grid">
+                    @forelse($similarArea as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">O'xshash maydonli e'lonlar topilmadi.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: Location -->
+            <div class="rec-tab-panel" id="rec-location">
+                <div class="rec-listings-grid">
+                    @forelse($similarLocation as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">Yaqin hududdagi o'xshash e'lonlar topilmadi.</div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
@@ -2882,6 +3575,89 @@
                 });
             });
 });
+    </script>
+
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Switch main image in Gallery
+        function switchMainImage(thumbElement, imageSrc, index) {
+            // Remove active from all thumbnails
+            const thumbs = document.querySelectorAll('.thumb-item');
+            thumbs.forEach(t => t.classList.remove('active'));
+            
+            // Add active to current
+            thumbElement.classList.add('active');
+            
+            // Update main image source
+            document.getElementById('mainGalleryImage').src = imageSrc;
+            
+            // Update index badge
+            const totalCount = thumbs.length;
+            document.getElementById('galleryIndexText').textContent = `${index + 1}/${totalCount}`;
+        }
+
+        // Fullscreen toggle logic
+        function toggleFullscreen() {
+            const mainImg = document.getElementById('mainGalleryImage');
+            if (mainImg.requestFullscreen) {
+                mainImg.requestFullscreen();
+            } else if (mainImg.webkitRequestFullscreen) {
+                mainImg.webkitRequestFullscreen();
+            } else if (mainImg.msRequestFullscreen) {
+                mainImg.msRequestFullscreen();
+            }
+        }
+
+        // Reveal phone number
+        function revealProductPhone(phoneNum) {
+            const phoneTextElement = document.getElementById('showPhoneText');
+            const revealBtn = document.getElementById('revealPhoneBtn');
+            if (phoneTextElement && phoneNum) {
+                phoneTextElement.textContent = phoneNum;
+                if (revealBtn) {
+                    revealBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // Switch similar product tabs
+        function switchRecTab(tabButton, tabType) {
+            // Remove active class from buttons
+            const buttons = document.querySelectorAll('.rec-tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            tabButton.classList.add('active');
+            
+            // Hide all tab panels
+            const panels = document.querySelectorAll('.rec-tab-panel');
+            panels.forEach(p => p.classList.remove('active'));
+            
+            // Show corresponding panel
+            const activePanel = document.getElementById(`rec-${tabType}`);
+            if (activePanel) {
+                activePanel.classList.add('active');
+            }
+        }
+
+        // Leaflet map initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const lat = {{ $product->latitude ?? 41.311081 }};
+            const lng = {{ $product->longitude ?? 69.240562 }};
+            
+            const map = L.map('showMap').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("{{ $product->name }}")
+                .openPopup();
+        });
     </script>
 </body>
 </html>

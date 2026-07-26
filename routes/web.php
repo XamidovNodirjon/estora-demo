@@ -11,6 +11,7 @@ Route::get('/', function () {
 });
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
+Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 
 // Authentication routes (Guest)
 Route::middleware('guest')->group(function () {
