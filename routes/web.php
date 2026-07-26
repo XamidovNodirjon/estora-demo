@@ -115,6 +115,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/universities', [\App\Http\Controllers\AdminUniversityController::class, 'store'])->name('admin.universities.store');
         Route::put('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'update'])->name('admin.universities.update');
         Route::delete('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'destroy'])->name('admin.universities.delete');
+
+        // Product Items management (Amenities like Lift, Playground, etc.)
+        Route::post('/admin/product-items', [\App\Http\Controllers\AdminProductItemController::class, 'store'])->name('admin.product-items.store');
+        Route::put('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'update'])->name('admin.product-items.update');
+        Route::delete('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'destroy'])->name('admin.product-items.delete');
     });
 
     // Client Dashboard
