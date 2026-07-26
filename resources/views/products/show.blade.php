@@ -2938,11 +2938,206 @@
         justify-content: flex-start;
     }
     
+    
     .gallery-main-view {
         height: 250px;
     }
 }
-</style>
+
+        /* INQUIRY MODAL PREMIUM STYLES */
+        .inquiry-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inquiry-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .inquiry-modal-content {
+            position: relative;
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 10;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .inquiry-modal-header {
+            background-color: var(--primary-navy, #0f172a);
+            padding: 20px 24px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inquiry-modal-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            padding: 0;
+        }
+
+        .close-modal-btn:hover {
+            opacity: 1;
+        }
+
+        .inquiry-modal-form {
+            padding: 24px;
+        }
+
+        .form-group-item {
+            margin-bottom: 20px;
+        }
+
+        .form-group-item label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark, #334155);
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .required-star {
+            color: #ef4444;
+        }
+
+        .inquiry-input, .inquiry-textarea {
+            width: 100%;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .inquiry-input:focus, .inquiry-textarea:focus {
+            border-color: var(--accent-blue, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .btn-submit-inquiry {
+            width: 100%;
+            background-color: var(--accent-orange, #f97316);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit-inquiry:hover {
+            background-color: #ea580c;
+        }
+
+        .btn-submit-inquiry:active {
+            transform: scale(0.98);
+        }
+
+        .inquiry-success-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-alert-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease-out;
+            border-top: 4px solid #10b981;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .success-alert-content p {
+            font-size: 15px;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-close-alert {
+            background-color: var(--primary-navy, #0f172a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-close-alert:hover {
+            background-color: #1e293b;
+        }
+    </style>
 </head>
 <body>
 
@@ -3401,10 +3596,58 @@
     </footer>
 
     <!-- STICKY CHAT WIDGET -->
-    <div class="chat-widget">
+    <div class="chat-widget" onclick="openInquiryModal()">
         <div class="chat-widget-pulse"></div>
         <span>Savollaringiz bormi? Biz aloqadamiz.</span>
     </div>
+
+    <!-- INQUIRY MODAL -->
+    <div id="inquiryModal" class="inquiry-modal" style="display: none;">
+        <div class="inquiry-modal-backdrop" onclick="closeInquiryModal()"></div>
+        <div class="inquiry-modal-content">
+            <div class="inquiry-modal-header">
+                <h3>Savollaringiz bormi? Biz aloqadamiz.</h3>
+                <button type="button" class="close-modal-btn" onclick="closeInquiryModal()">&times;</button>
+            </div>
+            <form action="{{ route('inquiries.store') }}" method="POST" class="inquiry-modal-form">
+                @csrf
+                <div class="form-group-item">
+                    <label for="inquiry_phone">Telefon raqamingiz <span class="required-star">*</span></label>
+                    <input type="text" id="inquiry_phone" name="phone" placeholder="+998 (90) 123-45-67" required class="inquiry-input">
+                </div>
+                <div class="form-group-item">
+                    <label for="inquiry_desc">Savolingiz yoki izohingiz</label>
+                    <textarea id="inquiry_desc" name="description" rows="4" placeholder="Savollaringizni shu yerga yozishingiz mumkin..." class="inquiry-textarea"></textarea>
+                </div>
+                <button type="submit" class="btn-submit-inquiry">YUBORISH</button>
+            </form>
+        </div>
+    </div>
+
+    @if(session('success_inquiry'))
+        <!-- Success Alert Popup -->
+        <div id="inquirySuccessAlert" class="inquiry-success-alert">
+            <div class="inquiry-modal-backdrop" onclick="closeSuccessAlert()"></div>
+            <div class="success-alert-content">
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                <p>{{ session('success_inquiry') }}</p>
+                <button type="button" class="btn-close-alert" onclick="closeSuccessAlert()">OK</button>
+            </div>
+        </div>
+    @endif
+
+    <script>
+        function openInquiryModal() {
+            document.getElementById('inquiryModal').style.display = 'flex';
+        }
+        function closeInquiryModal() {
+            document.getElementById('inquiryModal').style.display = 'none';
+        }
+        function closeSuccessAlert() {
+            const alert = document.getElementById('inquirySuccessAlert');
+            if (alert) alert.style.display = 'none';
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

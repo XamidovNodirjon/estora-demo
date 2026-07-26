@@ -12,6 +12,7 @@ Route::get('/', function () {
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
 Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
 
 // Authentication routes (Guest)
 Route::middleware('guest')->group(function () {
@@ -121,6 +122,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/product-items', [\App\Http\Controllers\AdminProductItemController::class, 'store'])->name('admin.product-items.store');
         Route::put('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'update'])->name('admin.product-items.update');
         Route::delete('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'destroy'])->name('admin.product-items.delete');
+
+        // Inquiries management
+        Route::get('/admin/inquiries', [\App\Http\Controllers\AdminInquiryController::class, 'index'])->name('admin.inquiries.index');
+        Route::get('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'show'])->name('admin.inquiries.show');
+        Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
     });
 
     // Client Dashboard

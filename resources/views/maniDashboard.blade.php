@@ -2264,7 +2264,201 @@
         justify-content: center;
     }
 }
-</style>
+
+        /* INQUIRY MODAL PREMIUM STYLES */
+        .inquiry-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inquiry-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .inquiry-modal-content {
+            position: relative;
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 10;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .inquiry-modal-header {
+            background-color: var(--primary-navy, #0f172a);
+            padding: 20px 24px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inquiry-modal-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            padding: 0;
+        }
+
+        .close-modal-btn:hover {
+            opacity: 1;
+        }
+
+        .inquiry-modal-form {
+            padding: 24px;
+        }
+
+        .form-group-item {
+            margin-bottom: 20px;
+        }
+
+        .form-group-item label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark, #334155);
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .required-star {
+            color: #ef4444;
+        }
+
+        .inquiry-input, .inquiry-textarea {
+            width: 100%;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .inquiry-input:focus, .inquiry-textarea:focus {
+            border-color: var(--accent-blue, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .btn-submit-inquiry {
+            width: 100%;
+            background-color: var(--accent-orange, #f97316);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit-inquiry:hover {
+            background-color: #ea580c;
+        }
+
+        .btn-submit-inquiry:active {
+            transform: scale(0.98);
+        }
+
+        .inquiry-success-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-alert-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease-out;
+            border-top: 4px solid #10b981;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .success-alert-content p {
+            font-size: 15px;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-close-alert {
+            background-color: var(--primary-navy, #0f172a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-close-alert:hover {
+            background-color: #1e293b;
+        }
+    </style>
 </head>
 <body>
 
@@ -2397,7 +2591,7 @@
                 <div class="compact-fields-row">
                     <div class="compact-field">
                         <label>Mulk turi</label>
-                        <select name="property_type">
+                        <select name="property_type" id="property_type">
                             <option value="Tanlang">Tanlang</option>
                             <option value="Kvartira" {{ request('property_type') == 'Kvartira' ? 'selected' : '' }}>Kvartira</option>
                             <option value="Hovli" {{ request('property_type') == 'Hovli' ? 'selected' : '' }}>Hovli</option>
@@ -2433,7 +2627,7 @@
                     
                     <div class="compact-field">
                         <label>So'ngi e'lonlar</label>
-                        <select name="time_filter">
+                        <select name="time_filter" id="time_filter">
                             <option value="Tanlang">Tanlang</option>
                             <option value="Bugungi" {{ request('time_filter') == 'Bugungi' ? 'selected' : '' }}>Bugungi</option>
                             <option value="Haftalik" {{ request('time_filter') == 'Haftalik' ? 'selected' : '' }}>Haftalik</option>
@@ -2708,61 +2902,133 @@
     </footer>
 
     <!-- STICKY CHAT WIDGET -->
-    <div class="chat-widget">
+    <div class="chat-widget" onclick="openInquiryModal()">
         <div class="chat-widget-pulse"></div>
         <span>Savollaringiz bormi? Biz aloqadamiz.</span>
     </div>
 
+    <!-- INQUIRY MODAL -->
+    <div id="inquiryModal" class="inquiry-modal" style="display: none;">
+        <div class="inquiry-modal-backdrop" onclick="closeInquiryModal()"></div>
+        <div class="inquiry-modal-content">
+            <div class="inquiry-modal-header">
+                <h3>Savollaringiz bormi? Biz aloqadamiz.</h3>
+                <button type="button" class="close-modal-btn" onclick="closeInquiryModal()">&times;</button>
+            </div>
+            <form action="{{ route('inquiries.store') }}" method="POST" class="inquiry-modal-form">
+                @csrf
+                <div class="form-group-item">
+                    <label for="inquiry_phone">Telefon raqamingiz <span class="required-star">*</span></label>
+                    <input type="text" id="inquiry_phone" name="phone" placeholder="+998 (90) 123-45-67" required class="inquiry-input">
+                </div>
+                <div class="form-group-item">
+                    <label for="inquiry_desc">Savolingiz yoki izohingiz</label>
+                    <textarea id="inquiry_desc" name="description" rows="4" placeholder="Savollaringizni shu yerga yozishingiz mumkin..." class="inquiry-textarea"></textarea>
+                </div>
+                <button type="submit" class="btn-submit-inquiry">YUBORISH</button>
+            </form>
+        </div>
+    </div>
+
+    @if(session('success_inquiry'))
+        <!-- Success Alert Popup -->
+        <div id="inquirySuccessAlert" class="inquiry-success-alert">
+            <div class="inquiry-modal-backdrop" onclick="closeSuccessAlert()"></div>
+            <div class="success-alert-content">
+                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                <p>{{ session('success_inquiry') }}</p>
+                <button type="button" class="btn-close-alert" onclick="closeSuccessAlert()">OK</button>
+            </div>
+        </div>
+    @endif
+
+    <script>
+        function openInquiryModal() {
+            document.getElementById('inquiryModal').style.display = 'flex';
+        }
+        function closeInquiryModal() {
+            document.getElementById('inquiryModal').style.display = 'none';
+        }
+        function closeSuccessAlert() {
+            const alert = document.getElementById('inquirySuccessAlert');
+            if (alert) alert.style.display = 'none';
+        }
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const filterForm = document.querySelector('.compact-filter-form');
             const regionSelect = document.getElementById('region_id');
             const citySelect = document.getElementById('city_id');
+            const propertyTypeSelect = document.getElementById('property_type');
+            const timeFilterSelect = document.getElementById('time_filter');
             
+            // 1. Dynamic Region/City Filtering
             if (regionSelect && citySelect) {
-                // Hamma original optionlarni saqlab qolamiz
                 const originalCityOptions = Array.from(citySelect.options);
+                let isInitialLoad = true;
                 
                 regionSelect.addEventListener('change', function() {
                     const selectedRegionId = this.value;
+                    const currentSelectedValue = citySelect.value;
                     
-                    // Mavjud tumanlarni tozalash
+                    // Clear city select
                     citySelect.innerHTML = '';
                     
-                    // Default "Tanlang" ni qaytarish
+                    // Append default "Tanlang"
                     citySelect.appendChild(originalCityOptions[0].cloneNode(true));
                     
                     if (selectedRegionId) {
-                        // Agar viloyat tanlangan bo'lsa, faqat shunga tegishli tumanlarni qo'shish
                         originalCityOptions.forEach(option => {
                             if (option.value !== "" && option.getAttribute('data-region') === selectedRegionId) {
-                                citySelect.appendChild(option.cloneNode(true));
+                                const cloned = option.cloneNode(true);
+                                if (isInitialLoad && cloned.value === currentSelectedValue) {
+                                    cloned.selected = true;
+                                }
+                                citySelect.appendChild(cloned);
                             }
                         });
                     } else {
-                        // Agar viloyat tanlanmagan bo'lsa (yoki "Tanlang"ga qaytilsa),
-                        // barcha tumanlarni qaytadan ko'rsatish (yoki bo'sh qoldirish) mumkin.
-                        // Foydalanuvchi qulayligi uchun barcha tumanlarni ko'rsatamiz:
                         originalCityOptions.forEach(option => {
                             if (option.value !== "") {
-                                citySelect.appendChild(option.cloneNode(true));
+                                const cloned = option.cloneNode(true);
+                                if (isInitialLoad && cloned.value === currentSelectedValue) {
+                                    cloned.selected = true;
+                                }
+                                citySelect.appendChild(cloned);
                             }
                         });
                     }
+                    
+                    // Reset initial load flag after page load check
+                    isInitialLoad = false;
                 });
 
-                // Sahifa yuklanganda viloyat tanlanmagan bo'lsa barcha tumanlarni ko'rsatib turish yoki 
-                // tanlangan viloyatga mos tumanlarni ko'rsatish uchun:
+                // Trigger change to sync on load
                 regionSelect.dispatchEvent(new Event('change'));
             }
 
-            // Filter tab toggling logic
-            const filterTabs = document.querySelectorAll('.filter-tab');
+            // 2. Submit filter form on field changes (except region to allow city selection)
+            if (filterForm) {
+                if (propertyTypeSelect) {
+                    propertyTypeSelect.addEventListener('change', () => filterForm.submit());
+                }
+                if (citySelect) {
+                    citySelect.addEventListener('change', () => filterForm.submit());
+                }
+                if (timeFilterSelect) {
+                    timeFilterSelect.addEventListener('change', () => filterForm.submit());
+                }
+            }
+
+            // 3. Compact Tab toggling & Form Submission
+            const compactTabs = document.querySelectorAll('.compact-tab');
             const transactionInput = document.getElementById('transaction_type');
             const navItems = document.querySelectorAll('.sub-navbar .nav-item');
 
-            filterTabs.forEach(tab => {
+            compactTabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    filterTabs.forEach(t => t.classList.remove('active'));
+                    compactTabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
 
                     const val = this.getAttribute('data-value');
@@ -2770,30 +3036,33 @@
                         transactionInput.value = val;
                     }
 
-                    // Also update active state on sub-navbar links if they match
+                    // Sync sub-navbar links
                     navItems.forEach(nav => {
                         if (nav.textContent.trim().toLowerCase() === val.toLowerCase()) {
                             navItems.forEach(n => n.classList.remove('active'));
                             nav.classList.add('active');
                         }
                     });
+
+                    // Submit form immediately
+                    if (filterForm) {
+                        filterForm.submit();
+                    }
                 });
             });
 
-            // Sync sub-navbar links with filter tabs
+            // 4. Sync sub-navbar with compact tabs
             navItems.forEach(nav => {
                 nav.addEventListener('click', function(e) {
                     e.preventDefault();
                     const text = this.textContent.trim();
-                    const matchingTab = Array.from(filterTabs).find(t => t.textContent.trim().toLowerCase() === text.toLowerCase());
+                    const matchingTab = Array.from(compactTabs).find(t => t.textContent.trim().toLowerCase() === text.toLowerCase());
                     if (matchingTab) {
-                        matchingTab.click();
-                        // Scroll to filters
-                        document.querySelector('.filter-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        matchingTab.click(); // Triggers the click and form submit
                     }
                 });
             });
-        
+
             // Carousel sliding logic for search listings
             window.moveSlide = function(button, direction) {
                 const container = button.closest('.product-carousel-container');
@@ -2822,6 +3091,7 @@
                 }
             };
 
+            // Phone number reveal
             window.revealPhone = function(button, phone) {
                 button.innerHTML = `<i class="fas fa-phone-alt"></i> ${phone}`;
                 button.onclick = null;
@@ -2830,9 +3100,9 @@
             // Set active states on search filters based on request query params
             const currentTxType = "{{ request('transaction_type', 'Sotuv') }}";
             if (currentTxType) {
-                const matchingTab = Array.from(filterTabs).find(t => t.getAttribute('data-value').toLowerCase() === currentTxType.toLowerCase());
+                const matchingTab = Array.from(compactTabs).find(t => t.getAttribute('data-value').toLowerCase() === currentTxType.toLowerCase());
                 if (matchingTab) {
-                    filterTabs.forEach(t => t.classList.remove('active'));
+                    compactTabs.forEach(t => t.classList.remove('active'));
                     matchingTab.classList.add('active');
                     if (transactionInput) transactionInput.value = matchingTab.getAttribute('data-value');
                     
@@ -2844,44 +3114,7 @@
                     });
                 }
             }
-
-            // Compact Tab toggling logic
-            const compactTabs = document.querySelectorAll('.compact-tab');
-            const compactTxInput = document.getElementById('transaction_type');
-            const navItems = document.querySelectorAll('.sub-navbar .nav-item');
-
-            compactTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    compactTabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-
-                    const val = this.getAttribute('data-value');
-                    if (compactTxInput) {
-                        compactTxInput.value = val;
-                    }
-
-                    // Sync sub-navbar links
-                    navItems.forEach(nav => {
-                        if (nav.textContent.trim().toLowerCase() === val.toLowerCase()) {
-                            navItems.forEach(n => n.classList.remove('active'));
-                            nav.classList.add('active');
-                        }
-                    });
-                });
-            });
-
-            // Sync sub-navbar with compact tabs
-            navItems.forEach(nav => {
-                nav.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const text = this.textContent.trim();
-                    const matchingTab = Array.from(compactTabs).find(t => t.textContent.trim().toLowerCase() === text.toLowerCase());
-                    if (matchingTab) {
-                        matchingTab.click();
-                    }
-                });
-            });
-});
+        });
     </script>
 </body>
 </html>
