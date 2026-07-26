@@ -33,6 +33,14 @@ class DeveloperCategoryController extends Controller
     }
 
     /**
+     * Show form to edit category.
+     */
+    public function editCategory(Category $category)
+    {
+        return view('developer.categories.edit', compact('category'));
+    }
+
+    /**
      * Update the category.
      */
     public function updateCategory(Request $request, Category $category)
@@ -72,6 +80,15 @@ class DeveloperCategoryController extends Controller
 
         return redirect()->route('developer.categories')
             ->with('success', 'Sub-kategoriya muvaffaqiyatli yaratildi!');
+    }
+
+    /**
+     * Show form to edit subcategory.
+     */
+    public function editSubCategory(SubCategory $subCategory)
+    {
+        $categories = Category::all();
+        return view('developer.subcategories.edit', compact('subCategory', 'categories'));
     }
 
     /**
