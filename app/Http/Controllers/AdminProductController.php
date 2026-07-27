@@ -30,6 +30,11 @@ class AdminProductController extends Controller
      */
     public function create()
     {
+        if (!$this->service->canUserCreateProduct(auth()->user())) {
+            return redirect()->route('client.dashboard')
+                ->withErrors(['limit' => 'Oddiy foydalanuvchilar (Mijozlar) maksimal 2 ta e\'lon qo\'sha oladi. Cheksiz e\'lon joylashtirish uchun Makler hisobi bilan ro\'yxatdan o\'ting!']);
+        }
+
         $categories = Category::with('subCategories')->get();
         $regions = Region::with('cities')->get();
         // Load default product items templates (product_id is null)
@@ -47,6 +52,12 @@ class AdminProductController extends Controller
     {
         $dto = ProductDto::fromArray($request->validated());
         $this->service->createProduct($dto);
+
+        $userRole = auth()->user()->role?->name ?? auth()->user()->type;
+        if (in_array($userRole, ['client', 'makler'])) {
+            return redirect()->route('client.dashboard')
+                ->with('success', 'E\'lon muvaffaqiyatli yaratildi!');
+        }
 
         return redirect()->route('admin.products')
             ->with('success', 'E\'lon muvaffaqiyatli yaratildi!');

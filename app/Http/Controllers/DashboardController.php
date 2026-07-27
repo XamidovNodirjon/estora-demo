@@ -46,10 +46,21 @@ class DashboardController extends Controller
     }
 
     /**
-     * Client Dashboard view.
+     * Client / Makler Dashboard view.
      */
     public function client()
     {
-        return view('client.dashboard');
+        $user = Auth::user();
+        $userRole = $user->role?->name ?? $user->type;
+        $userProducts = \App\Models\Product::where('user_id', $user->id)
+            ->with(['region', 'city', 'category', 'subCategory', 'metros', 'universities', 'items', 'views'])
+            ->latest()
+            ->get();
+        $productCount = $userProducts->count();
+
+        $isLimitReached = ($userRole === 'client' && $productCount >= 2);
+        $canCreateProduct = app(\App\Services\ProductService::class)->canUserCreateProduct($user);
+
+        return view('client.dashboard', compact('user', 'userRole', 'userProducts', 'productCount', 'isLimitReached', 'canCreateProduct'));
     }
 }

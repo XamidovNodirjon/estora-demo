@@ -11,7 +11,8 @@ class RegisterDto
         public ?string $phone,
         public ?string $passport,
         public ?string $jshshir,
-        public string $password
+        public string $password,
+        public ?string $role = 'client'
     ) {}
 
     public static function fromArray(array $data): self
@@ -23,7 +24,8 @@ class RegisterDto
             phone: $data['phone'] ?? null,
             passport: $data['passport'] ?? null,
             jshshir: $data['jshshir'] ?? null,
-            password: $data['password']
+            password: $data['password'],
+            role: $data['role'] ?? 'client'
         );
     }
 
@@ -37,6 +39,7 @@ class RegisterDto
             'passport' => $this->passport,
             'jshshir' => $this->jshshir,
             'password' => $this->password,
+            'role' => $this->role ?? 'client',
         ];
     }
 }

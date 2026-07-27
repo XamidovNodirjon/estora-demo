@@ -32,10 +32,44 @@ class ProductService
     }
 
     /**
+     * Check if a user is allowed to create a new product.
+     * Ordinary clients: max 2 products.
+     * Maklers & Admins: unlimited.
+     */
+    public function canUserCreateProduct(?\App\Models\User $user = null): bool
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        $roleName = $user->role?->name ?? $user->type;
+
+        if (in_array($roleName, ['makler', 'admin', 'dev', 'manager'])) {
+            return true;
+        }
+
+        if ($roleName === 'client') {
+            $count = Product::where('user_id', $user->id)->count();
+            return $count < 2;
+        }
+
+        return true;
+    }
+
+    /**
      * Store new product and its features.
      */
     public function createProduct(ProductDto $dto): Product
     {
+        $user = $dto->user_id ? \App\Models\User::find($dto->user_id) : auth()->user();
+
+        if ($user && !$this->canUserCreateProduct($user)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'limit' => "Oddiy foydalanuvchi (Mijoz) maksimal 2 ta e'lon qo'sha oladi. Cheksiz e'lon joylashtirish uchun Makler hisobi bilan ro'yxatdan o'ting!"
+            ]);
+        }
+
         $data = $dto->toArray();
         $data['images'] = $this->processBase64Images($dto->images);
         
@@ -79,6 +113,19 @@ class ProductService
     public function deleteProduct(Product $product): bool
     {
         return $this->repository->delete($product);
+    }
+
+    /**
+     * Record a product view entry in product_views table.
+     */
+    public function recordView(Product $product, ?int $userId = null, ?string $ip = null, ?string $userAgent = null): \App\Models\ProductView
+    {
+        return \App\Models\ProductView::create([
+            'product_id' => $product->id,
+            'user_id' => $userId ?? auth()->id(),
+            'ip_address' => $ip ?? request()->ip(),
+            'user_agent' => $userAgent ?? request()->userAgent(),
+        ]);
     }
 
     /**

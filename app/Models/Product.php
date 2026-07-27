@@ -81,4 +81,14 @@ class Product extends Model
     {
         return $this->belongsToMany(University::class);
     }
+
+    public function views()
+    {
+        return $this->hasMany(ProductView::class);
+    }
+
+    public function getViewsCountAttribute()
+    {
+        return $this->views()->count();
+    }
 }

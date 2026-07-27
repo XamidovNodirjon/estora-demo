@@ -23,12 +23,14 @@ class AuthService
      */
     public function register(RegisterDto $dto): User
     {
-        $clientRole = Role::where('name', 'client')->first();
+        $roleName = in_array($dto->role, ['client', 'makler']) ? $dto->role : 'client';
+        $userRole = Role::where('name', $roleName)->first() ?? Role::where('name', 'client')->first();
         
         $data = $dto->toArray();
+        unset($data['role']); // Remove transient role key from array before user creation if needed
         $data['password'] = Hash::make($dto->password);
-        $data['role_id'] = $clientRole ? $clientRole->id : null;
-        $data['type'] = 'client';
+        $data['role_id'] = $userRole ? $userRole->id : null;
+        $data['type'] = $roleName;
         $data['status'] = 1; // Active by default
 
         return $this->userRepository->create($data);

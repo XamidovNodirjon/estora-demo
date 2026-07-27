@@ -39,6 +39,16 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        .role-tab {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .role-tab.active {
+            background: rgba(0, 132, 255, 0.15);
+            border-color: #0084ff;
+            box-shadow: 0 0 15px rgba(0, 132, 255, 0.25);
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 py-12">
@@ -55,7 +65,30 @@
 
         <!-- Register Card -->
         <div class="glass-card rounded-3xl p-8 shadow-2xl">
-            <h2 class="font-display font-bold text-2xl text-white text-center mb-6">Yangi hisob yaratish</h2>
+            <h2 class="font-display font-bold text-2xl text-white text-center mb-2">Yangi hisob yaratish</h2>
+            <p class="text-center text-xs text-gray-400 mb-6">O'zingizga mos ro'yxatdan o'tish turini tanlang</p>
+
+            <!-- Role Selection Tabs (Client vs Makler) -->
+            @php $currentRole = old('role', 'client'); @endphp
+            <div class="grid grid-cols-2 gap-3 mb-6 p-1.5 rounded-2xl bg-white/5 border border-white/10">
+                <button type="button" id="tab-client" onclick="selectRole('client')"
+                    class="role-tab flex flex-col items-center justify-center py-3 px-4 rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'client' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fa-solid fa-user text-base text-[#0084ff]"></i>
+                        <span class="font-display font-bold text-sm">Mijoz (Uy egasi)</span>
+                    </div>
+                    <span class="text-[11px] opacity-80">Maksimal 2 ta tekin e'lon</span>
+                </button>
+
+                <button type="button" id="tab-makler" onclick="selectRole('makler')"
+                    class="role-tab flex flex-col items-center justify-center py-3 px-4 rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'makler' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fa-solid fa-user-tie text-base text-amber-400"></i>
+                        <span class="font-display font-bold text-sm">Makler (Rieltor)</span>
+                    </div>
+                    <span class="text-[11px] opacity-80">Cheksiz e'lonlar joylash</span>
+                </button>
+            </div>
 
             <!-- Errors -->
             @if ($errors->any())
@@ -70,6 +103,8 @@
 
             <form action="{{ route('register') }}" method="POST" class="space-y-4">
                 @csrf
+                <!-- Hidden input for role -->
+                <input type="hidden" name="role" id="role_input" value="{{ $currentRole }}">
 
                 <!-- Name & Username (Two columns) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -193,6 +228,26 @@
             &copy; {{ date('Y') }} Estora. Barcha huquqlar himoyalangan.
         </p>
     </div>
+
+    <script>
+        function selectRole(role) {
+            document.getElementById('role_input').value = role;
+            const clientTab = document.getElementById('tab-client');
+            const maklerTab = document.getElementById('tab-makler');
+
+            if (role === 'client') {
+                clientTab.classList.add('active', 'text-white');
+                clientTab.classList.remove('text-gray-400');
+                maklerTab.classList.remove('active', 'text-white');
+                maklerTab.classList.add('text-gray-400');
+            } else {
+                maklerTab.classList.add('active', 'text-white');
+                maklerTab.classList.remove('text-gray-400');
+                clientTab.classList.remove('active', 'text-white');
+                clientTab.classList.add('text-gray-400');
+            }
+        }
+    </script>
 
 </body>
 </html>

@@ -20,7 +20,7 @@ class AuthTest extends TestCase
         Vite::spy();
 
         // Seed roles for testing
-        $roles = ['dev', 'admin', 'manager', 'client'];
+        $roles = ['dev', 'admin', 'manager', 'client', 'makler'];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);
         }
@@ -40,18 +40,19 @@ class AuthTest extends TestCase
         $response->assertSee('Yangi hisob yaratish');
     }
 
-    public function test_user_can_register(): void
+    public function test_user_can_register_as_client(): void
     {
-        $email = 'test-' . uniqid() . '@example.com';
-        $username = 'testuser_' . uniqid();
+        $email = 'testclient-' . uniqid() . '@example.com';
+        $username = 'testclient_' . uniqid();
 
         $response = $this->post('/register', [
-            'name' => 'Test User',
+            'name' => 'Test Client',
             'email' => $email,
             'username' => $username,
             'phone' => '+99890' . rand(1000000, 9999999),
             'password' => 'password123',
             'password_confirmation' => 'password123',
+            'role' => 'client',
         ]);
 
         $response->assertRedirect('/dashboard');
@@ -59,6 +60,29 @@ class AuthTest extends TestCase
             'email' => $email,
             'username' => $username,
             'type' => 'client',
+        ]);
+    }
+
+    public function test_user_can_register_as_makler(): void
+    {
+        $email = 'testmakler-' . uniqid() . '@example.com';
+        $username = 'testmakler_' . uniqid();
+
+        $response = $this->post('/register', [
+            'name' => 'Test Makler',
+            'email' => $email,
+            'username' => $username,
+            'phone' => '+99890' . rand(1000000, 9999999),
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'role' => 'makler',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertDatabaseHas('users', [
+            'email' => $email,
+            'username' => $username,
+            'type' => 'makler',
         ]);
     }
 

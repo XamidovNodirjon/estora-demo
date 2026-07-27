@@ -10,6 +10,9 @@ Route::get('/', function () {
     return view('welcome', compact('regions'));
 });
 
+// Public product detail page
+Route::get('/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'show'])->name('products.show');
+
 // Authentication routes (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -112,8 +115,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'destroy'])->name('admin.universities.delete');
     });
 
-    // Client Dashboard
-    Route::middleware('role:client')->group(function () {
+    // Client & Makler Dashboard and Product CRUD
+    Route::middleware('role:client,makler')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
+        
+        // Client & Makler Announcements Management
+        Route::get('/client/products', [\App\Http\Controllers\ClientProductController::class, 'index'])->name('client.products.index');
+        Route::get('/client/products/create', [\App\Http\Controllers\ClientProductController::class, 'create'])->name('client.products.create');
+        Route::post('/client/products', [\App\Http\Controllers\ClientProductController::class, 'store'])->name('client.products.store');
+        Route::get('/client/products/{product}/edit', [\App\Http\Controllers\ClientProductController::class, 'edit'])->name('client.products.edit');
+        Route::put('/client/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'update'])->name('client.products.update');
+        Route::delete('/client/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'destroy'])->name('client.products.delete');
     });
 });

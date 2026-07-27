@@ -21,6 +21,7 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:6|confirmed',
             'passport' => 'nullable|string|max:20',
             'jshshir' => 'nullable|string|max:20',
+            'role' => 'nullable|string|in:client,makler',
         ];
     }
 

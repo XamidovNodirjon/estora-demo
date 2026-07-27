@@ -67,47 +67,62 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <!-- Points / Balance badge -->
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-sm font-semibold">
-                    <i class="fa-solid fa-coins text-amber-500"></i>
-                    <span>{{ Auth::user()->balls ?? 0 }} ball</span>
-                </div>
-
-                <!-- User Dropdown & Profile -->
-                <div class="relative flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <span class="block text-sm font-bold text-[#061c3f]">{{ Auth::user()->name ?? 'Mijoz' }}</span>
-                        <span class="block text-xs text-gray-400">Mijoz kabineti</span>
+                @auth
+                    <!-- Points / Balance badge -->
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-sm font-semibold">
+                        <i class="fa-solid fa-coins text-amber-500"></i>
+                        <span>{{ Auth::user()->balls ?? 0 }} ball</span>
                     </div>
 
-                    <div class="w-10 h-10 rounded-full bg-[#061c3f] text-white flex items-center justify-center font-bold text-lg shadow-md font-display">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'C', 0, 1)) }}
-                    </div>
+                    <!-- User Dropdown & Profile -->
+                    <div class="relative flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <span class="block text-sm font-bold text-[#061c3f]">{{ Auth::user()->name }}</span>
+                            <span class="inline-block text-xs font-semibold px-2 py-0.5 rounded-full {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-blue-100 text-blue-800 border border-blue-200' }}">
+                                {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'Makler (Rieltor)' : 'Uy egasi' }}
+                            </span>
+                        </div>
 
-                    <!-- Log Out Action -->
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-all" title="Tizimdan chiqish">
-                            <i class="fa-solid fa-right-from-bracket text-lg"></i>
-                        </button>
-                    </form>
-                </div>
+                        <div class="w-10 h-10 rounded-full bg-[#061c3f] text-white flex items-center justify-center font-bold text-lg shadow-md font-display">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </div>
+
+                        <!-- Log Out Action -->
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-all" title="Tizimdan chiqish">
+                                <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl bg-[#0084ff] text-white font-semibold text-sm hover:bg-[#0076e5] transition-all">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i> Kirish
+                    </a>
+                    <a href="{{ route('register') }}" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-all">
+                        Ro'yxatdan o'tish
+                    </a>
+                @endauth
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col md:flex-row gap-8 w-full">
-        <!-- Sidebar Navigation (Responsive) -->
-        <aside class="w-full md:w-64 flex-shrink-0">
-            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-24">
-                <div class="flex flex-col items-center text-center pb-6 border-b border-gray-100">
-                    <div class="w-16 h-16 rounded-full bg-[#0084ff]/10 text-[#0084ff] flex items-center justify-center font-bold text-2xl mb-3 font-display">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'C', 0, 1)) }}
+        @auth
+            <!-- Sidebar Navigation (Responsive) -->
+            <aside class="w-full md:w-64 flex-shrink-0">
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-24">
+                    <div class="flex flex-col items-center text-center pb-6 border-b border-gray-100">
+                        <div class="w-16 h-16 rounded-full bg-[#0084ff]/10 text-[#0084ff] flex items-center justify-center font-bold text-2xl mb-3 font-display">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-[#061c3f]">{{ Auth::user()->name }}</h3>
+                        <span class="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' }}">
+                            {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'Makler' : 'Uy egasi' }}
+                        </span>
+                        <p class="text-xs text-gray-400 mt-2">{{ Auth::user()->email ?? '' }}</p>
                     </div>
-                    <h3 class="font-display font-bold text-lg text-[#061c3f]">{{ Auth::user()->name ?? 'Client' }}</h3>
-                    <p class="text-xs text-gray-400">{{ Auth::user()->email ?? '' }}</p>
-                </div>
 
                 <nav class="mt-6 space-y-1">
                     <a href="{{ route('client.dashboard') }}" class="flex items-center justify-between px-4 py-3 rounded-xl bg-[#0084ff]/5 text-[#0084ff] font-medium transition-all">
@@ -147,6 +162,7 @@
                 </nav>
             </div>
         </aside>
+        @endauth
 
         <!-- Page Content -->
         <main class="flex-1 min-w-0">
