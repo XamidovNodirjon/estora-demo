@@ -2840,15 +2840,14 @@
 }
 
 .rec-listings-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
 }
 
 .rec-listings-grid > .listing-card {
-    flex: 1 1 calc(25% - 20px);
-    min-width: 280px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 320px;
 }
 
 .rec-empty-message {
@@ -2859,12 +2858,13 @@
     background-color: #f8fafc;
     border-radius: 12px;
     border: 1px dashed var(--border-color);
+    grid-column: 1 / -1;
 }
 
 /* Responsive Show page styles */
 @media (max-width: 1200px) {
-    .rec-listings-grid > .listing-card {
-        flex: 1 1 calc(33.333% - 20px);
+    .rec-listings-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
@@ -2872,8 +2872,8 @@
     .detail-columns-grid {
         grid-template-columns: 1fr;
     }
-    .rec-listings-grid > .listing-card {
-        flex: 1 1 calc(50% - 20px);
+    .rec-listings-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -2910,9 +2910,11 @@
         flex-direction: column;
         gap: 15px;
     }
-    
-    .rec-listings-grid > .listing-card {
-        flex: 1 1 100%;
+}
+
+@media (max-width: 576px) {
+    .rec-listings-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -3266,6 +3268,22 @@
 <!-- PRODUCT DETAIL CONTENT -->
 <div class="product-detail-section">
     <div class="container">
+        @if(!empty($isOwner))
+            <div style="background: linear-gradient(135deg, #061c3f 0%, #0B2240 100%); border-radius: 16px; padding: 20px 24px; color: #fff; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #1e3a8a;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(255,255,255,0.1); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #93c5fd;">Maxsus statistika</span>
+                            <span style="padding: 2px 8px; border-radius: 9999px; background: rgba(16,185,129,0.2); color: #6ee7b7; font-size: 10px; font-weight: 700;">Faqat sizga ko'rinadi</span>
+                        </div>
+                        <h3 style="font-size: 22px; font-weight: 700; margin-top: 4px;">{{ number_format($viewsCount ?? 0, 0, ',', ' ') }} ta ko'rishlar</h3>
+                    </div>
+                </div>
+            </div>
+        @endif
         <!-- Main title & badges -->
         <div class="product-detail-header-block">
             <div class="detail-header-top-row">

@@ -19,7 +19,7 @@ class SearchController extends Controller
             ->where('status', 'active');
 
         // 1. Filter by Transaction Type (Category name, e.g. Sotuv, Ijara)
-        if ($request->filled('transaction_type')) {
+        if ($request->filled('transaction_type') && !in_array($request->input('transaction_type'), ['Tanlang', 'Barchasi'])) {
             $transactionType = $request->input('transaction_type');
             $query->whereHas('category', function ($q) use ($transactionType) {
                 $q->where('name', 'like', $transactionType);
