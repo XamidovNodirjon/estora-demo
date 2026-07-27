@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,7 +44,15 @@ class DashboardController extends Controller
      */
     public function admin()
     {
-        return view('admin.dashboard');
+        $clientsCount = User::whereHas('role', function($query) {
+            $query->where('name', 'client');
+        })->count();
+
+        $productsCount = Product::count();
+        $pendingCount = 0;
+        $incomeAmount = 0;
+
+        return view('admin.dashboard', compact('clientsCount', 'productsCount', 'pendingCount', 'incomeAmount'));
     }
 
     /**

@@ -1625,6 +1625,1324 @@
                 grid-template-columns: 1fr;
             }
         }
+    
+/* SEARCH RESULTS CUSTOM STYLES */
+.results-container {
+    padding: 40px 0 80px 0;
+    background-color: var(--bg-light);
+}
+
+.results-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.breadcrumbs {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.results-filters-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.sort-selector-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.sort-select {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-navy);
+    background-color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.sort-select:hover {
+    border-color: var(--accent-blue);
+}
+
+.layout-toggle {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.btn-layout {
+    padding: 8px 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    background: none;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-layout:hover, .btn-layout.active {
+    color: var(--accent-blue);
+    background-color: var(--bg-light);
+}
+
+.btn-clear-filters {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    transition: color 0.2s;
+}
+
+.btn-clear-filters:hover {
+    color: var(--alert-red);
+}
+
+.search-listings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.product-row-card {
+    display: grid;
+    grid-template-columns: 320px 1fr 280px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-row-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.product-carousel-container {
+    position: relative;
+    height: 100%;
+    min-height: 240px;
+    background-color: #f1f3f5;
+    overflow: hidden;
+}
+
+.carousel-track-wrapper {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.carousel-slide-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.carousel-slide-img.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.badge-top-left {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 3;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.yaxshi-taklif-badge {
+    background-color: #e6f7eb;
+    color: #2b8a3e;
+    border: 1px solid #c3fae8;
+}
+
+.carousel-control-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: var(--primary-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.carousel-control-btn:hover {
+    background-color: #ffffff;
+    color: var(--accent-blue);
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+.carousel-index-badge {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.product-details-block {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.id-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.product-id-badge {
+    background-color: #fff9db;
+    color: #f59f00;
+    border: 1px solid #ffe066;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.negotiable-badge {
+    background-color: #e8f7ff;
+    color: #1c7ed6;
+    border: 1px solid #a5d8ff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.product-title-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.product-price-text {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    margin-bottom: 12px;
+}
+
+.product-location-text {
+    font-size: 15px;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.location-landmark-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.location-time i, .landmark-name i {
+    color: var(--accent-blue);
+    margin-right: 4px;
+}
+
+.date-published-row {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.product-actions-specs {
+    padding: 24px;
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.top-meta-icons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.action-meta-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-meta-btn:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background-color: #f8f9fa;
+}
+
+.phone-action-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.phone-reveal-btn {
+    width: 100%;
+    background-color: var(--secondary-navy);
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.phone-reveal-btn:hover {
+    background-color: var(--primary-navy);
+}
+
+.tg-write-btn {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    padding: 9px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.tg-write-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    background-color: #f8f9fa;
+}
+
+.specs-grid-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.spec-tag {
+    background-color: #f8f9fa;
+    border: 1px solid #f1f3f5;
+    padding: 6px 4px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: center;
+}
+
+.spec-tag i {
+    color: var(--text-muted);
+    margin-right: 2px;
+}
+
+.quality-tags-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.quality-tag {
+    background-color: #f1f3f5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.quality-tag i {
+    color: var(--text-muted);
+    margin-right: 4px;
+}
+
+.finance-badges-box {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.finance-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ipoteka-badge {
+    background-color: #fff4e6;
+    color: #fd7e14;
+    border: 1px solid #ffd8a8;
+}
+
+.subsidiya-badge {
+    background-color: #fff9db;
+    color: #f59f00;
+    border: 1px solid #ffe066;
+}
+
+.no-results-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.no-results-card h3 {
+    font-size: 18px;
+    color: var(--primary-navy);
+    margin: 15px 0 8px 0;
+    font-weight: 700;
+}
+
+.search-pagination {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-pagination nav {
+    display: flex;
+    gap: 5px;
+}
+
+.search-pagination nav .relative {
+    display: flex;
+    gap: 4px;
+}
+
+.search-pagination nav span, .search-pagination nav a {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.search-pagination nav a:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.search-pagination nav span.bg-blue-500, 
+.search-pagination nav .bg-blue-600 {
+    background-color: var(--accent-blue) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-blue) !important;
+}
+
+@media (max-width: 992px) {
+    .product-row-card {
+        grid-template-columns: 280px 1fr;
+    }
+    
+    .product-actions-specs {
+        grid-column: span 2;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .phone-action-container {
+        flex-direction: row;
+        margin-bottom: 0;
+        flex-grow: 1;
+        max-width: 400px;
+    }
+    
+    .top-meta-icons {
+        margin-bottom: 0;
+        order: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-row-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-actions-specs {
+        grid-column: span 1;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .phone-action-container {
+        flex-direction: column;
+        max-width: none;
+    }
+    
+    .top-meta-icons {
+        order: 0;
+        justify-content: flex-start;
+        margin-bottom: 12px;
+    }
+}
+
+/* COMPACT FILTERS STRIP STYLES */
+.compact-filters-strip {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.compact-filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.compact-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #f1f3f5;
+    padding-bottom: 8px;
+    overflow-x: auto;
+}
+
+.compact-tab {
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.compact-tab.active, .compact-tab:hover {
+    background-color: #e8f4ff;
+    color: var(--accent-blue);
+}
+
+.compact-fields-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.compact-field {
+    flex: 1;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.compact-field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.compact-field select {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--primary-navy);
+    font-weight: 500;
+    background-color: #ffffff;
+    cursor: pointer;
+    outline: none;
+}
+
+.compact-field select:focus {
+    border-color: var(--accent-blue);
+}
+
+.btn-compact-search {
+    background-color: var(--accent-orange);
+    color: #ffffff;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    margin-top: auto;
+    transition: background-color 0.2s;
+    border: none;
+    outline: none;
+}
+
+.btn-compact-search:hover {
+    background-color: var(--accent-orange-hover);
+}
+
+@media (max-width: 768px) {
+    .compact-field {
+        min-width: 100%;
+    }
+    
+    .btn-compact-search {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ================= PRODUCT SHOW PAGE PREMIUM STYLES ================= */
+.breadcrumbs-container {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.breadcrumbs-container a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.breadcrumbs-container a:hover {
+    color: var(--accent-blue);
+}
+
+.product-detail-section {
+    padding: 30px 0 60px 0;
+    background-color: #fcfdfe;
+}
+
+.product-detail-header-block {
+    margin-bottom: 24px;
+}
+
+.detail-header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.header-badges-left {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge-detail {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.kelishiladi-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.ipoteka-badge {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.subsidiya-badge {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.date-badge {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.detail-id-badge {
+    background-color: var(--primary-navy);
+    color: #ffffff;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.detail-title-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 10px;
+}
+
+.detail-header-tags {
+    display: flex;
+    gap: 8px;
+}
+
+.header-tag {
+    background-color: #f1f3f5;
+    color: var(--text-dark);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Two-column layout grid */
+.detail-columns-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Gallery / Carousel Styles */
+.detail-gallery-wrapper {
+    display: flex;
+    gap: 15px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
+    height: 480px;
+}
+
+.gallery-thumbnails {
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.thumb-item {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumb-item.active, .thumb-item:hover {
+    border-color: var(--accent-blue);
+    transform: scale(0.96);
+}
+
+.gallery-main-view {
+    flex: 1;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f3f4f6;
+    height: 100%;
+}
+
+.main-image-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.main-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-top-left-yaxshi {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #10b981;
+    color: white;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    z-index: 10;
+}
+
+.gallery-controls-overlay {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.gallery-index-badge {
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.gallery-fullscreen-btn {
+    background-color: rgba(255,255,255,0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--primary-navy);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gallery-fullscreen-btn:hover {
+    background-color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Address Box & Map Styles */
+.detail-address-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 30px;
+}
+
+.detail-address-box h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 12px;
+}
+
+.address-text {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.text-orange {
+    color: var(--accent-orange);
+}
+
+#showMap {
+    height: 280px;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Right Column Owner / Pricing Card */
+.owner-pricing-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.owner-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f3f5;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.owner-avatar-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.owner-avatar {
+    font-size: 40px;
+    color: var(--accent-blue);
+}
+
+.owner-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+.owner-type {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.owner-action-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-owner-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-owner-action:hover {
+    background-color: #f8fafc;
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.phone-and-price-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.detail-phone-wrapper {
+    flex: 1;
+}
+
+.phone-label, .price-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.phone-reveal-container {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 42px;
+    align-items: center;
+    padding-left: 12px;
+}
+
+.phone-masked-num {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-navy);
+    flex: 1;
+}
+
+.btn-reveal-phone {
+    background-color: var(--primary-navy);
+    color: white;
+    border: none;
+    padding: 0 15px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    height: 100%;
+    transition: background-color 0.2s;
+}
+
+.btn-reveal-phone:hover {
+    background-color: var(--secondary-navy);
+}
+
+.detail-price-box {
+    flex: 1;
+}
+
+.price-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    display: block;
+}
+
+.btn-telegram-direct {
+    background-color: #24A1DE;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.btn-telegram-direct:hover {
+    background-color: #208fbe;
+}
+
+/* Parameters Table Box */
+.detail-params-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.detail-params-box h3, .detail-amenities-box h3, .detail-desc-box h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f1f3f5;
+    padding-bottom: 10px;
+}
+
+.params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
+
+.param-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+    border-bottom: 1px dashed #f1f3f5;
+}
+
+.param-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.param-label i {
+    width: 16px;
+    color: var(--accent-blue);
+}
+
+.param-value {
+    color: var(--primary-navy);
+    font-weight: 600;
+}
+
+/* Amenities & Nearby list */
+.detail-amenities-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+
+.amenities-group {
+    margin-bottom: 15px;
+}
+
+.amenities-group:last-child {
+    margin-bottom: 0;
+}
+
+.group-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.group-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.group-tag-item {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: var(--text-dark);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+/* Description Box */
+.detail-desc-box {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.desc-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* Recommendations styling */
+.recommendations-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-navy);
+    margin-bottom: 20px;
+}
+
+.recommendations-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.rec-tab-btn {
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.rec-tab-btn:hover {
+    color: var(--accent-blue);
+    background-color: #f1f5f9;
+}
+
+.rec-tab-btn.active {
+    background-color: #e8f4ff;
+    color: var(--accent-blue);
+}
+
+.rec-tab-panel {
+    display: none;
+}
+
+.rec-tab-panel.active {
+    display: block;
+}
+
+.rec-listings-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.rec-listings-grid > .listing-card {
+    flex: 1 1 calc(25% - 20px);
+    min-width: 280px;
+    max-width: 100%;
+}
+
+.rec-empty-message {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 500;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+}
+
+/* Responsive Show page styles */
+@media (max-width: 1200px) {
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 calc(33.333% - 20px);
+    }
+}
+
+@media (max-width: 992px) {
+    .detail-columns-grid {
+        grid-template-columns: 1fr;
+    }
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .detail-gallery-wrapper {
+        flex-direction: column-reverse;
+        height: auto;
+    }
+    
+    .gallery-thumbnails {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        max-height: none;
+        height: 80px;
+        margin-top: 10px;
+        padding-bottom: 5px;
+    }
+    
+    .thumb-item {
+        flex: 0 0 65px;
+        height: 65px;
+    }
+    
+    .gallery-main-view {
+        height: 350px;
+    }
+    
+    .params-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .phone-and-price-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .rec-listings-grid > .listing-card {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-header-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .detail-id-badge {
+        align-self: flex-start;
+    }
+    
+    .owner-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .owner-action-icons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    
+    .gallery-main-view {
+        height: 250px;
+    }
+}
 
         /* INQUIRY MODAL PREMIUM STYLES */
         .inquiry-modal {
@@ -1933,593 +3251,294 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-left-card">
-                    <span class="hero-badge">Estora Real Estate</span>
-                    <h1 class="hero-title">Ko'chmas mulkning yagona raqamli ekotizimi</h1>
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="btn-hero-dark">KABINET</a>
+    
+    <!-- COMPACT FILTERS STRIP -->
+
+<!-- BREADCRUMBS -->
+<div class="breadcrumbs-container">
+    <div class="container">
+        <a href="/">Bosh sahifa</a> / 
+        <a href="{{ route('maniDashboard') }}?transaction_type={{ $product->category->name ?? 'Sotuv' }}">{{ $product->category->name ?? 'Sotuv' }}</a> / 
+        <a href="{{ route('maniDashboard') }}?transaction_type={{ $product->category->name ?? 'Sotuv' }}&property_type={{ $product->subCategory->name ?? 'Kvartira' }}">{{ $product->subCategory->name ?? 'Kvartira' }}</a>
+    </div>
+</div>
+
+<!-- PRODUCT DETAIL CONTENT -->
+<div class="product-detail-section">
+    <div class="container">
+        <!-- Main title & badges -->
+        <div class="product-detail-header-block">
+            <div class="detail-header-top-row">
+                <div class="header-badges-left">
+                    @if($product->exchange)
+                        <span class="badge-detail kelishiladi-badge">Kelishiladi</span>
+                    @endif
+                    @if($product->credit)
+                        <span class="badge-detail ipoteka-badge">Ipoteka</span>
+                    @endif
+                    @if($product->pay_in_installments)
+                        <span class="badge-detail subsidiya-badge">Subsidiya</span>
+                    @endif
+                    <span class="badge-detail date-badge">E'lon joylangan sana: {{ $product->created_at->format('d.m.Y') }}</span>
+                </div>
+                <span class="detail-id-badge">ID {{ 10000 + $product->id }}</span>
+            </div>
+            
+            <h1 class="detail-title-text">{{ $product->subCategory->name ?? 'Kvartira' }} - {{ $product->square }} m², {{ $product->rooms }} xona</h1>
+            
+            <div class="detail-header-tags">
+                <span class="header-tag">{{ $product->category->name ?? 'Sotuv' }}</span>
+                <span class="header-tag">Turar joy</span>
+                <span class="header-tag">{{ $product->subCategory->name ?? 'Kvartira' }}</span>
+            </div>
+        </div>
+
+        <div class="detail-columns-grid">
+            <!-- LEFT COLUMN (Media and Address) -->
+            <div class="detail-left-column">
+                <!-- Gallery Wrapper -->
+                <div class="detail-gallery-wrapper">
+                    @php
+                        $images = $product->images;
+                        if (is_string($images)) {
+                            $images = json_decode($images, true);
+                        }
+                        $images = is_array($images) ? $images : [];
+                    @endphp
+                    
+                    <!-- Thumbnails column -->
+                    <div class="gallery-thumbnails">
+                        @if(count($images) > 0)
+                            @foreach($images as $idx => $img)
+                                <div class="thumb-item {{ $loop->first ? 'active' : '' }}" onclick="switchMainImage(this, '{{ Str::startsWith($img, 'http') ? $img : (Str::startsWith($img, '/storage') ? $img : (Str::startsWith($img, 'storage') ? '/' . $img : '/storage/' . $img)) }}', {{ $loop->index }})">
+                                    <img src="{{ Str::startsWith($img, 'http') ? $img : (Str::startsWith($img, '/storage') ? $img : (Str::startsWith($img, 'storage') ? '/' . $img : '/storage/' . $img)) }}" alt="Thumbnail">
+                                </div>
+                            @endforeach
                         @else
-                            <a href="{{ route('login') }}" class="btn-hero-dark">KIRISH</a>
-                            <a href="{{ route('register') }}" class="btn-hero-blue">RO'YXATDAN O'TISH</a>
-                        @endauth
+                            <div class="thumb-item active">
+                                <img src="/images/apartment1.png" alt="Thumbnail">
+                            </div>
+                        @endif
+                    </div>
+                    
+                    <!-- Main image view -->
+                    <div class="gallery-main-view">
+                        <div class="main-image-wrapper">
+                            @if(count($images) > 0)
+                                <img id="mainGalleryImage" src="{{ Str::startsWith($images[0], 'http') ? $images[0] : (Str::startsWith($images[0], '/storage') ? $images[0] : (Str::startsWith($images[0], 'storage') ? '/' . $images[0] : '/storage/' . $images[0])) }}" alt="{{ $product->name }}">
+                            @else
+                                <img id="mainGalleryImage" src="/images/apartment1.png" alt="Placeholder">
+                            @endif
+                        </div>
+                        <span class="badge-top-left-yaxshi yaxshi-taklif-badge">Yaxshi Taklif</span>
+                        
+                        <div class="gallery-controls-overlay">
+                            <span class="gallery-index-badge" id="galleryIndexText">1/{{ max(count($images), 1) }}</span>
+                            <button class="gallery-fullscreen-btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Floating Search/Filter Form -->
-                <form action="{{ route('maniDashboard') }}" method="GET" class="filter-container">
-                    <input type="hidden" name="transaction_type" id="transaction_type" value="Sotuv">
+                <!-- Address Section -->
+                <div class="detail-address-box">
+                    <h3>Manzil</h3>
+                    <p class="address-text">
+                        <i class="fas fa-map-marker-alt text-orange"></i>
+                        {{ $product->region->name ?? 'Toshkent shahri' }}, {{ $product->city->name ?? 'Chilonzor tumani' }}
+                        @if($product->landmark)
+                            , Mo'ljal: {{ $product->landmark }}
+                        @endif
+                    </p>
                     
-                    <div class="filter-tabs">
-                        <div class="filter-tab active" data-value="Sotuv">Sotuv</div>
-                        <div class="filter-tab" data-value="Ijara">Ijara</div>
-                        <div class="filter-tab" data-value="Xonadosh">Xonadosh</div>
-                        <div class="filter-tab" data-value="Tijorat">Tijorat</div>
-                        <div class="filter-tab" data-value="Dacha">Dacha</div>
-                        <div class="filter-tab" data-value="Xalqaro">Xalqaro</div>
-                    </div>
-                    <div class="filter-box">
-                        <div class="filter-field">
-                            <label>Mulk turi</label>
-                            <div class="filter-select-wrapper">
-                                <select name="property_type">
-                                    <option>Tanlang</option>
-                                    <option>Kvartira</option>
-                                    <option>Hovli</option>
-                                    <option>Ofis</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
+                    <!-- Leaflet map container -->
+                    <div id="showMap"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN (Pricing, Params, Nearby, Description) -->
+            <div class="detail-right-column">
+                <!-- Owner & Pricing card -->
+                <div class="owner-pricing-card">
+                    <div class="owner-header-row">
+                        <div class="owner-avatar-info">
+                            <div class="owner-avatar"><i class="fas fa-user-circle"></i></div>
+                            <div>
+                                <h4 class="owner-name">{{ $product->user->name ?? 'Surename Name' }}</h4>
+                                <span class="owner-type">Jismoniy shaxs</span>
                             </div>
                         </div>
-                        <div class="filter-field">
-                            <label>Viloyat</label>
-                            <div class="filter-select-wrapper">
-                                <select name="region_id" id="region_id">
-                                    <option value="">Tanlang</option>
-                                    @if(isset($regions))
-                                        @foreach($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <div class="filter-field">
-                            <label>Tuman</label>
-                            <div class="filter-select-wrapper">
-                                <select name="city_id" id="city_id">
-                                    <option value="">Tanlang</option>
-                                    @if(isset($regions))
-                                        @foreach($regions as $region)
-                                            @foreach($region->cities as $city)
-                                                <option value="{{ $city->id }}" data-region="{{ $region->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <div class="filter-field">
-                            <label>So'ngi e'lonlar</label>
-                            <div class="filter-select-wrapper">
-                                <select name="time_filter">
-                                    <option>Tanlang</option>
-                                    <option>Bugungi</option>
-                                    <option>Haftalik</option>
-                                    <option>Oylik</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-filter-settings">
-                            <i class="fas fa-sliders-h"></i>
-                            FILTR
-                        </button>
-                        <button type="submit" class="btn-filter-search">
-                            <i class="fas fa-search"></i>
-                            QIDIRISH
-                        </button>
-                    </div>
-                </form>
-
-                <div class="map-trigger-container">
-                    <button class="btn-view-map">
-                        <i class="fas fa-map-marked-alt"></i>
-                        Xaritadan ko'rish
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TICKER BANNER -->
-    <div class="ticker-banner">
-        <div class="ticker-content">
-            <div class="ticker-item">
-                <span>Estora yangi imkoniyatlar taqdim etmoqda!</span>
-            </div>
-            <span class="ticker-separator">–</span>
-            <div class="ticker-item">
-                <span>Yangi turar-joy loyihalari ishga tushirildi.</span>
-            </div>
-            <span class="ticker-separator">–</span>
-            <div class="ticker-item">
-                <span>Xalqaro hamkorlik kengaymoqda</span>
-            </div>
-            <!-- Duplicated for loop effect -->
-            <span class="ticker-separator">–</span>
-            <div class="ticker-item">
-                <span>Estora yangi imkoniyatlar taqdim etmoqda!</span>
-            </div>
-            <span class="ticker-separator">–</span>
-            <div class="ticker-item">
-                <span>Yangi turar-joy loyihalari ishga tushirildi.</span>
-            </div>
-            <span class="ticker-separator">–</span>
-            <div class="ticker-item">
-                <span>Xalqaro hamkorlik kengaymoqda</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- BEST OFFERS SECTION -->
-    <section class="listings-section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-title-area">
-                    <h2 class="section-title">Eng yaxshi takliflar</h2>
-                    <p class="section-subtitle">Siz uchun eng maqbul va samarali yechimlarni topishda ishonchli hamkoringiz bo'lamiz.</p>
-                </div>
-                <div class="slider-controls">
-                    <button class="btn-slider"><i class="fas fa-chevron-left"></i></button>
-                    <button class="btn-slider"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </div>
-
-            <div class="listings-grid">
-                <!-- CARD 1 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment1.png" alt="Bedroom Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">50.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
+                        <div class="owner-action-icons">
+                            <button class="btn-owner-action" title="Saralanganlarga qo'shish"><i class="far fa-heart"></i></button>
+                            <button class="btn-owner-action" title="Ulashish"><i class="fas fa-share-alt"></i></button>
+                            <button class="btn-owner-action" title="Chop etish" onclick="window.print();"><i class="fas fa-print"></i></button>
+                            <button class="btn-owner-action" title="Shikoyat qilish"><i class="fas fa-exclamation-triangle"></i></button>
                         </div>
                     </div>
-                </div>
-
-                <!-- CARD 2 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment2.png" alt="Living Room Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo zudlik-bilan">Zudlik bilan</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">45.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 3 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment3.png" alt="Kitchen Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo super-narx">Super Narx</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">30.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 4 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment1.png" alt="Bedroom Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo super-narx">Super Narx</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">30.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ANALYTICS SECTION -->
-    <section class="analytics-section">
-        <div class="container">
-            <div class="analytics-content">
-                <div class="analytics-left">
-                    <h2 class="section-title" style="line-height: 1.3;">Ko'chmas mulk bozorining haqiqiy qiymatini bilib oling.</h2>
-                    <p class="section-subtitle" style="margin-top: 10px;">Real vaqt statistikasi, narx dinamikasi va hududlar kesimidagi tahlillar orqali ko'chmas mulk bozorini ishonch bilan baholang.</p>
                     
-                    <div class="analytics-features">
-                        <!-- Feature 1 -->
-                        <div class="analytics-feature-item">
-                            <div class="feature-icon-box blue">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="feature-text-box">
-                                <span class="feature-title">Real vaqt ma'lumotlari</span>
-                                <p class="feature-desc">Narxlar, e'lonlar soni va bozor tendensiyalari doimiy yangilanib, sizga eng so‘nggi ma'lumotlarni taqdim etadi.</p>
+                    <div class="phone-and-price-row">
+                        <div class="detail-phone-wrapper">
+                            <span class="phone-label">Telefon raqam</span>
+                            <div class="phone-reveal-container">
+                                <span class="phone-masked-num" id="showPhoneText">+998 ** *** ** **</span>
+                                <button class="btn-reveal-phone" id="revealPhoneBtn" onclick="revealProductPhone('{{ $product->phone }}')">To'liq ko'rish</button>
                             </div>
                         </div>
-                        <!-- Feature 2 -->
-                        <div class="analytics-feature-item">
-                            <div class="feature-icon-box green">
-                                <i class="fas fa-map-marked-alt"></i>
-                            </div>
-                            <div class="feature-text-box">
-                                <span class="feature-title">Interaktiv xarita</span>
-                                <p class="feature-desc">Hududlar kesimida narxlar, infratuzilma va bozor ko‘rsatkichlarini xaritada ko‘ring, solishtiring va tahlil qiling.</p>
-                            </div>
-                        </div>
-                        <!-- Feature 3 -->
-                        <div class="analytics-feature-item">
-                            <div class="feature-icon-box orange">
-                                <i class="fas fa-pie-chart"></i>
-                            </div>
-                            <div class="feature-text-box">
-                                <span class="feature-title">Chuqur tahlil va statistika</span>
-                                <p class="feature-desc">Narx dinamikasi, bozor faolligi va tarixiy ma'lumotlarni grafiklar hamda analitik ko‘rsatkichlar orqali baholang.</p>
-                            </div>
-                        </div>
-                        <!-- Feature 4 -->
-                        <div class="analytics-feature-item">
-                            <div class="feature-icon-box purple">
-                                <i class="fas fa-bell"></i>
-                            </div>
-                            <div class="feature-text-box">
-                                <span class="feature-title">Shaxsiy kuzatuv va ogohlantirishlar</span>
-                                <p class="feature-desc">Qiziqtirgan hududlaringiz yoki mulklar bo‘yicha narx va bozor o‘zgarishlari haqida avtomatik xabarnomalar oling.</p>
-                            </div>
+                        <div class="detail-price-box">
+                            <span class="price-label">Narx</span>
+                            <span class="price-value">{{ number_format($product->price) }} USD</span>
                         </div>
                     </div>
-
-                    <a href="#" class="btn-analytics-action">
-                        Bozor tahliliga kirish
-                        <i class="fas fa-arrow-right"></i>
+                    
+                    <a href="https://t.me/estora_realestate" target="_blank" class="btn-telegram-direct">
+                        <i class="fab fa-telegram-plane"></i>
+                        Telegram orqali yozish
                     </a>
                 </div>
 
-                <div class="analytics-right">
-                    <div class="analytics-right-card">
-                        <div class="map-header">
-                            <div class="map-select-wrapper">
-                                <select>
-                                    <option>Toshkent shahri</option>
-                                    <option>Samarqand shahri</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
+                <!-- Parameters Box -->
+                <div class="detail-params-box">
+                    <h3>Parametrlar</h3>
+                    <div class="params-grid">
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-door-open"></i> Xonalar soni:</span>
+                            <span class="param-value">{{ $product->rooms ?? '—' }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-ruler-combined"></i> Umumiy maydon:</span>
+                            <span class="param-value">{{ $product->square ? $product->square . ' m²' : '—' }}</span>
+                        </div>
+                        @if($product->floor)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-building"></i> Yashash qavati:</span>
+                            <span class="param-value">{{ $product->floor }}</span>
+                        </div>
+                        @endif
+                        @if($product->building_floor)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-level-up-alt"></i> Uydagi qavatlar soni:</span>
+                            <span class="param-value">{{ $product->building_floor }}</span>
+                        </div>
+                        @endif
+                        @if($product->repair)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-tools"></i> Ta'mir holati:</span>
+                            <span class="param-value">{{ $product->repair }}</span>
+                        </div>
+                        @endif
+                        @if($product->sotix)
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-tree"></i> Sotix:</span>
+                            <span class="param-value">{{ $product->sotix }}</span>
+                        </div>
+                        @endif
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-exchange-alt"></i> Almashish:</span>
+                            <span class="param-value">{{ $product->exchange ? 'Bor' : "Yo'q" }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-credit-card"></i> Bo'lib to'lash:</span>
+                            <span class="param-value">{{ $product->pay_in_installments ? 'Mavjud' : "Yo'q" }}</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-label"><i class="fas fa-hand-holding-usd"></i> Kredit (Ipoteka):</span>
+                            <span class="param-value">{{ $product->credit ? 'Mavjud' : "Yo'q" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Items (Amenities / Qulayliklar) Box -->
+                <div class="detail-amenities-box">
+                    <h3>Qo'shimcha</h3>
+                    
+                    @if(count($product->metros) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-subway text-blue"></i> Infratuzilma (Metro):</span>
+                            <div class="group-tags">
+                                @foreach($product->metros as $metro)
+                                    <span class="group-tag-item">{{ $metro->name }} Metro</span>
+                                @endforeach
                             </div>
                         </div>
-
-                        <!-- Stylized SVG Map of Tashkent districts -->
-                        <div class="svg-map-container">
-                            <svg viewBox="0 0 400 300" class="tashkent-map-svg">
-                                <defs>
-                                    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#0084ff" stop-opacity="0.6"/>
-                                        <stop offset="100%" stop-color="#0084ff" stop-opacity="0"/>
-                                    </radialGradient>
-                                </defs>
-                                <!-- Map Background grid paths (styled look) -->
-                                <rect width="100%" height="100%" fill="#f1f5f9" />
-                                
-                                <!-- Abstract District Shapes -->
-                                <!-- Yunusobod -->
-                                <path d="M 120,40 L 260,20 L 250,90 L 170,110 Z" fill="#90caf9" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="180" y="65" font-size="11" font-weight="700" fill="#061c3f" opacity="0.8">Yunusobod</text>
-                                
-                                <!-- Shayxontohur -->
-                                <path d="M 70,100 L 170,110 L 150,170 L 60,160 Z" fill="#42a5f5" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="90" y="135" font-size="11" font-weight="700" fill="#061c3f" opacity="0.8">Shayxontohur</text>
-                                
-                                <!-- Mirobod -->
-                                <path d="M 170,110 L 250,90 L 310,160 L 230,220 Z" fill="#1e88e5" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="220" y="145" font-size="11" font-weight="700" fill="#ffffff" opacity="0.9">Mirobod</text>
-                                
-                                <!-- Glowing Pins -->
-                                <circle cx="230" cy="130" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="230" cy="130" r="4" fill="#ff9e0d" />
-
-                                <circle cx="130" cy="120" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="130" cy="120" r="4" fill="#ff9e0d" />
-
-                                <circle cx="210" cy="70" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="210" cy="70" r="4" fill="#ff9e0d" />
-                            </svg>
-                        </div>
-
-                        <!-- Sparkline Stats Section -->
-                        <div class="map-stats-grid">
-                            <div class="stat-block">
-                                <div class="stat-block-header">
-                                    <span class="stat-block-title">Narx tendensiyasi</span>
-                                    <span class="stat-change-tag">2.8%</span>
-                                </div>
-                                <span class="stat-meta-text">O'tgan 3 oy</span>
-                                
-                                <!-- SVG Line Chart -->
-                                <div class="sparkline-container">
-                                    <svg viewBox="0 0 160 50" width="100%" height="100%">
-                                        <defs>
-                                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="#0084ff" stop-opacity="0.3" />
-                                                <stop offset="100%" stop-color="#0084ff" stop-opacity="0" />
-                                            </linearGradient>
-                                        </defs>
-                                        <path d="M 0,40 Q 30,25 60,35 T 120,15 T 160,5 L 160,50 L 0,50 Z" fill="url(#chartGrad)" />
-                                        <path d="M 0,40 Q 30,25 60,35 T 120,15 T 160,5" fill="none" stroke="#0084ff" stroke-width="2.5" />
-                                        <circle cx="160" cy="5" r="4" fill="#0084ff" />
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div class="stat-block" style="border-left: 1px solid var(--border-color); padding-left: 20px;">
-                                <div class="stat-block-header">
-                                    <span class="stat-block-title">Eng qimmat hududlar</span>
-                                    <span class="stat-change-tag" style="color: #2e7d32; background-color: #e8f5e9;">14.3%</span>
-                                </div>
-                                <div class="expensive-list">
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">01</span>
-                                            <span class="expensive-name">Mirobod</span>
-                                        </div>
-                                        <span class="expensive-val">22.8 mln</span>
-                                    </div>
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">02</span>
-                                            <span class="expensive-name">Yunusobod</span>
-                                        </div>
-                                        <span class="expensive-val">20.1 mln</span>
-                                    </div>
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">03</span>
-                                            <span class="expensive-name">Shayxontohur</span>
-                                        </div>
-                                        <span class="expensive-val">19.2 mln</span>
-                                    </div>
-                                </div>
+                    @endif
+                    
+                    @if(count($product->universities) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-graduation-cap text-orange"></i> Yaqin universitetlar:</span>
+                            <div class="group-tags">
+                                @foreach($product->universities as $uni)
+                                    <span class="group-tag-item">{{ $uni->name }}</span>
+                                @endforeach
                             </div>
                         </div>
+                    @endif
+
+                    @if(count($product->items) > 0)
+                        <div class="amenities-group">
+                            <span class="group-title"><i class="fas fa-concierge-bell text-green"></i> Qulayliklar:</span>
+                            <div class="group-tags">
+                                @foreach($product->items as $item)
+                                    <span class="group-tag-item">{{ $item->name }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Description (Tavsif) Box -->
+                <div class="detail-desc-box">
+                    <h3>Tavsif</h3>
+                    <div class="desc-content">
+                        {!! nl2br(e($product->description)) !!}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- EXTRA SERVICES SECTION -->
-    <section class="services-section">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <div class="section-title-area">
-                    <span class="section-header-badge">Xizmatlarimiz</span>
-                    <h2 class="section-title">Qo'shimcha uy xizmatlari</h2>
-                    <p class="section-subtitle">Uy bilan bog'liq har qanday muammoda — bitta qo'ng'iroq, ishonchli yechim.</p>
-                </div>
-                <button class="btn-add-ad" style="background-color: var(--accent-orange); box-shadow: 0 4px 6px rgba(255,152,0,0.2);">
-                    Barchasini ko'rish
-                    <i class="fas fa-arrow-right"></i>
-                </button>
+        <!-- RECOMMENDATIONS BLOCK -->
+        <div class="recommendations-container py-12">
+            <h2 class="recommendations-title">Sizga qiziqarli bo'lishi mumkin</h2>
+            
+            <div class="recommendations-tabs">
+                <button class="rec-tab-btn active" onclick="switchRecTab(this, 'price')">O'xshash narxli</button>
+                <button class="rec-tab-btn" onclick="switchRecTab(this, 'area')">O'xshash maydonli</button>
+                <button class="rec-tab-btn" onclick="switchRecTab(this, 'location')">Joylashuvga ko'ra o'xshash</button>
             </div>
 
-            <div class="services-grid">
-                <!-- Service 1 -->
-                <div class="service-card">
-                    <div class="service-icon-box">
-                        <i class="fas fa-couch"></i>
-                    </div>
-                    <span class="service-title">Dizayner</span>
-                    <p class="service-desc">Interer & Ekster'er</p>
-                    <i class="fas fa-arrow-right service-arrow"></i>
-                </div>
-
-                <!-- Service 2 -->
-                <div class="service-card">
-                    <div class="service-icon-box">
-                        <i class="fas fa-bed"></i>
-                    </div>
-                    <span class="service-title">Mebel</span>
-                    <p class="service-desc">Ta'mirlash & Buyurtma</p>
-                    <i class="fas fa-arrow-right service-arrow"></i>
-                </div>
-
-                <!-- Service 3 -->
-                <div class="service-card">
-                    <div class="service-icon-box">
-                        <i class="fas fa-truck-moving"></i>
-                    </div>
-                    <span class="service-title">Ko'chish</span>
-                    <p class="service-desc">Uydan-uyga ko'chirish</p>
-                    <i class="fas fa-arrow-right service-arrow"></i>
-                </div>
-
-                <!-- Service 4 -->
-                <div class="service-card">
-                    <div class="service-icon-box">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <span class="service-title">Elektrik</span>
-                    <p class="service-desc">O'rnatish & Ta'mirlash</p>
-                    <i class="fas fa-arrow-right service-arrow"></i>
-                </div>
-
-                <!-- Service 5 -->
-                <div class="service-card">
-                    <div class="service-icon-box">
-                        <i class="fas fa-faucet"></i>
-                    </div>
-                    <span class="service-title">Santexnik</span>
-                    <p class="service-desc">O'rnatish & Ta'mirlash</p>
-                    <i class="fas fa-arrow-right service-arrow"></i>
+            <!-- TAB CONTENT: Price -->
+            <div class="rec-tab-panel active" id="rec-price">
+                <div class="rec-listings-grid">
+                    @forelse($similarPrice as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">O'xshash narxli e'lonlar topilmadi.</div>
+                    @endforelse
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- ADVANTAGES SECTION -->
-    <section class="advantages-section">
-        <div class="container">
-            <div class="section-title-area" style="align-items: center; text-align: center; margin-bottom: 20px;">
-                <span class="section-header-badge">Afzalliklar</span>
-                <h2 class="section-title">Nima uchun Estora?</h2>
-            </div>
-
-            <div class="advantages-grid">
-                <!-- Advantage 1 -->
-                <div class="advantage-card">
-                    <div class="advantage-icon-box">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                    </div>
-                    <h3 class="advantage-title">To‘liq va aniq bozor ma’lumotlari</h3>
-                    <p class="advantage-desc">Xarita, radius va bozor narxlari tahlili yordamida eng mos mulkni tez va aniq toping.</p>
-                </div>
-
-                <!-- Advantage 2 -->
-                <div class="advantage-card">
-                    <div class="advantage-icon-box">
-                        <i class="fas fa-magnifying-glass-location"></i>
-                    </div>
-                    <h3 class="advantage-title">Aqlli va qulay qidiruv</h3>
-                    <p class="advantage-desc">Radius bo‘yicha qidiruv, bitta ishonch raqami va xavfsiz aloqa orqali kerakli mulkni tez va oson toping.</p>
-                </div>
-
-                <!-- Advantage 3 -->
-                <div class="advantage-card">
-                    <div class="advantage-icon-box">
-                        <i class="fas fa-shield-halved"></i>
-                    </div>
-                    <h3 class="advantage-title">Xavfsiz va ishonchli aloqa</h3>
-                    <p class="advantage-desc">Uy egasi bilan to‘g‘ridan-to‘g‘ri aloqa qiling, vositachisiz bevosita bog‘lanish imkoniyatidan foydalaning.</p>
-                </div>
-
-                <!-- Advantage 4 -->
-                <div class="advantage-card">
-                    <div class="advantage-icon-box">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <h3 class="advantage-title">Zamonaviy va xalqaro darajadagi xizmat</h3>
-                    <p class="advantage-desc">Bitta platformada barcha ko'chmas mulk xizmatlari. Mahalliy va xalqaro foydalanuvchilar uchun qulay yechim.</p>
+            <!-- TAB CONTENT: Area -->
+            <div class="rec-tab-panel" id="rec-area">
+                <div class="rec-listings-grid">
+                    @forelse($similarArea as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">O'xshash maydonli e'lonlar topilmadi.</div>
+                    @endforelse
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- FOOTER LINKS BAR -->
-    <div class="footer-links-bar">
-        <div class="container">
-            <div class="footer-links-content">
-                <a href="#">Biz haqimizda</a>
-                <a href="#">Xizmatlar</a>
-                <a href="#">Narxlar</a>
-                <a href="#">Qo'llanma</a>
-                <a href="#">Ommaviy oferta</a>
-                <a href="#">Hamkorlar</a>
-                <a href="#">Aloqa</a>
+            <!-- TAB CONTENT: Location -->
+            <div class="rec-tab-panel" id="rec-location">
+                <div class="rec-listings-grid">
+                    @forelse($similarLocation as $rec)
+                        @include('products.partials.rec_card', ['product' => $rec])
+                    @empty
+                        <div class="rec-empty-message">Yaqin hududdagi o'xshash e'lonlar topilmadi.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- MAIN FOOTER -->
+</div>
     <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
@@ -2710,6 +3729,177 @@
                     }
                 });
             });
+        
+            // Carousel sliding logic for search listings
+            window.moveSlide = function(button, direction) {
+                const container = button.closest('.product-carousel-container');
+                const slides = container.querySelectorAll('.carousel-slide-img');
+                const indexBadge = container.querySelector('.carousel-index-badge');
+                
+                let activeIndex = -1;
+                slides.forEach((slide, index) => {
+                    if (slide.classList.contains('active')) {
+                        activeIndex = index;
+                    }
+                });
+                
+                if (activeIndex !== -1 && slides.length > 1) {
+                    slides[activeIndex].classList.remove('active');
+                    let nextIndex = activeIndex + direction;
+                    
+                    if (nextIndex >= slides.length) {
+                        nextIndex = 0;
+                    } else if (nextIndex < 0) {
+                        nextIndex = slides.length - 1;
+                    }
+                    
+                    slides[nextIndex].classList.add('active');
+                    indexBadge.textContent = `${nextIndex + 1}/${slides.length}`;
+                }
+            };
+
+            window.revealPhone = function(button, phone) {
+                button.innerHTML = `<i class="fas fa-phone-alt"></i> ${phone}`;
+                button.onclick = null;
+            };
+
+            // Set active states on search filters based on request query params
+            const currentTxType = "{{ request('transaction_type', 'Sotuv') }}";
+            if (currentTxType) {
+                const matchingTab = Array.from(filterTabs).find(t => t.getAttribute('data-value').toLowerCase() === currentTxType.toLowerCase());
+                if (matchingTab) {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    matchingTab.classList.add('active');
+                    if (transactionInput) transactionInput.value = matchingTab.getAttribute('data-value');
+                    
+                    navItems.forEach(nav => {
+                        if (nav.textContent.trim().toLowerCase() === currentTxType.toLowerCase()) {
+                            navItems.forEach(n => n.classList.remove('active'));
+                            nav.classList.add('active');
+                        }
+                    });
+                }
+            }
+
+            // Compact Tab toggling logic
+            const compactTabs = document.querySelectorAll('.compact-tab');
+            const compactTxInput = document.getElementById('transaction_type');
+            const navItems = document.querySelectorAll('.sub-navbar .nav-item');
+
+            compactTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    compactTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const val = this.getAttribute('data-value');
+                    if (compactTxInput) {
+                        compactTxInput.value = val;
+                    }
+
+                    // Sync sub-navbar links
+                    navItems.forEach(nav => {
+                        if (nav.textContent.trim().toLowerCase() === val.toLowerCase()) {
+                            navItems.forEach(n => n.classList.remove('active'));
+                            nav.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // Sync sub-navbar with compact tabs
+            navItems.forEach(nav => {
+                nav.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const text = this.textContent.trim();
+                    const matchingTab = Array.from(compactTabs).find(t => t.textContent.trim().toLowerCase() === text.toLowerCase());
+                    if (matchingTab) {
+                        matchingTab.click();
+                    }
+                });
+            });
+});
+    </script>
+
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Switch main image in Gallery
+        function switchMainImage(thumbElement, imageSrc, index) {
+            // Remove active from all thumbnails
+            const thumbs = document.querySelectorAll('.thumb-item');
+            thumbs.forEach(t => t.classList.remove('active'));
+            
+            // Add active to current
+            thumbElement.classList.add('active');
+            
+            // Update main image source
+            document.getElementById('mainGalleryImage').src = imageSrc;
+            
+            // Update index badge
+            const totalCount = thumbs.length;
+            document.getElementById('galleryIndexText').textContent = `${index + 1}/${totalCount}`;
+        }
+
+        // Fullscreen toggle logic
+        function toggleFullscreen() {
+            const mainImg = document.getElementById('mainGalleryImage');
+            if (mainImg.requestFullscreen) {
+                mainImg.requestFullscreen();
+            } else if (mainImg.webkitRequestFullscreen) {
+                mainImg.webkitRequestFullscreen();
+            } else if (mainImg.msRequestFullscreen) {
+                mainImg.msRequestFullscreen();
+            }
+        }
+
+        // Reveal phone number
+        function revealProductPhone(phoneNum) {
+            const phoneTextElement = document.getElementById('showPhoneText');
+            const revealBtn = document.getElementById('revealPhoneBtn');
+            if (phoneTextElement && phoneNum) {
+                phoneTextElement.textContent = phoneNum;
+                if (revealBtn) {
+                    revealBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // Switch similar product tabs
+        function switchRecTab(tabButton, tabType) {
+            // Remove active class from buttons
+            const buttons = document.querySelectorAll('.rec-tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            tabButton.classList.add('active');
+            
+            // Hide all tab panels
+            const panels = document.querySelectorAll('.rec-tab-panel');
+            panels.forEach(p => p.classList.remove('active'));
+            
+            // Show corresponding panel
+            const activePanel = document.getElementById(`rec-${tabType}`);
+            if (activePanel) {
+                activePanel.classList.add('active');
+            }
+        }
+
+        // Leaflet map initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const lat = {{ $product->latitude ?? 41.311081 }};
+            const lng = {{ $product->longitude ?? 69.240562 }};
+            
+            const map = L.map('showMap').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("{{ $product->name }}")
+                .openPopup();
         });
     </script>
 </body>

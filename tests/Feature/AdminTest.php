@@ -349,4 +349,33 @@ class AdminTest extends TestCase
         $response->assertRedirect('/admin/categories');
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
+
+    public function test_admin_can_manage_infrastructure_and_product_items(): void
+    {
+        $admin = $this->createAdminUser();
+
+        // 1. View infrastructure index
+        $response = $this->actingAs($admin)->get('/admin/infrastructure');
+        $response->assertStatus(200);
+
+        // 2. Create product item (amenity)
+        $response = $this->actingAs($admin)->post('/admin/product-items', [
+            'name' => 'Basseyin',
+        ]);
+        $response->assertRedirect('/admin/infrastructure');
+        $this->assertDatabaseHas('product_items', ['name' => 'Basseyin']);
+
+        // 3. Update product item
+        $item = \App\Models\ProductItem::where('name', 'Basseyin')->first();
+        $response = $this->actingAs($admin)->put("/admin/product-items/{$item->id}", [
+            'name' => 'Katta Basseyin',
+        ]);
+        $response->assertRedirect('/admin/infrastructure');
+        $this->assertDatabaseHas('product_items', ['name' => 'Katta Basseyin']);
+
+        // 4. Delete product item
+        $response = $this->actingAs($admin)->delete("/admin/product-items/{$item->id}");
+        $response->assertRedirect('/admin/infrastructure');
+        $this->assertDatabaseMissing('product_items', ['id' => $item->id]);
+    }
 }

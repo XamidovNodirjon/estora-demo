@@ -10,8 +10,9 @@ Route::get('/', function () {
     return view('welcome', compact('regions'));
 });
 
-// Public product detail page
-Route::get('/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'show'])->name('products.show');
+Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
+Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
 
 // Authentication routes (Guest)
 Route::middleware('guest')->group(function () {
@@ -39,16 +40,19 @@ Route::middleware('auth')->group(function () {
         // Roles management
         Route::get('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'roles'])->name('developer.roles');
         Route::post('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'storeRole'])->name('developer.roles.store');
+        Route::get('/developer/roles/{role}/edit', [\App\Http\Controllers\DeveloperController::class, 'editRole'])->name('developer.roles.edit');
         Route::put('/developer/roles/{role}', [\App\Http\Controllers\DeveloperController::class, 'updateRole'])->name('developer.roles.update');
         Route::delete('/developer/roles/{role}', [\App\Http\Controllers\DeveloperController::class, 'deleteRole'])->name('developer.roles.delete');
 
         // Categories & SubCategories management
         Route::get('/developer/categories', [\App\Http\Controllers\DeveloperCategoryController::class, 'index'])->name('developer.categories');
         Route::post('/developer/categories', [\App\Http\Controllers\DeveloperCategoryController::class, 'storeCategory'])->name('developer.categories.store');
+        Route::get('/developer/categories/{category}/edit', [\App\Http\Controllers\DeveloperCategoryController::class, 'editCategory'])->name('developer.categories.edit');
         Route::put('/developer/categories/{category}', [\App\Http\Controllers\DeveloperCategoryController::class, 'updateCategory'])->name('developer.categories.update');
         Route::delete('/developer/categories/{category}', [\App\Http\Controllers\DeveloperCategoryController::class, 'deleteCategory'])->name('developer.categories.delete');
 
         Route::post('/developer/subcategories', [\App\Http\Controllers\DeveloperCategoryController::class, 'storeSubCategory'])->name('developer.subcategories.store');
+        Route::get('/developer/subcategories/{subCategory}/edit', [\App\Http\Controllers\DeveloperCategoryController::class, 'editSubCategory'])->name('developer.subcategories.edit');
         Route::put('/developer/subcategories/{subCategory}', [\App\Http\Controllers\DeveloperCategoryController::class, 'updateSubCategory'])->name('developer.subcategories.update');
         Route::delete('/developer/subcategories/{subCategory}', [\App\Http\Controllers\DeveloperCategoryController::class, 'deleteSubCategory'])->name('developer.subcategories.delete');
 
@@ -113,10 +117,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/universities', [\App\Http\Controllers\AdminUniversityController::class, 'store'])->name('admin.universities.store');
         Route::put('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'update'])->name('admin.universities.update');
         Route::delete('/admin/universities/{university}', [\App\Http\Controllers\AdminUniversityController::class, 'destroy'])->name('admin.universities.delete');
+
+        // Product Items management (Amenities like Lift, Playground, etc.)
+        Route::post('/admin/product-items', [\App\Http\Controllers\AdminProductItemController::class, 'store'])->name('admin.product-items.store');
+        Route::put('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'update'])->name('admin.product-items.update');
+        Route::delete('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'destroy'])->name('admin.product-items.delete');
+
+        // Inquiries management
+        Route::get('/admin/inquiries', [\App\Http\Controllers\AdminInquiryController::class, 'index'])->name('admin.inquiries.index');
+        Route::get('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'show'])->name('admin.inquiries.show');
+        Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
     });
 
-    // Client & Makler Dashboard and Product CRUD
-    Route::middleware('role:client,makler')->group(function () {
+    // Client Dashboard
+    Route::middleware('role:client')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
         
         // Client & Makler Announcements Management

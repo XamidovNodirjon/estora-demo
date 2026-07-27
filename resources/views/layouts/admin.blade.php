@@ -42,16 +42,23 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex bg-gray-50">
+<body class="h-screen w-screen flex overflow-hidden bg-gray-50">
+
+    <!-- Sidebar Backdrop (Mobile only) -->
+    <div id="sidebar-backdrop" class="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#0B2240] text-white flex flex-col fixed inset-y-0 left-0 z-20 shadow-xl transition-all duration-300">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0B2240] text-white flex flex-col transform -translate-x-full md:translate-x-0 md:relative md:inset-auto transition-transform duration-300 shadow-xl flex-shrink-0">
         <!-- Logo -->
-        <div class="h-16 flex items-center px-6 border-b border-navy-800 bg-[#061c3f]">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-navy-800 bg-[#061c3f] flex-shrink-0">
             <a href="/" class="flex items-center gap-2">
                 <i class="fa-solid fa-shield-halved text-[#ff9e0d] text-2xl"></i>
                 <span class="font-display font-extrabold text-xl tracking-wider text-white">ESTORA <span class="text-[#0084ff] text-xs font-bold">ADMIN</span></span>
             </a>
+            <!-- Close Button (Mobile only) -->
+            <button id="close-sidebar" class="md:hidden text-gray-400 hover:text-white transition-colors" title="Menyuni yopish">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
 
         <!-- Navigation Links -->
@@ -81,6 +88,11 @@
                 <span>Infratuzilma</span>
             </a>
 
+            <a href="{{ route('admin.inquiries.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('admin.inquiries*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
+                <i class="fa-solid fa-envelope-open-text text-lg"></i>
+                <span>Murojaatlar</span>
+            </a>
+
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
                 <i class="fa-solid fa-file-signature text-lg"></i>
                 <span>Shartnomalar</span>
@@ -98,7 +110,7 @@
         </nav>
 
         <!-- Sidebar Footer -->
-        <div class="p-4 border-t border-navy-800 bg-[#061c3f]">
+        <div class="p-4 border-t border-navy-800 bg-[#061c3f] flex-shrink-0">
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 rounded-full bg-[#ff9e0d] flex items-center justify-center font-bold text-white text-lg shadow-md font-display">
                     {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
@@ -119,11 +131,15 @@
     </aside>
 
     <!-- Main Content Area -->
-    <div class="pl-64 flex-1 flex flex-col min-h-screen">
+    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <!-- Header -->
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10 backdrop-blur-md bg-white/80">
-            <div class="flex items-center gap-4">
-                <h1 class="font-display font-bold text-xl text-[#061c3f]">@yield('header_title', 'Boshqaruv Paneli')</h1>
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 md:px-8 flex-shrink-0 z-10 backdrop-blur-md bg-white/80">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger Button (Mobile only) -->
+                <button id="toggle-sidebar" class="md:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" title="Menyuni ochish">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <h1 class="font-display font-bold text-lg md:text-xl text-[#061c3f]">@yield('header_title', 'Boshqaruv Paneli')</h1>
             </div>
             
             <div class="flex items-center gap-4">
@@ -141,24 +157,68 @@
             </div>
         </header>
 
-        <!-- Main Body -->
-        <main class="flex-1 p-8">
-            <!-- Toast Notifications -->
-            @if(session('success'))
-                <div class="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-sm animate-fade-in">
-                    <i class="fa-solid fa-circle-check text-lg text-emerald-500"></i>
-                    <span class="text-sm font-medium">{{ session('success') }}</span>
-                </div>
-            @endif
+        <!-- Main Body (Scrollable container) -->
+        <div class="flex-1 overflow-y-auto flex flex-col">
+            <main class="flex-1 p-6 md:p-8">
+                <!-- Toast Notifications -->
+                @if(session('success'))
+                    <div class="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-sm animate-fade-in">
+                        <i class="fa-solid fa-circle-check text-lg text-emerald-500"></i>
+                        <span class="text-sm font-medium">{{ session('success') }}</span>
+                    </div>
+                @endif
 
-            @yield('content')
-        </main>
+                @yield('content')
+            </main>
 
-        <!-- Footer -->
-        <footer class="py-4 px-8 bg-white border-t border-gray-100 text-center text-xs text-gray-400 font-medium">
-            &copy; {{ date('Y') }} Estora Real Estate. Hamma huquqlar himoyalangan.
-        </footer>
+            <!-- Footer -->
+            <footer class="py-4 px-8 bg-white border-t border-gray-100 text-center text-xs text-gray-400 font-medium flex-shrink-0">
+                &copy; {{ date('Y') }} Estora Real Estate. Hamma huquqlar himoyalangan.
+            </footer>
+        </div>
     </div>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            const closeBtn = document.getElementById('close-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+
+            if (toggleBtn && sidebar && backdrop) {
+                toggleBtn.addEventListener('click', function () {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    backdrop.classList.remove('hidden');
+                    setTimeout(() => {
+                        backdrop.classList.remove('opacity-0');
+                        backdrop.classList.add('opacity-100');
+                    }, 10);
+                });
+            }
+
+            function closeSidebar() {
+                if (sidebar && backdrop) {
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                    backdrop.classList.remove('opacity-100');
+                    backdrop.classList.add('opacity-0');
+                    setTimeout(() => {
+                        backdrop.classList.add('hidden');
+                    }, 300);
+                }
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closeSidebar);
+            }
+        });
+    </script>
 
 </body>
 </html>
