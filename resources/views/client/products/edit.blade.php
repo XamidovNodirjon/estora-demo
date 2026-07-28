@@ -229,6 +229,35 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Metrolar (Yaqin metrolarni tanlang)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                            @foreach($metros as $metro)
+                                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all border border-transparent">
+                                    <input type="checkbox" name="metros[]" value="{{ $metro->id }}"
+                                        {{ (is_array(old('metros')) && in_array($metro->id, old('metros'))) || (isset($selectedMetros) && in_array($metro->id, $selectedMetros)) ? 'checked' : '' }}
+                                        class="w-4 h-4 rounded border-gray-300 text-[#0084ff] focus:ring-[#0084ff]">
+                                    <span class="text-xs font-medium text-gray-700">{{ $metro->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Universitetlar (Yaqin OOT larni tanlang)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                            @foreach($universities as $university)
+                                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all border border-transparent">
+                                    <input type="checkbox" name="universities[]" value="{{ $university->id }}"
+                                        {{ (is_array(old('universities')) && in_array($university->id, old('universities'))) || (isset($selectedUniversities) && in_array($university->id, $selectedUniversities)) ? 'checked' : '' }}
+                                        class="w-4 h-4 rounded border-gray-300 text-[#0084ff] focus:ring-[#0084ff]">
+                                    <span class="text-xs font-medium text-gray-700">{{ $university->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                         <label for="phone" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Telefon</label>
@@ -490,18 +519,115 @@
         dropZone.addEventListener('click', () => fileSelector.click());
         fileSelector.addEventListener('change', () => handleFiles(fileSelector.files));
 
-        const initLat = {{ $product->latitude ?? 41.3775 }};
-        const initLng = {{ $product->longitude ?? 64.5853 }};
+        const regionSelect = document.getElementById('region_id');
+        const citySelect = document.getElementById('city_id');
 
-        map = L.map('map').setView([initLat, initLng], 12);
+        if (regionSelect && citySelect) {
+            regionSelect.addEventListener('change', updateMapLocation);
+            citySelect.addEventListener('change', updateMapLocation);
+        }
+
+        const initLat = {{ $product->latitude ?? 41.311081 }};
+        const initLng = {{ $product->longitude ?? 69.240562 }};
+
+        map = L.map('map').setView([initLat, initLng], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
         marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+
+        marker.on('dragend', function (e) {
+            const latlng = marker.getLatLng();
+            document.getElementById('latitude').value = latlng.lat.toFixed(6);
+            document.getElementById('longitude').value = latlng.lng.toFixed(6);
+        });
 
         map.on('click', function (e) {
             marker.setLatLng([e.latlng.lat, e.latlng.lng]);
             document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
             document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
         });
+
+        const uzCoordinates = {
+            'toshkent shahar': [41.311081, 69.240562],
+            'toshkent': [41.311081, 69.240562],
+            'chilonzor': [41.2778, 69.2081],
+            'yashnobod': [41.2917, 69.3242],
+            'yunusobod': [41.3653, 69.2847],
+            'mirzo ulug\'bek': [41.3325, 69.3402],
+            'mirobod': [41.2958, 69.2789],
+            'yakkasaroy': [41.2736, 69.2556],
+            'shayxontohur': [41.3211, 69.2319],
+            'olmazor': [41.3536, 69.2150],
+            'sergeli': [41.2269, 69.2197],
+            'yangihayot': [41.1969, 69.2097],
+            'uchtepa': [41.2889, 69.1764],
+            'samarqand': [39.6542, 66.9597],
+            'buxoro': [39.7681, 64.4556],
+            'andijon': [40.7821, 72.3442],
+            'farg\'ona': [40.3842, 71.7843],
+            'namangan': [41.0011, 71.6683],
+            'qashqadaryo': [38.8606, 65.7890],
+            'surxondaryo': [37.2242, 67.2783],
+            'xorazm': [41.5569, 60.6317],
+            'navoiy': [40.1039, 65.3688],
+            'jizzax': [40.1158, 67.8422],
+            'sirdaryo': [40.4947, 68.7797],
+            'qoraqalpog\'iston': [43.7683, 59.0214]
+        };
+
+        function updateMapLocation() {
+            let lat = null;
+            let lng = null;
+            let zoomLevel = 11;
+
+            const selectedCityOption = citySelect.options[citySelect.selectedIndex];
+            if (selectedCityOption && selectedCityOption.value) {
+                const cLat = selectedCityOption.getAttribute('data-lat');
+                const cLng = selectedCityOption.getAttribute('data-lng');
+                const cityName = selectedCityOption.textContent.trim().toLowerCase();
+
+                if (cLat && cLng && parseFloat(cLat) !== 0) {
+                    lat = parseFloat(cLat);
+                    lng = parseFloat(cLng);
+                } else if (uzCoordinates[cityName]) {
+                    lat = uzCoordinates[cityName][0];
+                    lng = uzCoordinates[cityName][1];
+                }
+                zoomLevel = 13;
+            }
+
+            if (!lat || !lng) {
+                const selectedRegionOption = regionSelect.options[regionSelect.selectedIndex];
+                if (selectedRegionOption && selectedRegionOption.value) {
+                    const rLat = selectedRegionOption.getAttribute('data-lat');
+                    const rLng = selectedRegionOption.getAttribute('data-lng');
+                    const regionName = selectedRegionOption.textContent.trim().toLowerCase();
+
+                    if (rLat && rLng && parseFloat(rLat) !== 0) {
+                        lat = parseFloat(rLat);
+                        lng = parseFloat(rLng);
+                    } else if (uzCoordinates[regionName]) {
+                        lat = uzCoordinates[regionName][0];
+                        lng = uzCoordinates[regionName][1];
+                    } else {
+                        for (const key in uzCoordinates) {
+                            if (regionName.includes(key)) {
+                                lat = uzCoordinates[key][0];
+                                lng = uzCoordinates[key][1];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (lat && lng && map && marker) {
+                map.setView([lat, lng], zoomLevel);
+                marker.setLatLng([lat, lng]);
+                document.getElementById('latitude').value = lat.toFixed(6);
+                document.getElementById('longitude').value = lng.toFixed(6);
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
     });
 </script>
 @endsection

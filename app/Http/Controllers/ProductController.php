@@ -27,6 +27,15 @@ class ProductController extends Controller
         $viewsCount = $product->views()->count();
         $isOwner = auth()->check() && (auth()->id() === $product->user_id || in_array(auth()->user()->role?->name ?? auth()->user()->type, ['admin', 'dev', 'manager']));
 
+        // Fetch seller's other products
+        $sellerOtherProducts = Product::where('user_id', $product->user_id)
+            ->where('id', '!=', $product->id)
+            ->with(['region', 'city', 'category', 'subCategory', 'metros', 'universities'])
+            ->latest()
+            ->take(4)
+            ->get();
+        $sellerTotalProductsCount = Product::where('user_id', $product->user_id)->count();
+
         // Fetch similar products
         $similarPrice = $this->recommendationService->getSimilarPriceProducts($product);
         $similarArea = $this->recommendationService->getSimilarAreaProducts($product);
@@ -36,6 +45,8 @@ class ProductController extends Controller
             'product',
             'viewsCount',
             'isOwner',
+            'sellerOtherProducts',
+            'sellerTotalProductsCount',
             'similarPrice',
             'similarArea',
             'similarLocation'

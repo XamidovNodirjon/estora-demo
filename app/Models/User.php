@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'favorites')->withTimestamps();
+    }
+
 
     /**
      * Get the attributes that should be cast.

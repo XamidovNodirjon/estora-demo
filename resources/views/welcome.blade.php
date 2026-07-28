@@ -2706,10 +2706,72 @@
                     if (matchingTab) {
                         matchingTab.click();
                         // Scroll to filters
-                        document.querySelector('.filter-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Universal AJAX Favorite Toggle Handler
+            const csrfToken = '{{ csrf_token() }}';
+            document.body.addEventListener('click', function(e) {
+                const btn = e.target.closest('.js-favorite-btn');
+                if (!btn) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                const productId = btn.dataset.id;
+                if (!productId) return;
+
+                fetch('/favorites/toggle/' + productId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     }
-                });
+                })
+                .then(res => {
+                    if (res.status === 401) {
+                        window.location.href = '{{ route("login") }}';
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        const allButtonsForProduct = document.querySelectorAll(`.js-favorite-btn[data-id="${productId}"]`);
+                        allButtonsForProduct.forEach(b => {
+                            const icon = b.querySelector('i');
+                            if (data.is_favorited) {
+                                b.classList.add('is-favorite');
+                                if (icon) icon.className = 'fas fa-heart text-red-500';
+                            } else {
+                                b.classList.remove('is-favorite');
+                                if (icon) icon.className = 'far fa-heart';
+                            }
+                        });
+
+                        showFavoriteToast(data.message, data.is_favorited);
+                    }
+                })
+                .catch(err => console.error('Favorite toggle error:', err));
             });
+
+            function showFavoriteToast(message, isFavorited) {
+                let toast = document.getElementById('favoriteToast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'favoriteToast';
+                    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; gap: 8px; font-family: sans-serif;';
+                    document.body.appendChild(toast);
+                }
+
+                toast.style.backgroundColor = isFavorited ? '#061c3f' : '#374151';
+                toast.innerHTML = (isFavorited ? '<i class="fas fa-heart text-red-500"></i> ' : '<i class="far fa-heart text-gray-300"></i> ') + message;
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                }, 2500);
+            }
         });
     </script>
 </body>

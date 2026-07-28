@@ -15,7 +15,7 @@
         @endif
         
         <span class="badge-top">TOP</span>
-        <div class="btn-favorite"><i class="far fa-heart"></i></div>
+        <div class="btn-favorite js-favorite-btn" data-id="{{ $product->id }}" style="cursor: pointer;"><i class="{{ Auth::check() && $product->isFavoritedBy(Auth::user()) ? 'fas fa-heart text-red-500' : 'far fa-heart' }}"></i></div>
         @if($product->exchange)
             <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
         @endif

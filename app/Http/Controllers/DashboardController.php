@@ -15,16 +15,15 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if (!$user || !$user->role) {
-            abort(403, 'Rol aniqlanmadi.');
-        }
+        $roleName = $user->role?->name ?? $user->type ?? 'client';
 
-        switch ($user->role->name) {
+        switch ($roleName) {
             case 'dev':
                 return redirect()->route('developer.dashboard');
             case 'admin':
             case 'manager':
                 return redirect()->route('admin.dashboard');
+            case 'makler':
             case 'client':
             default:
                 return redirect()->route('client.dashboard');
@@ -58,19 +57,34 @@ class DashboardController extends Controller
     /**
      * Client / Makler Dashboard view.
      */
-    public function client()
+    public function client(Request $request)
     {
         $user = Auth::user();
         $userRole = $user->role?->name ?? $user->type;
+        
+        // All products created by the user
         $userProducts = \App\Models\Product::where('user_id', $user->id)
             ->with(['region', 'city', 'category', 'subCategory', 'metros', 'universities', 'items', 'views'])
             ->latest()
             ->get();
         $productCount = $userProducts->count();
 
+        // All products favorited by the user
+        $favoriteProducts = $user->favorites()
+            ->with(['region', 'city', 'category', 'subCategory', 'metros', 'universities', 'items', 'views'])
+            ->latest()
+            ->get();
+        $favoriteCount = $favoriteProducts->count();
+
         $isLimitReached = ($userRole === 'client' && $productCount >= 2);
         $canCreateProduct = app(\App\Services\ProductService::class)->canUserCreateProduct($user);
 
-        return view('client.dashboard', compact('user', 'userRole', 'userProducts', 'productCount', 'isLimitReached', 'canCreateProduct'));
+        $section = $request->query('section', 'my_products');
+
+        return view('client.dashboard', compact(
+            'user', 'userRole', 'userProducts', 'productCount',
+            'favoriteProducts', 'favoriteCount', 'isLimitReached',
+            'canCreateProduct', 'section'
+        ));
     }
 }

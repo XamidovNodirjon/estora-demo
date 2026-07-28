@@ -12,6 +12,7 @@ Route::get('/', function () {
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
 Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
 
 // Authentication routes (Guest)
@@ -26,6 +27,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/favorites/toggle/{product}', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/client/favorites', function() {
+        return redirect()->route('client.dashboard', ['section' => 'favorites']);
+    })->name('client.favorites');
 
     // Developer Dashboard
     Route::middleware('role:dev')->group(function () {
@@ -129,8 +134,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
     });
 
-    // Client Dashboard
-    Route::middleware('role:client')->group(function () {
+    // Client & Makler Dashboard
+    Route::middleware('role:client,makler')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
         
         // Client & Makler Announcements Management

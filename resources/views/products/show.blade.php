@@ -2790,6 +2790,9 @@
     line-height: 1.6;
     color: var(--text-dark);
     font-weight: 500;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    max-width: 100%;
 }
 
 /* Recommendations styling */
@@ -2803,10 +2806,19 @@
 
 .recommendations-tabs {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 25px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    scrollbar-width: none;
+}
+
+.recommendations-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .rec-tab-btn {
@@ -2819,6 +2831,8 @@
     cursor: pointer;
     border-radius: 8px;
     transition: all 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .rec-tab-btn:hover {
@@ -3378,16 +3392,16 @@
                 <!-- Owner & Pricing card -->
                 <div class="owner-pricing-card">
                     <div class="owner-header-row">
-                        <div class="owner-avatar-info">
+                        <a href="{{ route('users.show', $product->user_id) }}" class="owner-avatar-info" style="text-decoration: none; color: inherit; cursor: pointer;">
                             <div class="owner-avatar"><i class="fas fa-user-circle"></i></div>
                             <div>
-                                <h4 class="owner-name">{{ $product->user->name ?? 'Surename Name' }}</h4>
-                                <span class="owner-type">Jismoniy shaxs</span>
+                                <h4 class="owner-name" style="transition: color 0.2s;" onmouseover="this.style.color='#0084ff'" onmouseout="this.style.color='inherit'">{{ $product->user->name ?? 'Muallif' }}</h4>
+                                <span class="owner-type">{{ ($product->user->role?->name ?? $product->user->type) === 'makler' ? 'Makler (Rieltor)' : 'Jismoniy shaxs' }}</span>
                             </div>
-                        </div>
+                        </a>
                         <div class="owner-action-icons">
-                            <button class="btn-owner-action" title="Saralanganlarga qo'shish"><i class="far fa-heart"></i></button>
-                            <button class="btn-owner-action" title="Ulashish"><i class="fas fa-share-alt"></i></button>
+                            <button class="btn-owner-action js-favorite-btn" data-id="{{ $product->id }}" title="Saralanganlarga qo'shish"><i class="{{ Auth::check() && $product->isFavoritedBy(Auth::user()) ? 'fas fa-heart text-red-500' : 'far fa-heart' }}"></i></button>
+                            <button class="btn-owner-action share-btn" data-id="{{ $product->id }}" title="Ulashish"><i class="fas fa-share-alt"></i></button>
                             <button class="btn-owner-action" title="Chop etish" onclick="window.print();"><i class="fas fa-print"></i></button>
                             <button class="btn-owner-action" title="Shikoyat qilish"><i class="fas fa-exclamation-triangle"></i></button>
                         </div>
@@ -3407,10 +3421,16 @@
                         </div>
                     </div>
                     
-                    <a href="https://t.me/estora_realestate" target="_blank" class="btn-telegram-direct">
-                        <i class="fab fa-telegram-plane"></i>
-                        Telegram orqali yozish
-                    </a>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                        <a href="https://t.me/estora_realestate" target="_blank" class="btn-telegram-direct">
+                            <i class="fab fa-telegram-plane"></i>
+                            Telegram orqali yozish
+                        </a>
+                        <a href="{{ route('users.show', $product->user_id) }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #f0f7ff; color: #0084ff; font-weight: 700; padding: 12px 20px; border-radius: 8px; border: 1px solid #cce5ff; text-decoration: none; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#e0f0ff'" onmouseout="this.style.backgroundColor='#f0f7ff'">
+                            <i class="fas fa-layer-group"></i>
+                            Muallifning barcha e'lonlari ({{ $sellerTotalProductsCount ?? 1 }} ta)
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Parameters Box -->
@@ -3520,6 +3540,9 @@
                 <button class="rec-tab-btn active" onclick="switchRecTab(this, 'price')">O'xshash narxli</button>
                 <button class="rec-tab-btn" onclick="switchRecTab(this, 'area')">O'xshash maydonli</button>
                 <button class="rec-tab-btn" onclick="switchRecTab(this, 'location')">Joylashuvga ko'ra o'xshash</button>
+                @if(isset($sellerOtherProducts) && $sellerOtherProducts->count() > 0)
+                    <button class="rec-tab-btn" onclick="switchRecTab(this, 'seller')">Muallifning boshqa e'lonlari ({{ $sellerOtherProducts->count() }})</button>
+                @endif
             </div>
 
             <!-- TAB CONTENT: Price -->
@@ -3554,6 +3577,24 @@
                     @endforelse
                 </div>
             </div>
+
+            @if(isset($sellerOtherProducts) && $sellerOtherProducts->count() > 0)
+                <!-- TAB CONTENT: Seller -->
+                <div class="rec-tab-panel" id="rec-seller">
+                    <div class="rec-listings-grid">
+                        @foreach($sellerOtherProducts as $rec)
+                            @include('products.partials.rec_card', ['product' => $rec])
+                        @endforeach
+                    </div>
+                    @if($sellerTotalProductsCount > 1)
+                        <div style="text-align: center; margin-top: 25px;">
+                            <a href="{{ route('users.show', $product->user_id) }}" class="btn-filter-search" style="display: inline-flex; text-decoration: none; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fas fa-layer-group"></i> Muallifning barcha {{ $sellerTotalProductsCount }} ta e'lonini ko'rish
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -3918,6 +3959,123 @@
             L.marker([lat, lng]).addTo(map)
                 .bindPopup("{{ $product->name }}")
                 .openPopup();
+
+            // Universal Favorite & Share Handlers
+            const csrfToken = '{{ csrf_token() }}';
+
+            document.body.addEventListener('click', function(e) {
+                // 1. Favorite Toggle
+                const favBtn = e.target.closest('.js-favorite-btn');
+                if (favBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const productId = favBtn.dataset.id;
+                    if (!productId) return;
+
+                    fetch('/favorites/toggle/' + productId, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => {
+                        if (res.status === 401) {
+                            window.location.href = '{{ route("login") }}';
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data && data.success) {
+                            const allButtonsForProduct = document.querySelectorAll(`.js-favorite-btn[data-id="${productId}"]`);
+                            allButtonsForProduct.forEach(b => {
+                                const icon = b.querySelector('i');
+                                if (data.is_favorited) {
+                                    b.classList.add('is-favorite');
+                                    if (icon) icon.className = 'fas fa-heart text-red-500';
+                                } else {
+                                    b.classList.remove('is-favorite');
+                                    if (icon) icon.className = 'far fa-heart';
+                                }
+                            });
+
+                            showAppToast(data.message, data.is_favorited ? 'favorite' : 'info');
+                        }
+                    })
+                    .catch(err => console.error('Favorite toggle error:', err));
+                    return;
+                }
+
+                // 2. Share URL Copy
+                const shareBtn = e.target.closest('.share-btn');
+                if (shareBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const productId = shareBtn.dataset.id || "{{ $product->id }}";
+                    const productUrl = productId ? (window.location.origin + '/products/' + productId) : window.location.href;
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(productUrl).then(() => {
+                            showAppToast("E'lon havolasi nusxalandi!", 'share');
+                        }).catch(() => {
+                            fallbackCopyTextToClipboard(productUrl);
+                        });
+                    } else {
+                        fallbackCopyTextToClipboard(productUrl);
+                    }
+                }
+            });
+
+            function fallbackCopyTextToClipboard(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showAppToast("E'lon havolasi nusxalandi!", 'share');
+                } catch (err) {
+                    alert("E'lon havolasi: " + text);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function showAppToast(message, type = 'info') {
+                let toast = document.getElementById('appToastNotice');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'appToastNotice';
+                    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 14px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; gap: 10px; font-family: sans-serif;';
+                    document.body.appendChild(toast);
+                }
+
+                let iconHtml = '<i class="fas fa-info-circle text-blue-400"></i>';
+                if (type === 'favorite') {
+                    toast.style.backgroundColor = '#061c3f';
+                    iconHtml = '<i class="fas fa-heart text-red-500"></i>';
+                } else if (type === 'share') {
+                    toast.style.backgroundColor = '#0084ff';
+                    iconHtml = '<i class="fas fa-share-square text-white"></i>';
+                } else {
+                    toast.style.backgroundColor = '#374151';
+                }
+
+                toast.innerHTML = iconHtml + ' <span>' + message + '</span>';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                }, 2500);
+            }
         });
     </script>
 </body>

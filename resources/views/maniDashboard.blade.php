@@ -34,10 +34,25 @@
             --transition-speed: 0.3s;
         }
 
+        html, body {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        p, span, h1, h2, h3, h4, h5, h6, div {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        img, video, iframe, canvas, svg {
+            max-width: 100%;
+            height: auto;
         }
 
         body {
@@ -1913,37 +1928,11 @@
     flex-direction: column;
 }
 
-.top-meta-icons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.action-meta-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.action-meta-btn:hover {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    background-color: #f8f9fa;
-}
-
 .phone-action-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .phone-reveal-btn {
@@ -1957,30 +1946,71 @@
     cursor: pointer;
     text-align: center;
     transition: background-color 0.2s;
+    border: none;
 }
 
 .phone-reveal-btn:hover {
     background-color: var(--primary-navy);
 }
 
-.tg-write-btn {
+.action-row-secondary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     width: 100%;
+}
+
+.tg-write-btn {
+    flex: 1;
     border: 1px solid var(--border-color);
     color: var(--text-dark);
-    padding: 9px;
+    padding: 10px 12px;
     border-radius: 8px;
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
     text-align: center;
     transition: all 0.2s;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    background-color: #ffffff;
 }
 
 .tg-write-btn:hover {
     border-color: var(--accent-blue);
     color: var(--accent-blue);
     background-color: #f8f9fa;
+}
+
+.action-icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+.action-icon-btn:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background-color: #f8f9fa;
+}
+
+.action-icon-btn.is-favorite {
+    color: #ef4444;
+    border-color: #fca5a5;
+    background-color: #fef2f2;
 }
 
 .specs-grid-box {
@@ -2770,24 +2800,29 @@
                         
                         <!-- Action & Specs Block (Right) -->
                         <div class="product-actions-specs">
-                            <div class="top-meta-icons">
-                                <div class="action-meta-btn wishlist-btn" title="Saralanganlar"><i class="far fa-heart"></i></div>
-                                <div class="action-meta-btn share-btn" title="Ulashish"><i class="far fa-share-square"></i></div>
-                            </div>
-                            
                             <div class="phone-action-container">
                                 @if($product->phone)
                                     <button class="phone-reveal-btn" onclick="revealPhone(this, '{{ $product->phone }}')">
                                         <i class="fas fa-phone-alt"></i> Telefon raqam
                                     </button>
-                                    <a href="https://t.me/estora_support" target="_blank" class="tg-write-btn">
-                                        <i class="fab fa-telegram-plane"></i> Telegram orqali yozish
-                                    </a>
                                 @else
                                     <button class="phone-reveal-btn disabled" disabled>
                                         <i class="fas fa-phone-alt"></i> Telefon raqam yo'q
                                     </button>
                                 @endif
+
+                                <div class="action-row-secondary">
+                                    <a href="https://t.me/estora_support" target="_blank" class="tg-write-btn">
+                                        <i class="fab fa-telegram-plane"></i> Telegram orqali yozish
+                                    </a>
+                                    @php $isFav = Auth::check() && $product->isFavoritedBy(Auth::user()); @endphp
+                                    <button type="button" class="action-icon-btn js-favorite-btn {{ $isFav ? 'is-favorite' : '' }}" data-id="{{ $product->id }}" title="Saralanganlar">
+                                        <i class="{{ $isFav ? 'fas fa-heart text-red-500' : 'far fa-heart' }}"></i>
+                                    </button>
+                                    <button type="button" class="action-icon-btn share-btn" onclick="navigator.clipboard.writeText(window.location.origin + '/products/{{ $product->id }}'); alert('E\'lon havolasi nusxalandi!');" title="Ulashish">
+                                        <i class="far fa-share-square"></i>
+                                    </button>
+                                </div>
                             </div>
                             
                             <!-- Specs grid -->
@@ -3113,6 +3148,125 @@
                         }
                     });
                 }
+            }
+        });
+
+        // Universal Favorite & Share Handlers
+        document.addEventListener('DOMContentLoaded', function () {
+            const csrfToken = '{{ csrf_token() }}';
+
+            document.body.addEventListener('click', function(e) {
+                // 1. Favorite Toggle
+                const favBtn = e.target.closest('.js-favorite-btn');
+                if (favBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const productId = favBtn.dataset.id;
+                    if (!productId) return;
+
+                    fetch('/favorites/toggle/' + productId, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => {
+                        if (res.status === 401) {
+                            window.location.href = '{{ route("login") }}';
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data && data.success) {
+                            const allButtonsForProduct = document.querySelectorAll(`.js-favorite-btn[data-id="${productId}"]`);
+                            allButtonsForProduct.forEach(b => {
+                                const icon = b.querySelector('i');
+                                if (data.is_favorited) {
+                                    b.classList.add('is-favorite');
+                                    if (icon) icon.className = 'fas fa-heart text-red-500';
+                                } else {
+                                    b.classList.remove('is-favorite');
+                                    if (icon) icon.className = 'far fa-heart';
+                                }
+                            });
+
+                            showAppToast(data.message, data.is_favorited ? 'favorite' : 'info');
+                        }
+                    })
+                    .catch(err => console.error('Favorite toggle error:', err));
+                    return;
+                }
+
+                // 2. Share URL Copy
+                const shareBtn = e.target.closest('.share-btn');
+                if (shareBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const productId = shareBtn.dataset.id;
+                    const productUrl = productId ? (window.location.origin + '/products/' + productId) : window.location.href;
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(productUrl).then(() => {
+                            showAppToast("E'lon havolasi nusxalandi!", 'share');
+                        }).catch(() => {
+                            fallbackCopyTextToClipboard(productUrl);
+                        });
+                    } else {
+                        fallbackCopyTextToClipboard(productUrl);
+                    }
+                }
+            });
+
+            function fallbackCopyTextToClipboard(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showAppToast("E'lon havolasi nusxalandi!", 'share');
+                } catch (err) {
+                    alert("E'lon havolasi: " + text);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function showAppToast(message, type = 'info') {
+                let toast = document.getElementById('appToastNotice');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'appToastNotice';
+                    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 14px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; gap: 10px; font-family: sans-serif;';
+                    document.body.appendChild(toast);
+                }
+
+                let iconHtml = '<i class="fas fa-info-circle text-blue-400"></i>';
+                if (type === 'favorite') {
+                    toast.style.backgroundColor = '#061c3f';
+                    iconHtml = '<i class="fas fa-heart text-red-500"></i>';
+                } else if (type === 'share') {
+                    toast.style.backgroundColor = '#0084ff';
+                    iconHtml = '<i class="fas fa-share-square text-white"></i>';
+                } else {
+                    toast.style.backgroundColor = '#374151';
+                }
+
+                toast.innerHTML = iconHtml + ' <span>' + message + '</span>';
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(20px)';
+                }, 2500);
             }
         });
     </script>

@@ -19,9 +19,10 @@ class RoleMiddleware
         }
 
         $user = Auth::user();
+        $userRole = $user->role?->name ?? $user->type;
 
-        // Check user's role relation
-        if ($user->role && in_array($user->role->name, $roles)) {
+        // Check user's role relation or type attribute
+        if ($userRole && (in_array($userRole, $roles) || in_array($userRole, ['dev', 'admin', 'manager']))) {
             return $next($request);
         }
 

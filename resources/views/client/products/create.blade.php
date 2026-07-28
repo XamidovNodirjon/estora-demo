@@ -234,28 +234,32 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="metros" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Metrolar (Yaqin)</label>
-                        <select name="metros[]" id="metros" multiple size="4"
-                            class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Metrolar (Yaqin metrolarni tanlang)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-3.5 rounded-xl bg-gray-50 border border-gray-200">
                             @foreach($metros as $metro)
-                                <option value="{{ $metro->id }}" {{ is_array(old('metros')) && in_array($metro->id, old('metros')) ? 'selected' : '' }}>
-                                    {{ $metro->name }}
-                                </option>
+                                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all border border-transparent">
+                                    <input type="checkbox" name="metros[]" value="{{ $metro->id }}"
+                                        {{ is_array(old('metros')) && in_array($metro->id, old('metros')) ? 'checked' : '' }}
+                                        class="w-4 h-4 rounded border-gray-300 text-[#0084ff] focus:ring-[#0084ff]">
+                                    <span class="text-xs font-medium text-gray-700">{{ $metro->name }}</span>
+                                </label>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                     <div>
-                        <label for="universities" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Universitetlar (Yaqin)</label>
-                        <select name="universities[]" id="universities" multiple size="4"
-                            class="block w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:bg-white transition-all text-sm">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Universitetlar (Yaqin OOT larni tanlang)</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-3.5 rounded-xl bg-gray-50 border border-gray-200">
                             @foreach($universities as $university)
-                                <option value="{{ $university->id }}" {{ is_array(old('universities')) && in_array($university->id, old('universities')) ? 'selected' : '' }}>
-                                    {{ $university->name }}
-                                </option>
+                                <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white rounded-lg transition-all border border-transparent">
+                                    <input type="checkbox" name="universities[]" value="{{ $university->id }}"
+                                        {{ is_array(old('universities')) && in_array($university->id, old('universities')) ? 'checked' : '' }}
+                                        class="w-4 h-4 rounded border-gray-300 text-[#0084ff] focus:ring-[#0084ff]">
+                                    <span class="text-xs font-medium text-gray-700">{{ $university->name }}</span>
+                                </label>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                 </div>
 
@@ -603,6 +607,7 @@
             citySelect.value = '';
             if (selectedRegionId === '') {
                 citySelect.innerHTML = '<option value="">Avval viloyatni tanlang</option>';
+                updateMapLocation();
                 return;
             }
             let hasVisibleOptions = false;
@@ -618,13 +623,24 @@
                     option.style.display = 'none';
                 }
             });
+            updateMapLocation();
         });
 
+        citySelect.addEventListener('change', updateMapLocation);
+
         // Leaflet Map Init
-        map = L.map('map').setView([41.3775, 64.5853], 6);
+        map = L.map('map').setView([41.311081, 69.240562], 11);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-        marker = L.marker([41.3775, 64.5853], { draggable: true }).addTo(map);
-        marker.setOpacity(0);
+        marker = L.marker([41.311081, 69.240562], { draggable: true }).addTo(map);
+        marker.setOpacity(1);
+        document.getElementById('latitude').value = '41.311081';
+        document.getElementById('longitude').value = '69.240562';
+
+        marker.on('dragend', function (e) {
+            const latlng = marker.getLatLng();
+            document.getElementById('latitude').value = latlng.lat.toFixed(6);
+            document.getElementById('longitude').value = latlng.lng.toFixed(6);
+        });
 
         map.on('click', function (e) {
             marker.setOpacity(1);
@@ -632,6 +648,96 @@
             document.getElementById('latitude').value = e.latlng.lat.toFixed(6);
             document.getElementById('longitude').value = e.latlng.lng.toFixed(6);
         });
+
+        // Location coordinates dictionary
+        const uzCoordinates = {
+            'toshkent shahar': [41.311081, 69.240562],
+            'toshkent': [41.311081, 69.240562],
+            'chilonzor': [41.2778, 69.2081],
+            'yashnobod': [41.2917, 69.3242],
+            'yunusobod': [41.3653, 69.2847],
+            'mirzo ulug\'bek': [41.3325, 69.3402],
+            'mirobod': [41.2958, 69.2789],
+            'yakkasaroy': [41.2736, 69.2556],
+            'shayxontohur': [41.3211, 69.2319],
+            'olmazor': [41.3536, 69.2150],
+            'sergeli': [41.2269, 69.2197],
+            'yangihayot': [41.1969, 69.2097],
+            'uchtepa': [41.2889, 69.1764],
+            'samarqand': [39.6542, 66.9597],
+            'buxoro': [39.7681, 64.4556],
+            'andijon': [40.7821, 72.3442],
+            'farg\'ona': [40.3842, 71.7843],
+            'namangan': [41.0011, 71.6683],
+            'qashqadaryo': [38.8606, 65.7890],
+            'surxondaryo': [37.2242, 67.2783],
+            'xorazm': [41.5569, 60.6317],
+            'navoiy': [40.1039, 65.3688],
+            'jizzax': [40.1158, 67.8422],
+            'sirdaryo': [40.4947, 68.7797],
+            'qoraqalpog\'iston': [43.7683, 59.0214]
+        };
+
+        function updateMapLocation() {
+            let lat = null;
+            let lng = null;
+            let zoomLevel = 11;
+
+            const selectedCityOption = citySelect.options[citySelect.selectedIndex];
+            if (selectedCityOption && selectedCityOption.value) {
+                const cLat = selectedCityOption.getAttribute('data-lat');
+                const cLng = selectedCityOption.getAttribute('data-lng');
+                const cityName = selectedCityOption.textContent.trim().toLowerCase();
+
+                if (cLat && cLng && parseFloat(cLat) !== 0) {
+                    lat = parseFloat(cLat);
+                    lng = parseFloat(cLng);
+                } else if (uzCoordinates[cityName]) {
+                    lat = uzCoordinates[cityName][0];
+                    lng = uzCoordinates[cityName][1];
+                }
+                zoomLevel = 13;
+            }
+
+            if (!lat || !lng) {
+                const selectedRegionOption = regionSelect.options[regionSelect.selectedIndex];
+                if (selectedRegionOption && selectedRegionOption.value) {
+                    const rLat = selectedRegionOption.getAttribute('data-lat');
+                    const rLng = selectedRegionOption.getAttribute('data-lng');
+                    const regionName = selectedRegionOption.textContent.trim().toLowerCase();
+
+                    if (rLat && rLng && parseFloat(rLat) !== 0) {
+                        lat = parseFloat(rLat);
+                        lng = parseFloat(rLng);
+                    } else if (uzCoordinates[regionName]) {
+                        lat = uzCoordinates[regionName][0];
+                        lng = uzCoordinates[regionName][1];
+                    } else {
+                        for (const key in uzCoordinates) {
+                            if (regionName.includes(key)) {
+                                lat = uzCoordinates[key][0];
+                                lng = uzCoordinates[key][1];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!lat || !lng) {
+                lat = 41.311081;
+                lng = 69.240562;
+            }
+
+            if (map && marker) {
+                map.setView([lat, lng], zoomLevel);
+                marker.setLatLng([lat, lng]);
+                marker.setOpacity(1);
+                document.getElementById('latitude').value = lat.toFixed(6);
+                document.getElementById('longitude').value = lng.toFixed(6);
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
     });
 </script>
 @endsection

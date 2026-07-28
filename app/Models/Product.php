@@ -87,6 +87,18 @@ class Product extends Model
         return $this->hasMany(ProductView::class);
     }
 
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
+    public function isFavoritedBy(?User $user = null): bool
+    {
+        $userId = $user?->id ?? \Illuminate\Support\Facades\Auth::id();
+        if (!$userId) return false;
+        return $this->favoritedByUsers()->where('user_id', $userId)->exists();
+    }
+
     public function getViewsCountAttribute()
     {
         return $this->views()->count();
