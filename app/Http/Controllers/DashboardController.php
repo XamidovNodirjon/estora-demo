@@ -62,12 +62,25 @@ class DashboardController extends Controller
         $user = Auth::user();
         $userRole = $user->role?->name ?? $user->type;
         
-        // All products created by the user
+        // All products created ONLY by the current authenticated user
         $userProducts = \App\Models\Product::where('user_id', $user->id)
             ->with(['region', 'city', 'category', 'subCategory', 'metros', 'universities', 'items', 'views'])
             ->latest()
             ->get();
         $productCount = $userProducts->count();
+
+        // Total views across user's products
+        $totalViews = $userProducts->sum(function($product) {
+            return $product->views->count();
+        });
+
+        // Top viewed product
+        $topViewedProduct = $userProducts->sortByDesc(function($product) {
+            return $product->views->count();
+        })->first();
+
+        // Average views per product
+        $avgViews = $productCount > 0 ? round($totalViews / $productCount, 1) : 0;
 
         // All products favorited by the user
         $favoriteProducts = $user->favorites()
@@ -82,9 +95,9 @@ class DashboardController extends Controller
         $section = $request->query('section', 'my_products');
 
         return view('client.dashboard', compact(
-            'user', 'userRole', 'userProducts', 'productCount',
-            'favoriteProducts', 'favoriteCount', 'isLimitReached',
-            'canCreateProduct', 'section'
+            'user', 'userRole', 'userProducts', 'productCount', 'totalViews',
+            'topViewedProduct', 'avgViews', 'favoriteProducts', 'favoriteCount',
+            'isLimitReached', 'canCreateProduct', 'section'
         ));
     }
 }
