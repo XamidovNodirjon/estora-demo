@@ -480,9 +480,8 @@
     <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-8">
-                <a href="/" class="flex items-center gap-2">
-                    <i class="fa-solid fa-house-chimney text-[#0084ff] text-2xl"></i>
-                    <span class="font-display font-extrabold text-xl tracking-wider text-[#061c3f]">ESTORA</span>
+                <a href="{{ url()->previous() != url()->current() ? url()->previous() : route('maniDashboard') }}" class="flex items-center gap-2 hover:opacity-90 transition-opacity" title="Orqaga qaytish / Bosh sahifa">
+                    <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-10 w-auto object-contain">
                 </a>
             </div>
 
@@ -490,6 +489,19 @@
                 <a href="/" class="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 font-semibold text-xs sm:text-sm hover:bg-gray-200 transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-arrow-left"></i> Asosiy sahifa
                 </a>
+                @auth
+                    <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold text-xs sm:text-sm hover:bg-blue-700 transition-all flex items-center gap-1.5 shadow-xs">
+                        <i class="fa-solid fa-user-gear"></i> Mening kabinetim
+                    </a>
+                    @if(Auth::id() === $user->id)
+                        <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="inline">
+                            @csrf
+                            <button type="submit" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer flex items-center justify-center border border-gray-200" title="Profildan chiqish">
+                                <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
+                            </button>
+                        </form>
+                    @endif
+                @endauth
             </div>
         </div>
     </header>

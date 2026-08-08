@@ -50,10 +50,10 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#061c3f] text-white flex flex-col transform -translate-x-full md:translate-x-0 md:relative md:inset-auto transition-transform duration-300 shadow-xl flex-shrink-0">
         <!-- Logo -->
-        <div class="h-16 flex items-center justify-between px-6 border-b border-navy-800 bg-[#0B2240] flex-shrink-0">
-            <a href="/" class="flex items-center gap-2">
-                <i class="fa-solid fa-code text-[#ff9e0d] text-2xl"></i>
-                <span class="font-display font-extrabold text-xl tracking-wider text-white">ESTORA <span class="text-[#0084ff] text-xs font-bold">DEV</span></span>
+        <div class="h-16 flex items-center justify-between px-5 border-b border-navy-800 bg-[#0B2240] flex-shrink-0">
+            <a href="/" class="flex items-center gap-2 hover:opacity-90 transition-opacity" title="Bosh sahifa">
+                <img src="/images/logo-white.svg" alt="ESTORA Real Estate" class="h-9 w-auto object-contain">
+                <span class="text-amber-400 text-[10px] font-black uppercase tracking-wider bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">DEV</span>
             </a>
             <!-- Close Button (Mobile only) -->
             <button id="close-sidebar" class="md:hidden text-gray-400 hover:text-white transition-colors" title="Menyuni yopish">

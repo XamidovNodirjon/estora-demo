@@ -207,40 +207,23 @@
         }
 
         .logo-container {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
-        .logo-icon {
-            color: var(--accent-blue);
-            font-size: 32px;
-            display: flex;
-            align-items: center;
+        .logo-container:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .logo-title {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 24px;
-            color: var(--primary-navy);
-            letter-spacing: 1px;
-            line-height: 1;
-        }
-
-        .logo-subtitle {
-            font-size: 10px;
-            color: var(--accent-blue);
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            line-height: 1;
-            margin-top: 2px;
+        .brand-logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .header-actions {
@@ -3210,21 +3193,15 @@
                         <span></span>
                         <span></span>
                     </div>
-                    <div class="logo-container">
-                        <div class="logo-icon">
-                            <i class="fas fa-house-chimney-window"></i>
-                        </div>
-                        <div class="logo-text">
-                            <span class="logo-title">ESTORA</span>
-                            <span class="logo-subtitle">Real Estate</span>
-                        </div>
-                    </div>
+                    <a href="{{ url()->previous() != url()->current() ? url()->previous() : route('maniDashboard') }}" class="logo-container" title="Orqaga qaytish / Bosh sahifa">
+                        <img src="/images/logo.svg" alt="ESTORA Real Estate" class="brand-logo-img">
+                    </a>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-add-ad">
+                    <a href="{{ route('add.ad') }}" class="btn-add-ad">
                         <i class="fas fa-plus"></i>
                         E'lon joylashtirish
-                    </button>
+                    </a>
                     @auth
                         <a href="{{ route('dashboard') }}" class="btn-login">
                             <i class="far fa-user-circle" style="font-size: 20px;"></i>
@@ -3246,12 +3223,13 @@
         <div class="container">
             <div class="sub-navbar-content">
                 <ul class="nav-menu">
-                    <li><a href="#" class="nav-item active">Sotuv</a></li>
-                    <li><a href="#" class="nav-item">ijara</a></li>
-                    <li><a href="#" class="nav-item">Xonadosh</a></li>
-                    <li><a href="#" class="nav-item">Tijorat</a></li>
-                    <li><a href="#" class="nav-item">Dacha</a></li>
-                    <li><a href="#" class="nav-item">Xalqaro</a></li>
+                    @php $catName = $product->category?->name ?? ''; @endphp
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Sotuv']) }}" class="nav-item {{ $catName == 'Sotuv' ? 'active' : '' }}">Sotuv</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Ijara']) }}" class="nav-item {{ $catName == 'Ijara' ? 'active' : '' }}">Ijara</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Xonadosh']) }}" class="nav-item {{ $catName == 'Xonadosh' ? 'active' : '' }}">Xonadosh</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Tijorat']) }}" class="nav-item {{ $catName == 'Tijorat' ? 'active' : '' }}">Tijorat</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Dacha']) }}" class="nav-item {{ $catName == 'Dacha' ? 'active' : '' }}">Dacha</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Xalqaro']) }}" class="nav-item {{ $catName == 'Xalqaro' ? 'active' : '' }}">Xalqaro</a></li>
                 </ul>
                 <div class="nav-contacts">
                     <span class="nav-contact-item">

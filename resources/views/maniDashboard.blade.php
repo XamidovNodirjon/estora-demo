@@ -222,40 +222,23 @@
         }
 
         .logo-container {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
-        .logo-icon {
-            color: var(--accent-blue);
-            font-size: 32px;
-            display: flex;
-            align-items: center;
+        .logo-container:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .logo-title {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 24px;
-            color: var(--primary-navy);
-            letter-spacing: 1px;
-            line-height: 1;
-        }
-
-        .logo-subtitle {
-            font-size: 10px;
-            color: var(--accent-blue);
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            line-height: 1;
-            margin-top: 2px;
+        .brand-logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .header-actions {
@@ -2545,21 +2528,15 @@
                         <span></span>
                         <span></span>
                     </div>
-                    <div class="logo-container">
-                        <div class="logo-icon">
-                            <i class="fas fa-house-chimney-window"></i>
-                        </div>
-                        <div class="logo-text">
-                            <span class="logo-title">ESTORA</span>
-                            <span class="logo-subtitle">Real Estate</span>
-                        </div>
-                    </div>
+                    <a href="/" class="logo-container" title="Bosh sahifa">
+                        <img src="/images/logo.svg" alt="ESTORA Real Estate" class="brand-logo-img">
+                    </a>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-add-ad">
+                    <a href="{{ route('add.ad') }}" class="btn-add-ad">
                         <i class="fas fa-plus"></i>
                         E'lon joylashtirish
-                    </button>
+                    </a>
                     @auth
                         <a href="{{ route('dashboard') }}" class="btn-login">
                             <i class="far fa-user-circle" style="font-size: 20px;"></i>
@@ -2581,12 +2558,12 @@
         <div class="container">
             <div class="sub-navbar-content">
                 <ul class="nav-menu">
-                    <li><a href="#" class="nav-item active">Sotuv</a></li>
-                    <li><a href="#" class="nav-item">ijara</a></li>
-                    <li><a href="#" class="nav-item">Xonadosh</a></li>
-                    <li><a href="#" class="nav-item">Tijorat</a></li>
-                    <li><a href="#" class="nav-item">Dacha</a></li>
-                    <li><a href="#" class="nav-item">Xalqaro</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Sotuv']) }}" class="nav-item {{ request('transaction_type', 'Sotuv') == 'Sotuv' ? 'active' : '' }}">Sotuv</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Ijara']) }}" class="nav-item {{ request('transaction_type') == 'Ijara' ? 'active' : '' }}">Ijara</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Xonadosh']) }}" class="nav-item {{ request('transaction_type') == 'Xonadosh' ? 'active' : '' }}">Xonadosh</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Tijorat']) }}" class="nav-item {{ request('transaction_type') == 'Tijorat' ? 'active' : '' }}">Tijorat</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Dacha']) }}" class="nav-item {{ request('transaction_type') == 'Dacha' ? 'active' : '' }}">Dacha</a></li>
+                    <li><a href="{{ route('maniDashboard', ['transaction_type' => 'Xalqaro']) }}" class="nav-item {{ request('transaction_type') == 'Xalqaro' ? 'active' : '' }}">Xalqaro</a></li>
                 </ul>
                 <div class="nav-contacts">
                     <span class="nav-contact-item">
@@ -2623,9 +2600,18 @@
                         <label>Mulk turi</label>
                         <select name="property_type" id="property_type">
                             <option value="Tanlang">Tanlang</option>
-                            <option value="Kvartira" {{ request('property_type') == 'Kvartira' ? 'selected' : '' }}>Kvartira</option>
-                            <option value="Hovli" {{ request('property_type') == 'Hovli' ? 'selected' : '' }}>Hovli</option>
-                            <option value="Ofis" {{ request('property_type') == 'Ofis' ? 'selected' : '' }}>Ofis</option>
+                            @if(isset($propertyTypes))
+                                @foreach($propertyTypes as $pt)
+                                    <option value="{{ $pt }}" {{ request('property_type') == $pt ? 'selected' : '' }}>{{ $pt }}</option>
+                                @endforeach
+                            @else
+                                <option value="Kvartira" {{ request('property_type') == 'Kvartira' ? 'selected' : '' }}>Kvartira</option>
+                                <option value="Hovli" {{ request('property_type') == 'Hovli' ? 'selected' : '' }}>Hovli</option>
+                                <option value="Ofis" {{ request('property_type') == 'Ofis' ? 'selected' : '' }}>Ofis</option>
+                                <option value="Do'kon" {{ request('property_type') == "Do'kon" ? 'selected' : '' }}>Do'kon</option>
+                                <option value="Ombor" {{ request('property_type') == 'Ombor' ? 'selected' : '' }}>Ombor</option>
+                                <option value="Dacha" {{ request('property_type') == 'Dacha' ? 'selected' : '' }}>Dacha</option>
+                            @endif
                         </select>
                     </div>
                     
@@ -2681,7 +2667,7 @@
         <div class="container">
             <div class="results-header-bar">
                 <div class="breadcrumbs">
-                    Bosh sahifa / {{ request('transaction_type', 'Sotuv') }} / {{ request('property_type', 'Kvartira') }}
+                    Bosh sahifa / {{ request('transaction_type', 'Sotuv') }} @if(request('property_type') && request('property_type') !== 'Tanlang') / {{ request('property_type') }} @endif @if(request('region_id') && isset($regions)) @php $selReg = $regions->firstWhere('id', request('region_id')); @endphp @if($selReg) / {{ $selReg->name }} @endif @endif
                 </div>
                 <div class="results-filters-row">
                     <div class="sort-selector-wrapper">
@@ -2850,10 +2836,14 @@
                         </div>
                     </div>
                 @empty
-                    <div class="no-results-card">
-                        <i class="far fa-folder-open text-4xl mb-3 block" style="font-size: 40px; margin-bottom: 12px; color: var(--text-muted);"></i>
-                        <h3>Siz tanlagan filtrlar bo'yicha e'lonlar topilmadi.</h3>
-                        <p>Iltimos, filtrlarni o'zgartirib qaytadan urinib ko'ring.</p>
+                    <div class="no-results-card" style="text-align: center; padding: 48px 24px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                        <i class="far fa-folder-open text-4xl mb-3 block" style="font-size: 48px; margin-bottom: 16px; color: #94a3b8;"></i>
+                        <h3 style="font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 8px;">Siz tanlagan filtrlar bo'yicha e'lonlar topilmadi.</h3>
+                        <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Iltimos, viloyat, tuman yoki boshqa filtrlarni o'zgartirib qaytadan urinib ko'ring.</p>
+                        <a href="{{ route('maniDashboard') }}" class="btn-clear-filters" style="display: inline-flex; align-items: center; gap: 8px; background: #0066ff; color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: 700; text-decoration: none;">
+                            <i class="fas fa-rotate-left"></i>
+                            Barcha e'lonlarni ko'rish
+                        </a>
                     </div>
                 @endforelse
             </div>
@@ -2997,72 +2987,69 @@
             const citySelect = document.getElementById('city_id');
             const propertyTypeSelect = document.getElementById('property_type');
             const timeFilterSelect = document.getElementById('time_filter');
-            
-            // 1. Dynamic Region/City Filtering
-            if (regionSelect && citySelect) {
-                const originalCityOptions = Array.from(citySelect.options);
-                let isInitialLoad = true;
-                
-                regionSelect.addEventListener('change', function() {
-                    const selectedRegionId = this.value;
-                    const currentSelectedValue = citySelect.value;
-                    
-                    // Clear city select
-                    citySelect.innerHTML = '';
-                    
-                    // Append default "Tanlang"
-                    citySelect.appendChild(originalCityOptions[0].cloneNode(true));
-                    
-                    if (selectedRegionId) {
-                        originalCityOptions.forEach(option => {
-                            if (option.value !== "" && option.getAttribute('data-region') === selectedRegionId) {
-                                const cloned = option.cloneNode(true);
-                                if (isInitialLoad && cloned.value === currentSelectedValue) {
-                                    cloned.selected = true;
-                                }
-                                citySelect.appendChild(cloned);
-                            }
-                        });
-                    } else {
-                        originalCityOptions.forEach(option => {
-                            if (option.value !== "") {
-                                const cloned = option.cloneNode(true);
-                                if (isInitialLoad && cloned.value === currentSelectedValue) {
-                                    cloned.selected = true;
-                                }
-                                citySelect.appendChild(cloned);
-                            }
-                        });
-                    }
-                    
-                    // Reset initial load flag after page load check
-                    isInitialLoad = false;
-                });
-
-                // Trigger change to sync on load
-                regionSelect.dispatchEvent(new Event('change'));
-            }
-
-            // 2. Submit filter form on field changes (except region to allow city selection)
-            if (filterForm) {
-                if (propertyTypeSelect) {
-                    propertyTypeSelect.addEventListener('change', () => filterForm.submit());
-                }
-                if (citySelect) {
-                    citySelect.addEventListener('change', () => filterForm.submit());
-                }
-                if (timeFilterSelect) {
-                    timeFilterSelect.addEventListener('change', () => filterForm.submit());
-                }
-            }
-
-            // 3. Compact Tab toggling & Form Submission
             const compactTabs = document.querySelectorAll('.compact-tab');
             const transactionInput = document.getElementById('transaction_type');
-            const navItems = document.querySelectorAll('.sub-navbar .nav-item');
 
+            // Server-selected values from URL parameters
+            const serverCityId = "{{ request('city_id') }}";
+            const serverRegionId = "{{ request('region_id') }}";
+
+            // 1. Dynamic Region/City Cascading Select
+            if (regionSelect && citySelect) {
+                // Collect and cache all city options from DOM
+                const allCityOptions = [];
+                Array.from(citySelect.options).forEach(opt => {
+                    if (opt.value !== "") {
+                        allCityOptions.push({
+                            value: opt.value,
+                            text: opt.text,
+                            regionId: opt.getAttribute('data-region')
+                        });
+                    }
+                });
+
+                function updateCityOptions(preserveSelected = true) {
+                    const selectedRegion = regionSelect.value;
+                    const currentCityVal = preserveSelected ? (citySelect.value || serverCityId) : '';
+
+                    // Clear and add placeholder
+                    citySelect.innerHTML = '<option value="">Tanlang</option>';
+
+                    let hasMatchingSelected = false;
+
+                    allCityOptions.forEach(city => {
+                        if (!selectedRegion || city.regionId === selectedRegion) {
+                            const opt = document.createElement('option');
+                            opt.value = city.value;
+                            opt.textContent = city.text;
+                            opt.setAttribute('data-region', city.regionId);
+
+                            if (String(city.value) === String(currentCityVal)) {
+                                opt.selected = true;
+                                hasMatchingSelected = true;
+                            }
+                            citySelect.appendChild(opt);
+                        }
+                    });
+
+                    if (!hasMatchingSelected && currentCityVal) {
+                        citySelect.value = "";
+                    }
+                }
+
+                // Initial setup on page load
+                updateCityOptions(true);
+
+                // Update on region change
+                regionSelect.addEventListener('change', function() {
+                    updateCityOptions(false);
+                });
+            }
+
+            // 2. Compact Tabs click -> update input and submit search
             compactTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
                     compactTabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
 
@@ -3071,33 +3058,16 @@
                         transactionInput.value = val;
                     }
 
-                    // Sync sub-navbar links
-                    navItems.forEach(nav => {
-                        if (nav.textContent.trim().toLowerCase() === val.toLowerCase()) {
-                            navItems.forEach(n => n.classList.remove('active'));
-                            nav.classList.add('active');
-                        }
-                    });
-
-                    // Submit form immediately
                     if (filterForm) {
                         filterForm.submit();
                     }
                 });
             });
+        });
+    </script>
 
-            // 4. Sync sub-navbar with compact tabs
-            navItems.forEach(nav => {
-                nav.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const text = this.textContent.trim();
-                    const matchingTab = Array.from(compactTabs).find(t => t.textContent.trim().toLowerCase() === text.toLowerCase());
-                    if (matchingTab) {
-                        matchingTab.click(); // Triggers the click and form submit
-                    }
-                });
-            });
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             // Carousel sliding logic for search listings
             window.moveSlide = function(button, direction) {
                 const container = button.closest('.product-carousel-container');
@@ -3131,24 +3101,6 @@
                 button.innerHTML = `<i class="fas fa-phone-alt"></i> ${phone}`;
                 button.onclick = null;
             };
-
-            // Set active states on search filters based on request query params
-            const currentTxType = "{{ request('transaction_type', 'Sotuv') }}";
-            if (currentTxType) {
-                const matchingTab = Array.from(compactTabs).find(t => t.getAttribute('data-value').toLowerCase() === currentTxType.toLowerCase());
-                if (matchingTab) {
-                    compactTabs.forEach(t => t.classList.remove('active'));
-                    matchingTab.classList.add('active');
-                    if (transactionInput) transactionInput.value = matchingTab.getAttribute('data-value');
-                    
-                    navItems.forEach(nav => {
-                        if (nav.textContent.trim().toLowerCase() === currentTxType.toLowerCase()) {
-                            navItems.forEach(n => n.classList.remove('active'));
-                            nav.classList.add('active');
-                        }
-                    });
-                }
-            }
         });
 
         // Universal Favorite & Share Handlers

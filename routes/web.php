@@ -15,6 +15,16 @@ Route::get('/products/{product}', [\App\Http\Controllers\ProductController::clas
 Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
 
+// Smart Add Advertisement redirect
+Route::get('/add-ad', function () {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('client.products.create');
+    }
+    session()->put('url.intended', route('client.products.create'));
+    return redirect()->route('register')
+        ->with('info', 'E\'lon joylashtirish uchun avval ro\'yxatdan o\'ting yoki mavjud hisobingizga kiring!');
+})->name('add.ad');
+
 // Authentication routes (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -137,6 +147,7 @@ Route::middleware('auth')->group(function () {
     // Client & Makler Dashboard
     Route::middleware('role:client,makler')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
+        Route::put('/client/profile', [\App\Http\Controllers\ClientProfileController::class, 'update'])->name('client.profile.update');
         
         // Client & Makler Announcements Management
         Route::get('/client/products', [\App\Http\Controllers\ClientProductController::class, 'index'])->name('client.products.index');

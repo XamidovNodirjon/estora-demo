@@ -84,6 +84,15 @@
                 </div>
             </a>
 
+            <!-- 9. Profildan Chiqish (Logout) -->
+            <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="pt-2 border-t border-slate-100 mt-2">
+                @csrf
+                <button type="submit" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl px-3.5 py-2.5 flex items-center gap-3 text-xs sm:text-sm transition-all cursor-pointer text-left">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
+                    <span>Profildan chiqish</span>
+                </button>
+            </form>
+
         </div>
 
         <!-- Left Sidebar PRO Subscription Card -->
@@ -328,26 +337,344 @@
                 </div>
             </div>
 
-        @elseif($section === 'my_page')
-            <!-- ================= MENING SAHIFAM SAHIFASI ================= -->
-            <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
-                <div class="border-b border-slate-100 pb-3">
-                    <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-globe text-blue-600"></i>
-                        <span>Mening Shaxsiy Sahifam</span>
-                    </h2>
-                    <p class="text-xs text-slate-400 font-medium">Shaxsiy rieltorlik sahifangiz barcha e'lonlaringizni ko'rsatadi</p>
-                </div>
+        @elseif($section === 'my_page' || $section === 'settings')
+            <!-- ================= MENING SAHIFAM VA PROFIL SOZLAMALARI SAHIFASI ================= -->
+            <div class="space-y-5">
+                
+                <!-- 1. HEADER TITLE -->
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-black text-2xl text-slate-900 flex items-center gap-2.5 tracking-tight">
+                            <i class="fa-solid fa-user-gear text-blue-600 text-xl"></i>
+                            <span>{{ $section === 'settings' ? 'Profil Sozlamalari' : 'Mening Shaxsiy Sahifam' }}</span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                            Shaxsiy ma'lumotlaringizni ko'ring va istalgan vaqtda tahrirlang hamda saqlang
+                        </p>
+                    </div>
 
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
-                    <label class="text-xs font-bold text-slate-700 block">Sizning Sahifa Havolangiz:</label>
-                    <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2 pl-3 shadow-xs">
-                        <span class="text-xs font-bold text-blue-600 truncate flex-1">estorqa.uz/makler/{{ Str::slug(Auth::user()->name ?? 'akmaljon') }}</span>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-4 py-2 rounded-lg shadow-xs transition-all">
-                            Nusxalash
-                        </button>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <a href="{{ route('users.show', Auth::id()) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                            <span>Jonli sahifani ko'rish</span>
+                        </a>
+
+                        <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer" title="Hisobdan chiqish">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                <span>Chiqish</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
+
+                <!-- 2. PROFILNING ASOSIY MA'LUMOTLAR KARTASI (OVERVIEW CARD) -->
+                <div class="bg-gradient-to-br from-slate-900 via-[#0B1A30] to-blue-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-slate-800">
+                    <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                        <!-- User avatar & names -->
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-2xl sm:text-3xl ring-4 ring-white/10 shadow-lg uppercase">
+                                    {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
+                                </div>
+                                <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-slate-900" title="Tasdiqlangan Makler">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                                        {{ Auth::user()->name }}
+                                    </h3>
+                                    <span class="bg-blue-500/30 text-blue-300 border border-blue-400/30 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full capitalize">
+                                        {{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Makler' }}
+                                    </span>
+                                    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] px-2 py-0.5 rounded-full flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Faol
+                                    </span>
+                                </div>
+
+                                <p class="text-xs text-slate-300 font-medium flex items-center gap-2">
+                                    <span>&#64;{{ Auth::user()->username ?? 'foydalanuvchi' }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ Auth::user()->email }}</span>
+                                </p>
+
+                                <div class="text-[11px] text-slate-400 pt-0.5">
+                                    Ro'yxatdan o'tgan sana: <strong>{{ Auth::user()->created_at ? Auth::user()->created_at->format('d.m.Y') : 'Yaqinda' }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats mini pills -->
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3 flex-1 md:flex-initial text-center min-w-[100px]">
+                                <span class="text-[11px] text-slate-300 font-medium block">E'lonlar</span>
+                                <span class="text-lg font-black text-white">{{ $productCount }} ta</span>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3 flex-1 md:flex-initial text-center min-w-[100px]">
+                                <span class="text-[11px] text-slate-300 font-medium block">Ko'rishlar</span>
+                                <span class="text-lg font-black text-emerald-400">{{ $totalViews }}</span>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3 flex-1 md:flex-initial text-center min-w-[100px]">
+                                <span class="text-[11px] text-slate-300 font-medium block">Reyting</span>
+                                <span class="text-lg font-black text-amber-400">4.9 &#9733;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Public Page Link Share Strip -->
+                    <div class="mt-5 pt-4 border-t border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 min-w-0 w-full sm:w-auto">
+                            <span class="text-xs font-bold text-slate-300 flex-shrink-0">
+                                <i class="fa-solid fa-link text-blue-400 mr-1"></i> Shaxsiy havola:
+                            </span>
+                            <div class="bg-black/30 border border-white/15 rounded-lg px-3 py-1.5 text-xs text-blue-300 font-mono font-bold truncate max-w-md">
+                                {{ route('users.show', Auth::id()) }}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button type="button" 
+                                    onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                                    class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Havolani nusxalash</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SHAXSIY MA'LUMOTLARNI TAHRIRLASH FORMASI (UPDATE PROFILE FORM) -->
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-6">
+                    <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square text-blue-600"></i>
+                                <span>Shaxsiy ma'lumotlarni tahrirlash</span>
+                            </h3>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">
+                                Ismingiz, username, email, telefon va boshqa ma'lumotlaringizni istalgan paytda o'zgartirishingiz mumkin.
+                            </p>
+                        </div>
+                        <span class="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-lg hidden sm:inline-block">
+                            * Majburiy maydonlar
+                        </span>
+                    </div>
+
+                    <form method="POST" action="{{ route('client.profile.update') }}" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- ROW 1: Ism-Familiya va Username -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Name -->
+                            <div class="space-y-1.5">
+                                <label for="name" class="block text-xs font-extrabold text-slate-700">
+                                    Ism va Familiya <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-user text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="name" 
+                                           name="name" 
+                                           value="{{ old('name', Auth::user()->name) }}" 
+                                           required 
+                                           placeholder="Masalan: Akmaljon Toshmatov" 
+                                           class="w-full bg-slate-50 border @error('name') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('name')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Username -->
+                            <div class="space-y-1.5">
+                                <label for="username" class="block text-xs font-extrabold text-slate-700">
+                                    Foydalanuvchi nomi (Username) <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-at text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="username" 
+                                           name="username" 
+                                           value="{{ old('username', Auth::user()->username) }}" 
+                                           required 
+                                           placeholder="Masalan: akmal_makler" 
+                                           class="w-full bg-slate-50 border @error('username') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('username')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: Email va Telefon -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Email -->
+                            <div class="space-y-1.5">
+                                <label for="email" class="block text-xs font-extrabold text-slate-700">
+                                    Elektron pochta (Email) <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-envelope text-sm"></i>
+                                    </div>
+                                    <input type="email" 
+                                           id="email" 
+                                           name="email" 
+                                           value="{{ old('email', Auth::user()->email) }}" 
+                                           required 
+                                           placeholder="Masalan: akmal@example.uz" 
+                                           class="w-full bg-slate-50 border @error('email') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('email')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="space-y-1.5">
+                                <label for="phone" class="block text-xs font-extrabold text-slate-700">
+                                    Telefon raqam
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-phone text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="phone" 
+                                           name="phone" 
+                                           value="{{ old('phone', Auth::user()->phone) }}" 
+                                           placeholder="+998 90 123 45 67" 
+                                           class="w-full bg-slate-50 border @error('phone') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('phone')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- ROW 3: Pasport va JSHSHIR -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Passport -->
+                            <div class="space-y-1.5">
+                                <label for="passport" class="block text-xs font-extrabold text-slate-700">
+                                    Pasport seriya va raqami
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-id-card text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="passport" 
+                                           name="passport" 
+                                           value="{{ old('passport', Auth::user()->passport) }}" 
+                                           placeholder="Masalan: AA 1234567" 
+                                           class="w-full bg-slate-50 border @error('passport') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('passport')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- JSHSHIR -->
+                            <div class="space-y-1.5">
+                                <label for="jshshir" class="block text-xs font-extrabold text-slate-700">
+                                    JSHSHIR (PINFL)
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-fingerprint text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="jshshir" 
+                                           name="jshshir" 
+                                           maxlength="20"
+                                           value="{{ old('jshshir', Auth::user()->jshshir) }}" 
+                                           placeholder="14 xonali shaxsiy identifikatsiya raqami" 
+                                           class="w-full bg-slate-50 border @error('jshshir') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('jshshir')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- ROW 4: Parolni yangilash (Xavfsizlik) -->
+                        <div class="border-t border-slate-100 pt-5 space-y-4">
+                            <div>
+                                <h4 class="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-lock text-amber-500"></i>
+                                    <span>Parolni o'zgartirish (Ixtiyoriy)</span>
+                                </h4>
+                                <p class="text-xs text-slate-400 font-medium">
+                                    Agar parolni o'zgartirishni istamasangiz, ushbu maydonlarni bo'sh qoldiring.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Password -->
+                                <div class="space-y-1.5">
+                                    <label for="password" class="block text-xs font-extrabold text-slate-700">
+                                        Yangi parol
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                            <i class="fa-solid fa-key text-sm"></i>
+                                        </div>
+                                        <input type="password" 
+                                               id="password" 
+                                               name="password" 
+                                               placeholder="Kamida 6 ta belgi kiriting..." 
+                                               class="w-full bg-slate-50 border @error('password') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                    </div>
+                                    @error('password')
+                                        <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Password Confirmation -->
+                                <div class="space-y-1.5">
+                                    <label for="password_confirmation" class="block text-xs font-extrabold text-slate-700">
+                                        Yangi parolni tasdiqlash
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                            <i class="fa-solid fa-check-double text-sm"></i>
+                                        </div>
+                                        <input type="password" 
+                                               id="password_confirmation" 
+                                               name="password_confirmation" 
+                                               placeholder="Yangi parolni qayta kiriting..." 
+                                               class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ACTIONS: Submit Button -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-4">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Ma'lumotlarni saqlash va yangilash</span>
+                            </button>
+
+                            <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                                Bekor qilish
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
             </div>
 
         @elseif($section === 'news')
@@ -365,37 +692,10 @@
                         <i class="fa-solid fa-circle-info text-blue-600 text-lg mt-0.5"></i>
                         <div>
                             <h4 class="font-extrabold text-slate-900 text-sm">Yangi funksiyalar ishga tushirildi!</h4>
-                            <p class="text-xs text-slate-600 mt-0.5">Statistika bo'limida e'lonlaringiz ko'rishlar sonini kuzatishingiz mumkin.</p>
+                            <p class="text-xs text-slate-600 mt-0.5">Mening sahifam bo'limida shaxsiy ma'lumotlaringizni to'liq yangilashingiz mumkin.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-        @elseif($section === 'settings')
-            <!-- ================= SOZLAMALAR SAHIFASI ================= -->
-            <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
-                <div class="border-b border-slate-100 pb-3">
-                    <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-blue-600"></i>
-                        <span>Profil Sozlamalari</span>
-                    </h2>
-                </div>
-
-                <form class="space-y-4 max-w-lg">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Ism va Familiya</label>
-                        <input type="text" value="{{ Auth::user()->name }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-bold text-slate-800">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Telefon raqam</label>
-                        <input type="text" value="{{ Auth::user()->phone ?? '+998 90 123 45 67' }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-bold text-slate-800">
-                    </div>
-
-                    <button type="button" class="bg-blue-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs">
-                        Saqlash
-                    </button>
-                </form>
             </div>
 
         @else
@@ -690,7 +990,9 @@
             
             <!-- Avatar photo with verified checkmark -->
             <div class="relative w-20 h-20 mx-auto">
-                <img src="/images/avatar_akmaljon.jpg" alt="Akmaljon Makler" class="w-20 h-20 rounded-full object-cover ring-4 ring-slate-100 shadow-md">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-2xl uppercase ring-4 ring-slate-100 shadow-md">
+                    {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
+                </div>
                 <div class="absolute right-0 bottom-0 bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-white shadow-xs" title="Verified Makler">
                     <i class="fa-solid fa-check"></i>
                 </div>
@@ -698,17 +1000,24 @@
 
             <div>
                 <h3 class="font-black text-slate-900 text-base flex items-center justify-center gap-1.5">
-                    <span>{{ Auth::user()->name ?? 'Akmaljon Makler' }}</span>
+                    <span>{{ Auth::user()->name ?? 'Foydalanuvchi' }}</span>
                     <i class="fa-solid fa-circle-check text-blue-600 text-sm" title="Verified"></i>
                 </h3>
+                <p class="text-xs text-slate-400 font-medium mt-0.5">
+                    &#64;{{ Auth::user()->username ?? 'foydalanuvchi' }}
+                </p>
 
-                <div class="text-xs font-bold text-slate-600 mt-1">
+                <div class="text-xs font-bold text-slate-600 mt-1.5">
                     <span class="text-amber-500">★</span> <strong>4.9</strong> <span class="text-slate-400">(128 ta baho)</span>
                 </div>
             </div>
 
             <!-- Key-Value Info Rows -->
             <div class="space-y-2.5 border-t border-b border-slate-100 py-3 text-xs text-left">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-500 font-medium">Telefon:</span>
+                    <span class="font-bold text-slate-800">{{ Auth::user()->phone ?? 'Kiritilmagan' }}</span>
+                </div>
                 <div class="flex items-center justify-between">
                     <span class="text-slate-500 font-medium">Ishonch darajasi</span>
                     <span class="font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
@@ -718,7 +1027,7 @@
             </div>
 
             <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="w-full border border-blue-500 text-blue-600 hover:bg-blue-50 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs">
-                Profilni ko'rish
+                Profilni ko'rish va tahrirlash
             </a>
         </div>
 
@@ -747,60 +1056,34 @@
             </a>
         </div>
 
-
-        <!-- CARD 3: DAROMADIM -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-3">
-            <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-slate-900 text-sm">Daromadim</h4>
-                <select class="bg-slate-50 border border-slate-200 rounded-lg text-xs px-2 py-1 font-bold text-slate-700 focus:outline-none shadow-xs">
-                    <option>Joriy oy</option>
-                    <option>O'tgan oy</option>
-                    <option>Shu yil</option>
-                </select>
-            </div>
-
-            <div class="font-black text-slate-900 text-2xl tracking-tight my-1">
-                23 450 000 so'm
-            </div>
-
-            <div class="space-y-2 text-xs text-slate-600 pt-1 border-t border-slate-100">
-                <div class="flex items-center justify-between">
-                    <span class="text-slate-500 font-medium">Sotuvdan</span>
-                    <strong class="font-extrabold text-slate-900">18 200 000 so'm</strong>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-slate-500 font-medium">Ijaradan</span>
-                    <strong class="font-extrabold text-slate-900">5 250 000 so'm</strong>
-                </div>
-            </div>
-
-            <a href="{{ route('client.dashboard', ['section' => 'stats']) }}" class="text-xs font-bold text-blue-600 hover:underline block pt-1">
-                Batafsil statistika &rarr;
-            </a>
-        </div>
-
-
         <!-- CARD 4: MENING SAHIFAM SHARE CARD -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-3">
             <h4 class="font-extrabold text-slate-900 text-sm">Mening sahifam</h4>
             <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                Mijozlaringiz sizning e'lonlaringizni shu sahifa orqali ko'rishadi.
+                Mijozlaringiz sizning barcha e'lonlaringizni shu havola orqali ko'rishadi.
             </p>
 
             <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2 pl-3">
-                <span class="text-xs font-bold text-blue-600 truncate flex-1">estorqa.uz/makler/{{ Str::slug(Auth::user()->name ?? 'akmaljon') }}</span>
-                <button type="button" class="p-1.5 text-slate-400 hover:text-slate-700 bg-white rounded-lg border border-slate-200 shadow-xs cursor-pointer" title="Nusxalash">
+                <span class="text-xs font-bold text-blue-600 truncate flex-1 font-mono">
+                    {{ route('users.show', Auth::id()) }}
+                </span>
+                <button type="button" 
+                        onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                        class="p-1.5 text-slate-500 hover:text-blue-600 bg-white rounded-lg border border-slate-200 shadow-xs cursor-pointer transition-all" 
+                        title="Nusxalash">
                     <i class="fa-regular fa-copy"></i>
                 </button>
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <button class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all">
-                    <i class="fa-solid fa-qrcode text-slate-500"></i>
-                    <span>QR kod</span>
-                </button>
+                <a href="{{ route('users.show', Auth::id()) }}" target="_blank" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all text-center">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i>
+                    <span>Ochish</span>
+                </a>
 
-                <button class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all">
+                <button type="button" 
+                        onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                        class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer">
                     <i class="fa-solid fa-share-nodes text-slate-500"></i>
                     <span>Ulashish</span>
                 </button>
@@ -810,4 +1093,48 @@
     </aside>
 
 </div>
+
+<!-- Global Clipboard Helper Script -->
+<script>
+function copyToClipboard(text, btnElement) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopySuccess(btnElement);
+        }).catch(() => {
+            fallbackCopyText(text, btnElement);
+        });
+    } else {
+        fallbackCopyText(text, btnElement);
+    }
+}
+
+function fallbackCopyText(text, btnElement) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showCopySuccess(btnElement);
+    } catch (err) {
+        alert("Havola: " + text);
+    }
+    textArea.remove();
+}
+
+function showCopySuccess(btnElement) {
+    if (!btnElement) return;
+    const originalHtml = btnElement.innerHTML;
+    btnElement.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+    btnElement.innerHTML = '<i class="fa-solid fa-check"></i> <span class="text-xs">Nusxalandi!</span>';
+    setTimeout(() => {
+        btnElement.innerHTML = originalHtml;
+        btnElement.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
+    }, 2000);
+}
+</script>
 @endsection

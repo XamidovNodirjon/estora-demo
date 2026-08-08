@@ -56,12 +56,22 @@
     <div class="w-full max-w-lg">
         <!-- Logo and Brand -->
         <div class="text-center mb-8">
-            <a href="/" class="inline-flex items-center gap-2 mb-2">
-                <i class="fa-solid fa-house-chimney text-[#0084ff] text-4xl shadow-md"></i>
-                <span class="font-display font-black text-3xl tracking-wider text-white">ESTORA</span>
+            <a href="/" class="inline-flex items-center gap-2 mb-2 hover:opacity-90 transition-opacity" title="Bosh sahifa">
+                <img src="/images/logo-white.svg" alt="ESTORA Real Estate" class="h-12 w-auto object-contain mx-auto">
             </a>
             <p class="text-gray-400 text-sm">Ko'chmas mulkning yagona raqamli ekotizimi</p>
         </div>
+
+        <!-- Info Banner (e.g. from Add Ad button) -->
+        @if(session('info'))
+            <div class="mb-5 p-4 rounded-2xl bg-blue-500/20 border border-blue-500/40 text-blue-200 flex items-start gap-3 shadow-lg text-xs sm:text-sm animate-fade-in backdrop-blur-md">
+                <i class="fa-solid fa-circle-info text-xl text-blue-400 flex-shrink-0 mt-0.5"></i>
+                <div class="space-y-1">
+                    <span class="font-bold text-white block">{{ session('info') }}</span>
+                    <span class="text-xs text-blue-200 block">Agar sizda allaqachon hisob mavjud bo'lsa, <a href="{{ route('login') }}" class="underline font-bold text-white hover:text-blue-300">Tizimga kiring &rarr;</a></span>
+                </div>
+            </div>
+        @endif
 
         <!-- Register Card -->
         <div class="glass-card rounded-3xl p-8 shadow-2xl">

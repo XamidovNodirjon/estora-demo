@@ -73,14 +73,8 @@
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
 
-                <a href="/" class="flex items-center gap-2.5 flex-shrink-0 group">
-                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
-                        <i class="fa-solid fa-house-signal"></i>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-extrabold text-lg leading-tight tracking-wide text-slate-900 font-sans">ESTORA</span>
-                        <span class="text-[9px] font-bold tracking-widest uppercase text-blue-600 -mt-0.5">REAL ESTATE</span>
-                    </div>
+                <a href="{{ route('maniDashboard') }}" class="flex items-center gap-2.5 flex-shrink-0 group hover:opacity-90 transition-opacity" title="ESTORA Real Estate">
+                    <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-10 w-auto object-contain">
                 </a>
             </div>
 
@@ -116,9 +110,11 @@
                 </a>
 
                 <!-- User Profile Header Pill -->
-                <div class="flex items-center gap-3 pl-2 border-l border-slate-200">
+                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="flex items-center gap-3 pl-2 border-l border-slate-200 hover:opacity-90 transition-opacity">
                     <div class="relative">
-                        <img src="/images/avatar_akmaljon.jpg" alt="Akmaljon Makler" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-500/30">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-sm ring-2 ring-blue-500/30 uppercase shadow-xs">
+                            {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
+                        </div>
                         <div class="absolute -bottom-0.5 -right-0.5 bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] ring-2 ring-white" title="Tasdiqlangan Makler">
                             <i class="fa-solid fa-check"></i>
                         </div>
@@ -126,13 +122,21 @@
 
                     <div class="hidden md:block text-left">
                         <div class="flex items-center gap-1">
-                            <span class="font-extrabold text-xs sm:text-sm text-slate-900">Akmaljon Makler</span>
+                            <span class="font-extrabold text-xs sm:text-sm text-slate-900">{{ Auth::user()->name ?? 'Foydalanuvchi' }}</span>
                             <i class="fa-solid fa-circle-check text-blue-600 text-xs" title="Verified"></i>
                             <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] ml-1"></i>
                         </div>
-                        <span class="text-[11px] font-bold text-slate-500">Rieltor / Makler</span>
+                        <span class="text-[11px] font-bold text-slate-500 capitalize">{{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Makler' }}</span>
                     </div>
-                </div>
+                </a>
+
+                <!-- Quick Logout Button in Header -->
+                <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="inline">
+                    @csrf
+                    <button type="submit" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer flex items-center justify-center" title="Profildan chiqish">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -146,6 +150,20 @@
             <div class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-xs text-xs sm:text-sm animate-fade-in">
                 <i class="fa-solid fa-circle-check text-lg text-emerald-500 flex-shrink-0"></i>
                 <span class="font-semibold">{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="mb-5 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 flex items-start gap-3 shadow-xs text-xs sm:text-sm animate-fade-in">
+                <i class="fa-solid fa-circle-exclamation text-lg text-red-500 flex-shrink-0 mt-0.5"></i>
+                <div class="space-y-1">
+                    <h5 class="font-bold">Iltimos, kiritilgan ma'lumotlarni tekshiring:</h5>
+                    <ul class="list-disc list-inside text-xs text-red-700 space-y-0.5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
         @endif
 

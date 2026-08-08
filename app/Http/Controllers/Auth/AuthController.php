@@ -37,7 +37,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if ($this->authService->login($credentials)) {
-            return redirect()->intended(route('dashboard'))
+            return redirect()->intended(route('client.products.create'))
                 ->with('success', 'Tizimga muvaffaqiyatli kirdingiz!');
         }
 
@@ -52,7 +52,7 @@ class AuthController extends Controller
     public function showRegister()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('client.products.create');
         }
         return view('auth.register');
     }
@@ -68,8 +68,8 @@ class AuthController extends Controller
         // Auto-login after registration
         Auth::login($user);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Ro\'yxatdan muvaffaqiyatli o\'tdingiz!');
+        return redirect()->intended(route('client.products.create'))
+            ->with('success', 'Ro\'yxatdan muvaffaqiyatli o\'tdingiz! Endi e\'loningizni joylashtirishingiz mumkin.');
     }
 
     /**
