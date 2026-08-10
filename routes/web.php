@@ -118,6 +118,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/developer/users/{user}', [\App\Http\Controllers\DeveloperController::class, 'updateUser'])->name('developer.users.update');
         Route::delete('/developer/users/{user}', [\App\Http\Controllers\DeveloperController::class, 'deleteUser'])->name('developer.users.delete');
         
+        // Developer Products
+        Route::get('/developer/products', [\App\Http\Controllers\DeveloperController::class, 'products'])->name('developer.products');
+        Route::post('/developer/products/{product}/toggle-top', [\App\Http\Controllers\ClientProductController::class, 'toggleTop'])->name('developer.products.toggle-top');
+
         // Roles management
         Route::get('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'roles'])->name('developer.roles');
         Route::post('/developer/roles', [\App\Http\Controllers\DeveloperController::class, 'storeRole'])->name('developer.roles.store');
@@ -180,6 +184,7 @@ Route::middleware('auth')->group(function () {
 
         // Products management
         Route::get('/admin/products', [\App\Http\Controllers\AdminProductController::class, 'index'])->name('admin.products');
+        Route::post('/admin/products/{product}/toggle-top', [\App\Http\Controllers\ClientProductController::class, 'toggleTop'])->name('admin.products.toggle-top');
         Route::get('/admin/products/create', [\App\Http\Controllers\AdminProductController::class, 'create'])->name('admin.products.create');
         Route::post('/admin/products', [\App\Http\Controllers\AdminProductController::class, 'store'])->name('admin.products.store');
         Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\AdminProductController::class, 'edit'])->name('admin.products.edit');

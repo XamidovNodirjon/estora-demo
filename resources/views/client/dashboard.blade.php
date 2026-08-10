@@ -97,24 +97,6 @@
 
         </div>
 
-        <!-- Left Sidebar PRO Subscription Card -->
-        <div class="bg-gradient-to-br from-blue-50/70 to-slate-50 border border-blue-100/90 rounded-2xl p-4 space-y-2 shadow-xs">
-            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-500 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-crown"></i>
-            </div>
-            <div class="space-y-0.5">
-                <h4 class="font-black text-slate-900 text-sm">PRO obuna</h4>
-                <p class="text-xs font-bold text-slate-600">17 kun qoldi</p>
-                <p class="text-[11px] text-slate-400 font-medium">25.05.2025 da tugaydi</p>
-            </div>
-            <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="w-full bg-[#0066FF] hover:bg-blue-700 text-white font-extrabold text-xs py-2 rounded-xl transition-all block text-center shadow-xs mt-3">
-                Obunani uzaytirish
-            </a>
-            <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="text-xs font-bold text-blue-600 hover:underline block text-center pt-1">
-                Tariflar haqida &rarr;
-            </a>
-        </div>
-
     </aside>
 
 
@@ -1178,31 +1160,6 @@
 
             <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="w-full border border-blue-500 text-blue-600 hover:bg-blue-50 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs">
                 Profilni ko'rish va tahrirlash
-            </a>
-        </div>
-
-
-        <!-- CARD 2: OBUNA HOLATI -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-3">
-            <h4 class="font-extrabold text-slate-900 text-sm">Obuna holati</h4>
-
-            <div class="flex items-center justify-between">
-                <span class="bg-amber-500 text-white font-black text-[11px] px-2.5 py-0.5 rounded-md uppercase tracking-wider">PRO</span>
-                <span class="text-xs font-bold text-slate-700">17 kun qoldi</span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mt-1">
-                <div class="bg-blue-600 h-full rounded-full w-[80%]"></div>
-            </div>
-            <p class="text-[11px] text-slate-400 font-medium">25.05.2025 da tugaydi</p>
-
-            <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="w-full bg-blue-50/80 hover:bg-blue-100 text-blue-600 font-extrabold text-xs py-2 rounded-xl transition-all text-center block mt-1">
-                Obunani uzaytirish
-            </a>
-
-            <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="text-xs font-bold text-blue-600 hover:underline block text-left">
-                Tariflar haqida &rarr;
             </a>
         </div>
 

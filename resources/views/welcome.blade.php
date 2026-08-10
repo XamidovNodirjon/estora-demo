@@ -2055,61 +2055,64 @@
                     <p class="section-subtitle">Siz uchun eng maqbul va samarali yechimlarni topishda ishonchli hamkoringiz bo'lamiz.</p>
                 </div>
                 <div class="slider-controls">
-                    <button class="btn-slider"><i class="fas fa-chevron-left"></i></button>
-                    <button class="btn-slider"><i class="fas fa-chevron-right"></i></button>
+                    <button type="button" class="btn-slider" onclick="moveTopOffersSlider(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="btn-slider" onclick="moveTopOffersSlider(1)"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
 
-            <div class="listings-grid">
-                @forelse($topProducts as $topItem)
-                    @php
-                        $topImgs = is_array($topItem->images) ? $topItem->images : json_decode($topItem->images ?? '[]', true);
-                        $topImg = !empty($topImgs) ? $topImgs[0] : '/images/apartment1.png';
-                        if (!str_starts_with($topImg, 'http') && !str_starts_with($topImg, '/')) {
-                            $topImg = '/storage/' . $topImg;
-                        }
-                    @endphp
-                    <!-- TOP CARD -->
-                    <div class="listing-card cursor-pointer" onclick="window.location.href='{{ route('products.show', $topItem->id) }}'">
-                        <div class="listing-img-wrapper">
-                            <img src="{{ $topImg }}" alt="{{ $topItem->name }}">
-                            <span class="badge-top">TOP</span>
-                            <div class="btn-favorite" onclick="event.stopPropagation();"><i class="far fa-heart"></i></div>
-                            <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
+            <!-- Slider Wrapper for Infinite Auto Sliding -->
+            <div class="overflow-hidden relative w-full py-2">
+                <div id="topOffersSlider" style="display: flex; flex-direction: row; gap: 20px; width: 100%; transition: transform 0.5s ease-in-out;">
+                    @forelse($topProducts as $topItem)
+                        @php
+                            $topImgs = is_array($topItem->images) ? $topItem->images : json_decode($topItem->images ?? '[]', true);
+                            $topImg = !empty($topImgs) ? $topImgs[0] : '/images/apartment1.png';
+                            if (!str_starts_with($topImg, 'http') && !str_starts_with($topImg, '/')) {
+                                $topImg = '/storage/' . $topImg;
+                            }
+                        @endphp
+                        <!-- TOP CARD (Fixed 4 cards per row side by side) -->
+                        <div class="listing-card cursor-pointer transition-all duration-300 hover:-translate-y-1" style="flex: 0 0 calc((100% - 60px) / 4); width: calc((100% - 60px) / 4); min-width: calc((100% - 60px) / 4); box-sizing: border-box;" onclick="window.location.href='{{ route('products.show', $topItem->id) }}'">
+                            <div class="listing-img-wrapper">
+                                <img src="{{ $topImg }}" alt="{{ $topItem->name }}">
+                                <span class="badge-top">TOP</span>
+                                <div class="btn-favorite" onclick="event.stopPropagation();"><i class="far fa-heart"></i></div>
+                                <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
+                            </div>
+                            <div class="listing-details">
+                                <div class="listing-header-row">
+                                    <span class="listing-price">{{ number_format($topItem->price, 0, '', ' ') }} so'm</span>
+                                    <span class="listing-date">{{ $topItem->created_at ? $topItem->created_at->diffForHumans() : 'Yangi' }}</span>
+                                </div>
+                                <h3 class="listing-title">{{ $topItem->name }}</h3>
+                                <p class="listing-location">{{ $topItem->city->name_uz ?? ($topItem->region->name_uz ?? ($topItem->landmark ?? 'Toshkent')) }}</p>
+                                <div class="listing-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="listing-specs">
+                                    <div class="spec-item"><i class="fas fa-building"></i> {{ $topItem->floor ?? 1 }}/{{ $topItem->building_floor ?? 5 }} etaj</div>
+                                    <div class="spec-item"><i class="fas fa-door-open"></i> {{ $topItem->rooms ?? 1 }} xona</div>
+                                    <div class="spec-item"><i class="fas fa-ruler-combined"></i> {{ $topItem->square ?? 0 }}m²</div>
+                                </div>
+                                <div class="listing-tags">
+                                    <span class="listing-tag repair"><i class="fas fa-tools"></i> {{ $topItem->repair ?? 'Yevro ta\'mir' }}</span>
+                                    @if($topItem->metros->first())
+                                        <span class="listing-tag metro"><i class="fas fa-subway"></i> {{ $topItem->metros->first()->name }}</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                        <div class="listing-details">
-                            <div class="listing-header-row">
-                                <span class="listing-price">{{ number_format($topItem->price, 0, '', ' ') }} so'm</span>
-                                <span class="listing-date">{{ $topItem->created_at ? $topItem->created_at->diffForHumans() : 'Yangi' }}</span>
-                            </div>
-                            <h3 class="listing-title">{{ $topItem->name }}</h3>
-                            <p class="listing-location">{{ $topItem->city->name_uz ?? ($topItem->region->name_uz ?? ($topItem->landmark ?? 'Toshkent')) }}</p>
-                            <div class="listing-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="listing-specs">
-                                <div class="spec-item"><i class="fas fa-building"></i> {{ $topItem->floor ?? 1 }}/{{ $topItem->building_floor ?? 5 }} etaj</div>
-                                <div class="spec-item"><i class="fas fa-door-open"></i> {{ $topItem->rooms ?? 1 }} xona</div>
-                                <div class="spec-item"><i class="fas fa-ruler-combined"></i> {{ $topItem->square ?? 0 }}m²</div>
-                            </div>
-                            <div class="listing-tags">
-                                <span class="listing-tag repair"><i class="fas fa-tools"></i> {{ $topItem->repair ?? 'Yevro ta\'mir' }}</span>
-                                @if($topItem->metros->first())
-                                    <span class="listing-tag metro"><i class="fas fa-subway"></i> {{ $topItem->metros->first()->name }}</span>
-                                @endif
-                            </div>
+                    @empty
+                        <div class="w-full py-12 text-center text-slate-400">
+                            <i class="fa-solid fa-crown text-3xl text-amber-400 mb-2"></i>
+                            <p class="font-bold text-sm">Hozircha TOP darajasiga ko'tarilgan e'lonlar mavjud emas.</p>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-span-full py-12 text-center text-slate-400">
-                        <i class="fa-solid fa-crown text-3xl text-amber-400 mb-2"></i>
-                        <p class="font-bold text-sm">Hozircha TOP darajasiga ko'tarilgan e'lonlar mavjud emas.</p>
-                    </div>
-                @endforelse
+                    @endforelse
+                </div>
             </div>
         </div>
     </section>
@@ -2807,11 +2810,68 @@
             renderAnalyticsDistrictPage();
         }
 
-        // Initialize default region analytics on DOM load
+        // ================= TOP OFFERS INFINITE 3-SECOND CAROUSEL SCRIPT =================
+        let topOffersIndex = 0;
+        let topOffersInterval = null;
+        const totalTopCards = {{ count($topProducts) }};
+
+        function moveTopOffersSlider(direction) {
+            const slider = document.getElementById('topOffersSlider');
+            if (!slider || totalTopCards <= 4) return;
+
+            const maxIndex = totalTopCards - 4;
+            topOffersIndex += direction;
+
+            // Infinite loop wrapping: when reaching end, loop smoothly back to 0
+            if (topOffersIndex > maxIndex) {
+                topOffersIndex = 0;
+            } else if (topOffersIndex < 0) {
+                topOffersIndex = maxIndex;
+            }
+
+            // Each card takes 1/4th container width plus gap: shift = index * (calc(100% + 20px) / 4)
+            // Or calculated precisely via card width + 20px gap:
+            const firstCard = slider.querySelector('.listing-card');
+            const stepWidth = firstCard ? (firstCard.offsetWidth + 20) : 280;
+
+            slider.style.transform = `translateX(-${topOffersIndex * stepWidth}px)`;
+
+            resetTopOffersInterval();
+        }
+
+        function startTopOffersInterval() {
+            if (totalTopCards > 4) {
+                topOffersInterval = setInterval(() => {
+                    moveTopOffersSlider(1);
+                }, 3000); // 3 seconds step
+            }
+        }
+
+        function resetTopOffersInterval() {
+            if (topOffersInterval) {
+                clearInterval(topOffersInterval);
+            }
+            startTopOffersInterval();
+        }
+
+        // Initialize default region analytics & auto slider on DOM load
         document.addEventListener('DOMContentLoaded', () => {
             const selectEl = document.getElementById('analyticsRegionSelect');
             if (selectEl && selectEl.value) {
                 onAnalyticsRegionChange(selectEl.value);
+            }
+
+            startTopOffersInterval();
+
+            // Pause slider on mouse hover
+            const container = document.getElementById('topOffersSlider');
+            if (container) {
+                container.addEventListener('mouseenter', () => {
+                    if (topOffersInterval) clearInterval(topOffersInterval);
+                });
+                container.addEventListener('mouseleave', () => {
+                    startTopOffersInterval();
+                });
             }
         });
     </script>

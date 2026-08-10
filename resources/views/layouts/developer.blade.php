@@ -73,6 +73,11 @@
                 <span>Foydalanuvchilar</span>
             </a>
 
+            <a href="{{ route('developer.products') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('developer.products*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
+                <i class="fa-solid fa-building text-lg"></i>
+                <span>E'lonlar (Mahsulotlar)</span>
+            </a>
+
             <a href="{{ route('developer.roles') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('developer.roles*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
                 <i class="fa-solid fa-user-shield text-lg"></i>
                 <span>Rollar</span>

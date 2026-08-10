@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Hash;
 class DeveloperController extends Controller
 {
     /**
+     * Display a listing of all products/announcements for developers.
+     */
+    public function products()
+    {
+        $products = \App\Models\Product::with(['user', 'category', 'subCategory', 'region', 'city'])
+            ->latest()
+            ->paginate(15);
+
+        return view('developer.products.index', compact('products'));
+    }
+
+    /**
      * Display a listing of all users.
      */
     public function users()
