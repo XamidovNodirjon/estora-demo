@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <style>
         /* CSS RESET & VARIABLES */
@@ -3400,10 +3400,24 @@
                     </div>
                     
                     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
-                        <a href="https://t.me/estora_realestate" target="_blank" class="btn-telegram-direct">
-                            <i class="fab fa-telegram-plane"></i>
-                            Telegram orqali yozish
-                        </a>
+                        @auth
+                            @if(Auth::id() !== $product->user_id)
+                                <button type="button" onclick="openSendMessageModal({{ $product->id }}, '{{ addslashes($product->title) }}')" class="btn-telegram-direct" style="background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%); border: none; cursor: pointer;">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Xabar yozish
+                                </button>
+                            @else
+                                <div class="bg-blue-50 text-blue-700 font-bold text-xs p-3 rounded-lg text-center border border-blue-200">
+                                    <i class="fas fa-user-check mr-1"></i> Bu sizning e'loningiz
+                                </div>
+                            @endif
+                        @else
+                            <button type="button" onclick="openAuthModal()" class="btn-telegram-direct" style="background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%); border: none; cursor: pointer;">
+                                <i class="fas fa-paper-plane"></i>
+                                Xabar yozish
+                            </button>
+                        @endauth
+
                         <a href="{{ route('users.show', $product->user_id) }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #f0f7ff; color: #0084ff; font-weight: 700; padding: 12px 20px; border-radius: 8px; border: 1px solid #cce5ff; text-decoration: none; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#e0f0ff'" onmouseout="this.style.backgroundColor='#f0f7ff'">
                             <i class="fas fa-layer-group"></i>
                             Muallifning barcha e'lonlari ({{ $sellerTotalProductsCount ?? 1 }} ta)
@@ -4055,6 +4069,89 @@
                 }, 2500);
             }
         });
+
+        function openSendMessageModal(productId, productTitle) {
+            const modal = document.getElementById('sendMessageModal');
+            if (modal) {
+                document.getElementById('modalProductId').value = productId;
+                document.getElementById('modalProductTitleDisplay').innerText = productTitle;
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function openAuthModal() {
+            const modal = document.getElementById('authRequiredModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authRequiredModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
     </script>
+
+    <!-- Auth Required Modal -->
+    <div id="authRequiredModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease-out;">
+        <div style="background: white; border-radius: 24px; max-width: 420px; width: 100%; padding: 32px 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; position: relative;">
+            <button type="button" onclick="closeAuthModal()" style="position: absolute; top: 18px; right: 18px; background: #f3f4f6; border: none; width: 32px; h-32px; border-radius: 50%; font-size: 16px; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            
+            <div style="width: 72px; height: 72px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 4px solid #dbeafe;">
+                <i class="fas fa-lock" style="font-size: 28px; color: #0066FF;"></i>
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Tizimga kirish talab etiladi</h3>
+            <p style="font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+                Uy egasiga xabar yuborish va muloqot qilish uchun avval tizimga kiring yoki ro'yxatdan o'ting!
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{{ route('login') }}" style="width: 100%; padding: 13px; background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%); color: white; border-radius: 14px; font-weight: 800; font-size: 14px; text-decoration: none; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-right-to-bracket"></i> Tizimga kirish
+                </a>
+                <a href="{{ route('register') }}" style="width: 100%; padding: 13px; background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; border-radius: 14px; font-weight: 700; font-size: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-user-plus"></i> Ro'yxatdan o'tish
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Message Modal -->
+    <div id="sendMessageModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 20px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 16px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: #111827; margin: 0;">Uy egasiga xabar yuborish</h3>
+                <button type="button" onclick="closeSendMessageModal()" style="background: none; border: none; font-size: 20px; color: #6b7280; cursor: pointer;">&times;</button>
+            </div>
+            
+            <form action="{{ route('messages.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" id="modalProductId" value="">
+                
+                <div style="margin-bottom: 14px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #0066FF; text-transform: uppercase; letter-spacing: 0.5px;">Tanlangan e'lon</span>
+                    <p id="modalProductTitleDisplay" style="font-size: 14px; font-weight: 700; color: #374151; margin-top: 2px;"></p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="modalMessageText" style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px;">Xabar matni:</label>
+                    <textarea name="message" id="modalMessageText" rows="4" required placeholder="Salom, ushbu xonadon bo'yicha ma'lumot olmoqchi edim..." style="width: 100%; border: 1px solid #d1d5db; border-radius: 12px; padding: 12px; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#0066FF'"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" onclick="closeSendMessageModal()" style="padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; background: #f3f4f6; color: #374151; border: none; cursor: pointer;">Bekor qilish</button>
+                    <button type="submit" style="padding: 10px 22px; border-radius: 10px; font-weight: 700; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-paper-plane"></i> Yuborish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

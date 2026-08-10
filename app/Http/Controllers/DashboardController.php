@@ -94,10 +94,16 @@ class DashboardController extends Controller
 
         $section = $request->query('section', 'my_products');
 
+        $conversations = collect();
+        $unreadNotificationCount = $user->unreadNotifications->count();
+        if ($section === 'chats') {
+            $conversations = app(\App\Services\MessageService::class)->getUserConversations($user);
+        }
+
         return view('client.dashboard', compact(
             'user', 'userRole', 'userProducts', 'productCount', 'totalViews',
             'topViewedProduct', 'avgViews', 'favoriteProducts', 'favoriteCount',
-            'isLimitReached', 'canCreateProduct', 'section'
+            'isLimitReached', 'canCreateProduct', 'section', 'conversations', 'unreadNotificationCount'
         ));
     }
 }

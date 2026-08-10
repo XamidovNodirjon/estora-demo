@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -555,8 +555,8 @@
 
                 <!-- Contact Action Button -->
                 <div class="flex-shrink-0 pt-2 sm:pt-0">
-                    <a href="https://t.me/estora_realestate" target="_blank" class="px-6 py-3.5 bg-[#0084ff] hover:bg-[#0076e5] text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition-all inline-flex items-center gap-2">
-                        <i class="fa-paper-plane fab"></i> Telegram orqali bog'lanish
+                    <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="px-6 py-3.5 bg-[#0084ff] hover:bg-[#0076e5] text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg transition-all inline-flex items-center gap-2">
+                        <i class="fa-solid fa-comments"></i> Chatlar bo'limi
                     </a>
                 </div>
             </div>

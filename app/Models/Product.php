@@ -24,6 +24,7 @@ class Product extends Model
         'repair',
         'sotix',
         'status',
+        'is_top',
         'landmark',
         'exchange',
         'pay_in_installments',
@@ -34,6 +35,7 @@ class Product extends Model
 
     protected $casts = [
         'images' => 'array',
+        'is_top' => 'boolean',
         'exchange' => 'boolean',
         'pay_in_installments' => 'boolean',
         'credit' => 'boolean',

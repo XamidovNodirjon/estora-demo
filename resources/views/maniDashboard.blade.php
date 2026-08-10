@@ -9,9 +9,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Leaflet OpenStreetMap CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         /* CSS RESET & VARIABLES */
         :root {
@@ -1504,8 +1507,20 @@
             100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
         }
 
-        /* RESPONSIVE MEDIA QUERIES */
+        /* RESPONSIVE MEDIA QUERIES & MOBILE OPTIMIZATIONS */
         @media (max-width: 1024px) {
+            .product-row-card {
+                grid-template-columns: 280px 1fr;
+            }
+            .product-actions-specs {
+                grid-column: 1 / -1;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+            }
             .listings-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -1526,6 +1541,10 @@
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0 12px;
+            }
+
             .top-bar-right {
                 display: none;
             }
@@ -1540,63 +1559,175 @@
                 transform: none;
                 width: 100%;
                 justify-content: center;
+                font-size: 11px;
             }
-            .nav-contacts {
-                display: none;
+            
+            .main-header {
+                padding: 10px 0;
             }
             .header-content {
-                flex-wrap: wrap;
-                gap: 15px;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .logo-area {
+                gap: 10px;
+            }
+            .brand-logo-img {
+                height: 34px;
             }
             .header-actions {
-                width: 100%;
-                justify-content: center;
+                width: auto;
+                gap: 8px;
             }
+            .btn-add-ad {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            .btn-login {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            /* Sub navbar horizontal scrollable tabs on mobile */
             .sub-navbar {
-                padding: 10px 0;
+                padding: 6px 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
             .sub-navbar-content {
                 height: auto;
             }
             .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 5px;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+                overflow-x: auto;
+                width: 100%;
+                gap: 4px;
+                padding-bottom: 4px;
             }
             .nav-item {
-                height: 36px;
-                padding: 0 15px;
-                border-radius: 18px;
+                height: 32px;
+                padding: 0 14px;
+                font-size: 12px;
+                border-radius: 16px;
+                flex-shrink: 0;
             }
+            .nav-contacts {
+                display: none;
+            }
+
+            /* Compact Filters Strip Mobile Optimization */
+            .compact-filters-strip {
+                padding: 12px 0;
+            }
+            .compact-tabs {
+                display: flex;
+                overflow-x: auto;
+                white-space: nowrap;
+                gap: 6px;
+                padding-bottom: 6px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .compact-tab {
+                flex-shrink: 0;
+                padding: 6px 16px;
+                font-size: 12px;
+                border-radius: 20px;
+            }
+            .compact-fields-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-top: 10px;
+            }
+            .compact-field {
+                width: 100%;
+            }
+            .compact-field label {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            .compact-field select {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+            .btn-compact-search {
+                grid-column: 1 / -1;
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                font-size: 13px;
+                margin-top: 4px;
+            }
+
+            /* Search Product Row Card Mobile Layout */
+            .product-row-card {
+                grid-template-columns: 1fr;
+                border-radius: 12px;
+            }
+            .product-carousel-container {
+                min-height: 200px;
+                height: 200px;
+            }
+            .product-details-block {
+                padding: 16px;
+            }
+            .product-title-text {
+                font-size: 13px;
+            }
+            .product-price-text {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+            .product-location-text {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            .location-landmark-meta {
+                font-size: 11.5px;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            .product-actions-specs {
+                padding: 16px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .phone-action-container {
+                width: 100%;
+                gap: 6px;
+            }
+            .action-row-secondary {
+                width: 100%;
+            }
+            .specs-grid-box {
+                width: 100%;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            .spec-tag {
+                font-size: 11px;
+                padding: 6px 8px;
+                justify-content: center;
+            }
+
             .hero-section {
-                padding: 40px 0 60px 0;
+                padding: 30px 0 40px 0;
             }
             .hero-left-card {
-                padding: 20px;
+                padding: 16px;
+                max-width: 100%;
             }
             .hero-title {
-                font-size: 28px;
+                font-size: 24px;
             }
             .hero-buttons {
-                flex-wrap: wrap;
+                flex-direction: column;
             }
             .btn-hero-dark, .btn-hero-blue {
                 width: 100%;
-            }
-            .filter-tabs {
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-            .filter-tab {
-                flex: 1 1 calc(50% - 5px);
-                text-align: center;
-                border-radius: 6px;
-                margin-bottom: 5px;
-            }
-            .filter-box {
-                grid-template-columns: 1fr;
-                border-radius: 8px;
-                padding: 20px;
             }
             .listings-grid {
                 grid-template-columns: 1fr;
@@ -1609,7 +1740,7 @@
             }
             .footer-grid {
                 grid-template-columns: 1fr;
-                gap: 40px;
+                gap: 30px;
             }
             .footer-col-left, .footer-col-right {
                 align-items: center;
@@ -2655,6 +2786,11 @@
                         <i class="fas fa-search"></i>
                         QIDIRISH
                     </button>
+                    
+                    <button type="button" onclick="openInteractiveMapModal()" class="btn-view-map" style="padding: 10px 18px; height: 44px; margin: 0; font-size: 13px;">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Xaritadan ko'rish
+                    </button>
                 </div>
             </form>
         </div>
@@ -2798,9 +2934,21 @@
                                 @endif
 
                                 <div class="action-row-secondary">
-                                    <a href="https://t.me/estora_support" target="_blank" class="tg-write-btn">
-                                        <i class="fab fa-telegram-plane"></i> Telegram orqali yozish
-                                    </a>
+                                     @auth
+                                         @if(Auth::id() !== $product->user_id)
+                                             <button type="button" class="tg-write-btn" onclick="openSendMessageModal({{ $product->id }}, '{{ addslashes($product->name) }}')" style="border: none; cursor: pointer; background: #0066FF; color: white;">
+                                                 <i class="fas fa-paper-plane"></i> Xabar yozish
+                                             </button>
+                                         @else
+                                             <span class="tg-write-btn" style="background: #e0f2fe; color: #0369a1; font-weight: 700; cursor: default;">
+                                                 <i class="fas fa-user-check"></i> Mening e'lonim
+                                             </span>
+                                         @endif
+                                     @else
+                                         <button type="button" onclick="openAuthModal()" class="tg-write-btn" style="border: none; cursor: pointer; background: #0066FF; color: white;">
+                                             <i class="fas fa-paper-plane"></i> Xabar yozish
+                                         </button>
+                                     @endauth
                                     @php $isFav = Auth::check() && $product->isFavoritedBy(Auth::user()); @endphp
                                     <button type="button" class="action-icon-btn js-favorite-btn {{ $isFav ? 'is-favorite' : '' }}" data-id="{{ $product->id }}" title="Saralanganlar">
                                         <i class="{{ $isFav ? 'fas fa-heart text-red-500' : 'far fa-heart' }}"></i>
@@ -3221,6 +3369,191 @@
                 }, 2500);
             }
         });
+
+        function openSendMessageModal(productId, productTitle) {
+            const modal = document.getElementById('sendMessageModal');
+            if (modal) {
+                document.getElementById('modalProductId').value = productId;
+                document.getElementById('modalProductTitleDisplay').innerText = productTitle;
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeSendMessageModal() {
+            const modal = document.getElementById('sendMessageModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        function openAuthModal() {
+            const modal = document.getElementById('authRequiredModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authRequiredModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+
+    <!-- Auth Required Modal -->
+    <div id="authRequiredModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease-out;">
+        <div style="background: white; border-radius: 24px; max-width: 420px; width: 100%; padding: 32px 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; position: relative;">
+            <button type="button" onclick="closeAuthModal()" style="position: absolute; top: 18px; right: 18px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            
+            <div style="width: 72px; height: 72px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 4px solid #dbeafe;">
+                <i class="fas fa-lock" style="font-size: 28px; color: #0066FF;"></i>
+            </div>
+            
+            <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Tizimga kirish talab etiladi</h3>
+            <p style="font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+                Uy egasiga xabar yuborish va muloqot qilish uchun avval tizimga kiring yoki ro'yxatdan o'ting!
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{{ route('login') }}" style="width: 100%; padding: 13px; background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%); color: white; border-radius: 14px; font-weight: 800; font-size: 14px; text-decoration: none; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-right-to-bracket"></i> Tizimga kirish
+                </a>
+                <a href="{{ route('register') }}" style="width: 100%; padding: 13px; background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; border-radius: 14px; font-weight: 700; font-size: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-user-plus"></i> Ro'yxatdan o'tish
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Message Modal -->
+    <div id="sendMessageModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 20px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 14px; margin-bottom: 16px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: #111827; margin: 0;">Uy egasiga xabar yuborish</h3>
+                <button type="button" onclick="closeSendMessageModal()" style="background: none; border: none; font-size: 20px; color: #6b7280; cursor: pointer;">&times;</button>
+            </div>
+            
+            <form action="{{ route('messages.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" id="modalProductId" value="">
+                
+                <div style="margin-bottom: 14px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #0066FF; text-transform: uppercase; letter-spacing: 0.5px;">Tanlangan e'lon</span>
+                    <p id="modalProductTitleDisplay" style="font-size: 14px; font-weight: 700; color: #374151; margin-top: 2px;"></p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label for="modalMessageText" style="display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px;">Xabar matni:</label>
+                    <textarea name="message" id="modalMessageText" rows="4" required placeholder="Salom, ushbu xonadon bo'yicha ma'lumot olmoqchi edim..." style="width: 100%; border: 1px solid #d1d5db; border-radius: 12px; padding: 12px; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#0066FF'"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" onclick="closeSendMessageModal()" style="padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; background: #f3f4f6; color: #374151; border: none; cursor: pointer;">Bekor qilish</button>
+                    <button type="submit" style="padding: 10px 22px; border-radius: 10px; font-weight: 700; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-paper-plane"></i> Yuborish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN INTERACTIVE UZBEKISTAN MAP MODAL -->
+    <div id="interactiveMapModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 999999; align-items: center; justify-content: center; padding: 12px sm:padding: 24px;">
+        <div style="background: white; border-radius: 24px; max-width: 1280px; width: 100%; height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2);">
+            
+            <!-- Map Header Bar -->
+            <div style="background: #061c3f; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #0084ff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white;">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: white; tracking-tight">O'zbekiston Xaritasi bo'yicha Ko'chmas Mulklar</h3>
+                        <p style="font-size: 12px; color: #94a3b8; margin: 0;">Marker ustiga bosib e'lon haqida ma'lumot oling va ko'rish sahifasiga o'ting</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeInteractiveMapModal()" style="background: rgba(255,255,255,0.1); border: none; width: 38px; height: 38px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
+            </div>
+
+            <!-- Leaflet Container -->
+            <div id="uzbekistanLeafletMap" style="flex: 1; width: 100%; height: 100%; z-index: 1;"></div>
+        </div>
+    </div>
+
+    <script>
+        let leafletMapInstance = null;
+        const mapProductsData = @json($mapProducts ?? []);
+
+        function openInteractiveMapModal() {
+            const modal = document.getElementById('interactiveMapModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+
+            setTimeout(() => {
+                if (!leafletMapInstance) {
+                    // Center on Uzbekistan coordinates [41.3775, 64.5853], zoom 6.5
+                    leafletMapInstance = L.map('uzbekistanLeafletMap').setView([41.2995, 69.2401], 11);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(leafletMapInstance);
+
+                    // Add Custom Pins for each property
+                    if (mapProductsData && mapProductsData.length > 0) {
+                        const markersGroup = L.featureGroup();
+
+                        mapProductsData.forEach(item => {
+                            const customIcon = L.divIcon({
+                                className: 'custom-map-pin',
+                                html: `<div style="background: #0084ff; color: white; font-weight: 800; font-size: 11px; padding: 5px 10px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,132,255,0.4); border: 2px solid white; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+                                           <i class="fas fa-home"></i> ${item.price}
+                                       </div>`,
+                                iconSize: [90, 30],
+                                iconAnchor: [45, 15]
+                            });
+
+                            const popupHtml = `
+                                <div style="width: 220px; font-family: 'Inter', sans-serif; text-align: left; padding: 2px;">
+                                    <img src="${item.image}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 8px;">
+                                    <span style="background: #eff6ff; color: #0066FF; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${item.category} | ${item.sub_category}</span>
+                                    <h4 style="font-size: 13px; font-weight: 800; color: #0f172a; margin: 4px 0 2px; line-height: 1.3;">${item.name}</h4>
+                                    <div style="font-size: 15px; font-weight: 800; color: #ff9e0d; margin-bottom: 4px;">${item.price}</div>
+                                    <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;"><i class="fas fa-map-marker-alt" style="color: #0084ff;"></i> ${item.region}, ${item.city}</p>
+                                    <a href="${item.url}" style="display: block; width: 100%; padding: 8px; background: #061c3f; color: white; text-align: center; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 2px 6px rgba(6,28,63,0.3);">
+                                        Ko'rish sahifasiga o'tish &rarr;
+                                    </a>
+                                </div>
+                            `;
+
+                            const marker = L.marker([item.lat, item.lng], { icon: customIcon })
+                                .bindPopup(popupHtml)
+                                .addTo(leafletMapInstance);
+
+                            markersGroup.addLayer(marker);
+                        });
+
+                        leafletMapInstance.fitBounds(markersGroup.getBounds().pad(0.2));
+                    }
+                } else {
+                    leafletMapInstance.invalidateSize();
+                }
+            }, 200);
+        }
+
+        function closeInteractiveMapModal() {
+            const modal = document.getElementById('interactiveMapModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

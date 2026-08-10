@@ -69,7 +69,9 @@ class SearchController extends Controller
             }
         }
 
-        // 6. Sorting
+        // 6. Sorting (Always prioritize TOP announcements first!)
+        $query->orderBy('is_top', 'desc');
+
         $sortBy = $request->input('sort_by', 'newest');
         if ($sortBy === 'price_asc') {
             $query->orderBy('price', 'asc');
@@ -94,6 +96,36 @@ class SearchController extends Controller
             ->distinct()
             ->pluck('name');
 
-        return view('maniDashboard', compact('products', 'regions', 'categories', 'propertyTypes'));
+        // Prepare map markers data
+        $mapProducts = Product::with(['category', 'subCategory', 'region', 'city'])
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($product) {
+                // Default coordinates around Tashkent/Uzbekistan if empty
+                $lat = $product->latitude ?: (41.2995 + (crc32($product->id . 'lat') % 1000) / 10000);
+                $lng = $product->longitude ?: (69.2401 + (crc32($product->id . 'lng') % 1000) / 10000);
+                
+                $images = is_array($product->images) ? $product->images : json_decode($product->images ?? '[]', true);
+                $firstImg = !empty($images) ? $images[0] : '/images/hero.png';
+                if (!str_starts_with($firstImg, 'http') && !str_starts_with($firstImg, '/')) {
+                    $firstImg = '/storage/' . $firstImg;
+                }
+
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => number_format($product->price) . ' USD',
+                    'lat' => (float)$lat,
+                    'lng' => (float)$lng,
+                    'category' => $product->category->name ?? 'Sotuv',
+                    'sub_category' => $product->subCategory->name ?? 'Kvartira',
+                    'region' => $product->region->name ?? 'Toshkent shahar',
+                    'city' => $product->city->name ?? 'Yashnobod tumani',
+                    'image' => $firstImg,
+                    'url' => route('products.show', $product->id),
+                ];
+            });
+
+        return view('maniDashboard', compact('products', 'regions', 'categories', 'propertyTypes', 'mapProducts'));
     }
 }

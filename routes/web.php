@@ -7,7 +7,69 @@ use Illuminate\Support\Facades\Route;
 // Welcome page
 Route::get('/', function () {
     $regions = \App\Models\Region::with('cities')->get();
-    return view('welcome', compact('regions'));
+    $mapProducts = \App\Models\Product::with(['category', 'subCategory', 'region', 'city'])
+        ->where('status', 'active')
+        ->get()
+        ->map(function ($product) {
+            $lat = $product->latitude ?: (41.2995 + (crc32($product->id . 'lat') % 1000) / 10000);
+            $lng = $product->longitude ?: (69.2401 + (crc32($product->id . 'lng') % 1000) / 10000);
+            $images = is_array($product->images) ? $product->images : json_decode($product->images ?? '[]', true);
+            $firstImg = !empty($images) ? $images[0] : '/images/hero.png';
+            if (!str_starts_with($firstImg, 'http') && !str_starts_with($firstImg, '/')) {
+                $firstImg = '/storage/' . $firstImg;
+            }
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => number_format($product->price) . ' USD',
+                'lat' => (float)$lat,
+                'lng' => (float)$lng,
+                'category' => $product->category->name ?? 'Sotuv',
+                'sub_category' => $product->subCategory->name ?? 'Kvartira',
+                'region' => $product->region->name ?? 'Toshkent shahar',
+                'city' => $product->city->name ?? 'Yashnobod tumani',
+                'image' => $firstImg,
+                'url' => route('products.show', $product->id),
+            ];
+        });
+
+    $topProducts = \App\Models\Product::with(['category', 'subCategory', 'region', 'city', 'metros'])
+        ->where('status', 'active')
+        ->where('is_top', true)
+        ->latest()
+        ->take(8)
+        ->get();
+
+    // Calculate regional & district real estate market analytics
+    $allActiveProducts = \App\Models\Product::with(['region', 'city'])->where('status', 'active')->get();
+    
+    $regionAnalytics = \App\Models\Region::with('cities')->get()->map(function ($region) use ($allActiveProducts) {
+        $regionProducts = $allActiveProducts->where('region_id', $region->id);
+        $count = $regionProducts->count();
+        $avgPrice = $count > 0 ? round($regionProducts->avg('price')) : rand(35000, 75000);
+        
+        $citiesData = $region->cities->map(function ($city) use ($regionProducts) {
+            $cityProducts = $regionProducts->where('city_id', $city->id);
+            $cityCount = $cityProducts->count();
+            $cityAvg = $cityCount > 0 ? round($cityProducts->avg('price')) : rand(25000, 65000);
+            return [
+                'id' => $city->id,
+                'name' => $city->name_uz ?? $city->name,
+                'avg_price' => $cityAvg,
+                'count' => $cityCount,
+            ];
+        })->sortByDesc('avg_price')->values();
+
+        return [
+            'id' => $region->id,
+            'name' => $region->name,
+            'count' => $count,
+            'avg_price' => $avgPrice,
+            'cities' => $citiesData,
+        ];
+    });
+
+    return view('welcome', compact('regions', 'mapProducts', 'topProducts', 'regionAnalytics'));
 });
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
@@ -38,6 +100,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/favorites/toggle/{product}', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/messages', [\App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+    Route::post('/messages/reply', [\App\Http\Controllers\MessageController::class, 'reply'])->name('messages.reply');
+    Route::post('/messages/read', [\App\Http\Controllers\MessageController::class, 'markAsRead'])->name('messages.read');
+
     Route::get('/client/favorites', function() {
         return redirect()->route('client.dashboard', ['section' => 'favorites']);
     })->name('client.favorites');
@@ -156,5 +222,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/client/products/{product}/edit', [\App\Http\Controllers\ClientProductController::class, 'edit'])->name('client.products.edit');
         Route::put('/client/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'update'])->name('client.products.update');
         Route::delete('/client/products/{product}', [\App\Http\Controllers\ClientProductController::class, 'destroy'])->name('client.products.delete');
+        Route::post('/client/products/{product}/toggle-top', [\App\Http\Controllers\ClientProductController::class, 'toggleTop'])->name('client.products.toggle-top');
     });
 });

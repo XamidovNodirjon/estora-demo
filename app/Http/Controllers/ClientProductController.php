@@ -133,4 +133,23 @@ class ClientProductController extends Controller
         return redirect()->route('client.dashboard')
             ->with('success', 'E\'lon muvaffaqiyatli o\'chirildi!');
     }
+
+    /**
+     * Toggle TOP status for announcement.
+     */
+    public function toggleTop(Product $product)
+    {
+        if (Auth::id() !== $product->user_id && !in_array(Auth::user()->role?->name ?? Auth::user()->type, ['admin', 'dev'])) {
+            abort(403, 'Ushbu amalni bajarish huquqingiz yo\'q.');
+        }
+
+        $product->is_top = !$product->is_top;
+        $product->save();
+
+        $message = $product->is_top 
+            ? 'E\'lon muvaffaqiyatli TOP darajasiga ko\'tarildi!' 
+            : 'E\'lon TOP darajasidan olib tashlandi.';
+
+        return redirect()->back()->with('success', $message);
+    }
 }

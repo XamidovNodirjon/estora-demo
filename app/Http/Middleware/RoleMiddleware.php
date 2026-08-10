@@ -21,9 +21,15 @@ class RoleMiddleware
         $user = Auth::user();
         $userRole = $user->role?->name ?? $user->type;
 
-        // Check user's role relation or type attribute
-        if ($userRole && (in_array($userRole, $roles) || in_array($userRole, ['dev', 'admin', 'manager']))) {
-            return $next($request);
+        // Strict check user's role relation or type attribute against allowed roles for the route
+        if ($userRole) {
+            // Dev has access everywhere
+            if ($userRole === 'dev') {
+                return $next($request);
+            }
+            if (in_array($userRole, $roles)) {
+                return $next($request);
+            }
         }
 
         abort(403, 'Ushbu sahifaga kirish huquqingiz yo\'q.');

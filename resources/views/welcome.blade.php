@@ -9,9 +9,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Leaflet OpenStreetMap CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         /* CSS RESET & VARIABLES */
         :root {
@@ -2004,7 +2007,7 @@
                 </form>
 
                 <div class="map-trigger-container">
-                    <button class="btn-view-map">
+                    <button type="button" onclick="openInteractiveMapModal()" class="btn-view-map">
                         <i class="fas fa-map-marked-alt"></i>
                         Xaritadan ko'rish
                     </button>
@@ -2058,141 +2061,55 @@
             </div>
 
             <div class="listings-grid">
-                <!-- CARD 1 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment1.png" alt="Bedroom Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">50.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
+                @forelse($topProducts as $topItem)
+                    @php
+                        $topImgs = is_array($topItem->images) ? $topItem->images : json_decode($topItem->images ?? '[]', true);
+                        $topImg = !empty($topImgs) ? $topImgs[0] : '/images/apartment1.png';
+                        if (!str_starts_with($topImg, 'http') && !str_starts_with($topImg, '/')) {
+                            $topImg = '/storage/' . $topImg;
+                        }
+                    @endphp
+                    <!-- TOP CARD -->
+                    <div class="listing-card cursor-pointer" onclick="window.location.href='{{ route('products.show', $topItem->id) }}'">
+                        <div class="listing-img-wrapper">
+                            <img src="{{ $topImg }}" alt="{{ $topItem->name }}">
+                            <span class="badge-top">TOP</span>
+                            <div class="btn-favorite" onclick="event.stopPropagation();"><i class="far fa-heart"></i></div>
+                            <span class="badge-promo yaxshi-taklif">Yaxshi Taklif</span>
                         </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 2 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment2.png" alt="Living Room Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo zudlik-bilan">Zudlik bilan</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">45.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
+                        <div class="listing-details">
+                            <div class="listing-header-row">
+                                <span class="listing-price">{{ number_format($topItem->price, 0, '', ' ') }} so'm</span>
+                                <span class="listing-date">{{ $topItem->created_at ? $topItem->created_at->diffForHumans() : 'Yangi' }}</span>
+                            </div>
+                            <h3 class="listing-title">{{ $topItem->name }}</h3>
+                            <p class="listing-location">{{ $topItem->city->name_uz ?? ($topItem->region->name_uz ?? ($topItem->landmark ?? 'Toshkent')) }}</p>
+                            <div class="listing-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="listing-specs">
+                                <div class="spec-item"><i class="fas fa-building"></i> {{ $topItem->floor ?? 1 }}/{{ $topItem->building_floor ?? 5 }} etaj</div>
+                                <div class="spec-item"><i class="fas fa-door-open"></i> {{ $topItem->rooms ?? 1 }} xona</div>
+                                <div class="spec-item"><i class="fas fa-ruler-combined"></i> {{ $topItem->square ?? 0 }}m²</div>
+                            </div>
+                            <div class="listing-tags">
+                                <span class="listing-tag repair"><i class="fas fa-tools"></i> {{ $topItem->repair ?? 'Yevro ta\'mir' }}</span>
+                                @if($topItem->metros->first())
+                                    <span class="listing-tag metro"><i class="fas fa-subway"></i> {{ $topItem->metros->first()->name }}</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- CARD 3 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment3.png" alt="Kitchen Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo super-narx">Super Narx</span>
+                @empty
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fa-solid fa-crown text-3xl text-amber-400 mb-2"></i>
+                        <p class="font-bold text-sm">Hozircha TOP darajasiga ko'tarilgan e'lonlar mavjud emas.</p>
                     </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">30.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 4 -->
-                <div class="listing-card">
-                    <div class="listing-img-wrapper">
-                        <img src="/images/apartment1.png" alt="Bedroom Interior">
-                        <span class="badge-top">TOP</span>
-                        <div class="btn-favorite"><i class="far fa-heart"></i></div>
-                        <span class="badge-promo super-narx">Super Narx</span>
-                    </div>
-                    <div class="listing-details">
-                        <div class="listing-header-row">
-                            <span class="listing-price">30.000 y.e</span>
-                            <span class="listing-date">1 hafta oldin</span>
-                        </div>
-                        <h3 class="listing-title">Kvartira Sotiladi</h3>
-                        <p class="listing-location">Qibray tumani, Limonaria village turar-joy majmuasi</p>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <div class="listing-specs">
-                            <div class="spec-item"><i class="fas fa-building"></i> 5/7 etaj</div>
-                            <div class="spec-item"><i class="fas fa-door-open"></i> 2 xona</div>
-                            <div class="spec-item"><i class="fas fa-ruler-combined"></i> 45m²</div>
-                        </div>
-                        <div class="listing-tags">
-                            <span class="listing-tag repair"><i class="fas fa-tools"></i> Yevro ta'mir</span>
-                            <span class="listing-tag metro"><i class="fas fa-subway"></i> Oybek Metro</span>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -2255,108 +2172,68 @@
                 </div>
 
                 <div class="analytics-right">
-                    <div class="analytics-right-card">
-                        <div class="map-header">
-                            <div class="map-select-wrapper">
-                                <select>
-                                    <option>Toshkent shahri</option>
-                                    <option>Samarqand shahri</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
+                    <!-- Premium Dark Leaderboard Analytics Card -->
+                    <div style="background: linear-gradient(145deg, #0f1729 0%, #0d1b3e 50%, #0a1628 100%); border-radius: 20px; padding: 20px; width: 320px; margin-left: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06);">
+                        
+                        <!-- Card Header -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                            <div>
+                                <div style="font-size: 9px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px;">
+                                    🏙️ Ko'chmas Mulk Bozori
+                                </div>
+                                <div style="font-size: 15px; font-weight: 900; color: #ffffff;" id="selectedRegionNameDisplay">
+                                    Toshkent shahri
+                                </div>
+                            </div>
+                            <select id="analyticsRegionSelect" onchange="onAnalyticsRegionChange(this.value)" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 10px; font-size: 10px; font-weight: 700; color: #cbd5e1; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none;">
+                                @foreach($regionAnalytics as $rAnalytics)
+                                    <option value="{{ $rAnalytics['id'] }}" style="background: #1e293b; color: #f1f5f9;">{{ $rAnalytics['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Average Price Stat Bar -->
+                        <div style="background: linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(99,102,241,0.15) 100%); border: 1px solid rgba(96,165,250,0.25); border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <div style="font-size: 9px; color: #93c5fd; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Viloyat o'rtacha narxi</div>
+                                <div style="font-size: 22px; font-weight: 900; color: #fbbf24; line-height: 1.2; margin-top: 2px;" id="regionAvgPriceDisplay">$58,400</div>
+                            </div>
+                            <div style="width: 40px; height: 40px; background: rgba(251,191,36,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                                📊
                             </div>
                         </div>
 
-                        <!-- Stylized SVG Map of Tashkent districts -->
-                        <div class="svg-map-container">
-                            <svg viewBox="0 0 400 300" class="tashkent-map-svg">
-                                <defs>
-                                    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#0084ff" stop-opacity="0.6"/>
-                                        <stop offset="100%" stop-color="#0084ff" stop-opacity="0"/>
-                                    </radialGradient>
-                                </defs>
-                                <!-- Map Background grid paths (styled look) -->
-                                <rect width="100%" height="100%" fill="#f1f5f9" />
-                                
-                                <!-- Abstract District Shapes -->
-                                <!-- Yunusobod -->
-                                <path d="M 120,40 L 260,20 L 250,90 L 170,110 Z" fill="#90caf9" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="180" y="65" font-size="11" font-weight="700" fill="#061c3f" opacity="0.8">Yunusobod</text>
-                                
-                                <!-- Shayxontohur -->
-                                <path d="M 70,100 L 170,110 L 150,170 L 60,160 Z" fill="#42a5f5" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="90" y="135" font-size="11" font-weight="700" fill="#061c3f" opacity="0.8">Shayxontohur</text>
-                                
-                                <!-- Mirobod -->
-                                <path d="M 170,110 L 250,90 L 310,160 L 230,220 Z" fill="#1e88e5" stroke="#ffffff" stroke-width="1.5" class="map-district" />
-                                <text x="220" y="145" font-size="11" font-weight="700" fill="#ffffff" opacity="0.9">Mirobod</text>
-                                
-                                <!-- Glowing Pins -->
-                                <circle cx="230" cy="130" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="230" cy="130" r="4" fill="#ff9e0d" />
-
-                                <circle cx="130" cy="120" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="130" cy="120" r="4" fill="#ff9e0d" />
-
-                                <circle cx="210" cy="70" r="12" fill="url(#glow)" class="map-pulse" />
-                                <circle cx="210" cy="70" r="4" fill="#ff9e0d" />
-                            </svg>
+                        <!-- Leaderboard Header -->
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 6px;">
+                                <span>🏆</span> Tumanlar reytingi
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span id="districtPageIndicator" style="font-size: 10px; font-weight: 700; color: #64748b; font-variant-numeric: tabular-nums;">1 / 1</span>
+                                <button type="button" id="prevDistrictPageBtn" onclick="changeDistrictPage(-1)" style="width: 24px; height: 24px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; transition: all 0.2s;">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </button>
+                                <button type="button" id="nextDistrictPageBtn" onclick="changeDistrictPage(1)" style="width: 24px; height: 24px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; transition: all 0.2s;">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Sparkline Stats Section -->
-                        <div class="map-stats-grid">
-                            <div class="stat-block">
-                                <div class="stat-block-header">
-                                    <span class="stat-block-title">Narx tendensiyasi</span>
-                                    <span class="stat-change-tag">2.8%</span>
-                                </div>
-                                <span class="stat-meta-text">O'tgan 3 oy</span>
-                                
-                                <!-- SVG Line Chart -->
-                                <div class="sparkline-container">
-                                    <svg viewBox="0 0 160 50" width="100%" height="100%">
-                                        <defs>
-                                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="#0084ff" stop-opacity="0.3" />
-                                                <stop offset="100%" stop-color="#0084ff" stop-opacity="0" />
-                                            </linearGradient>
-                                        </defs>
-                                        <path d="M 0,40 Q 30,25 60,35 T 120,15 T 160,5 L 160,50 L 0,50 Z" fill="url(#chartGrad)" />
-                                        <path d="M 0,40 Q 30,25 60,35 T 120,15 T 160,5" fill="none" stroke="#0084ff" stroke-width="2.5" />
-                                        <circle cx="160" cy="5" r="4" fill="#0084ff" />
-                                    </svg>
-                                </div>
-                            </div>
+                        <!-- Leaderboard Items Container -->
+                        <div id="districtAnalyticsSlider" style="display: flex; flex-direction: column; gap: 6px; min-height: 230px;">
+                            <!-- JS generates items here -->
+                        </div>
 
-                            <div class="stat-block" style="border-left: 1px solid var(--border-color); padding-left: 20px;">
-                                <div class="stat-block-header">
-                                    <span class="stat-block-title">Eng qimmat hududlar</span>
-                                    <span class="stat-change-tag" style="color: #2e7d32; background-color: #e8f5e9;">14.3%</span>
-                                </div>
-                                <div class="expensive-list">
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">01</span>
-                                            <span class="expensive-name">Mirobod</span>
-                                        </div>
-                                        <span class="expensive-val">22.8 mln</span>
-                                    </div>
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">02</span>
-                                            <span class="expensive-name">Yunusobod</span>
-                                        </div>
-                                        <span class="expensive-val">20.1 mln</span>
-                                    </div>
-                                    <div class="expensive-item">
-                                        <div class="expensive-item-left">
-                                            <span class="expensive-num">03</span>
-                                            <span class="expensive-name">Shayxontohur</span>
-                                        </div>
-                                        <span class="expensive-val">19.2 mln</span>
-                                    </div>
+                        <!-- Footer Trend Row -->
+                        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 28px; height: 28px; background: rgba(16,185,129,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px;">📈</div>
+                                <div>
+                                    <div style="font-size: 11px; font-weight: 700; color: #e2e8f0;">Bozor o'sish dinamikasi</div>
+                                    <div style="font-size: 9px; color: #64748b;">Oxirgi 3 oy davomida</div>
                                 </div>
                             </div>
+                            <div style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); border-radius: 8px; padding: 3px 8px; font-size: 11px; font-weight: 900; color: #34d399;">+3.4%</div>
                         </div>
                     </div>
                 </div>
@@ -2730,6 +2607,211 @@
                     toast.style.opacity = '0';
                     toast.style.transform = 'translateY(20px)';
                 }, 2500);
+            }
+        });
+    </script>
+
+    <!-- FULLSCREEN INTERACTIVE UZBEKISTAN MAP MODAL -->
+    <div id="interactiveMapModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 999999; align-items: center; justify-content: center; padding: 12px sm:padding: 24px;">
+        <div style="background: white; border-radius: 24px; max-width: 1280px; width: 100%; height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.2);">
+            
+            <!-- Map Header Bar -->
+            <div style="background: #061c3f; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #0084ff; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white;">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: white; tracking-tight">O'zbekiston Xaritasi bo'yicha Ko'chmas Mulklar</h3>
+                        <p style="font-size: 12px; color: #94a3b8; margin: 0;">Marker ustiga bosib e'lon haqida ma'lumot oling va ko'rish sahifasiga o'ting</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeInteractiveMapModal()" style="background: rgba(255,255,255,0.1); border: none; width: 38px; height: 38px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
+            </div>
+
+            <!-- Leaflet Container -->
+            <div id="welcomeUzbekistanLeafletMap" style="flex: 1; width: 100%; height: 100%; z-index: 1;"></div>
+        </div>
+    </div>
+
+    <script>
+        let welcomeLeafletMapInstance = null;
+        const welcomeMapProductsData = @json($mapProducts ?? []);
+
+        function openInteractiveMapModal() {
+            const modal = document.getElementById('interactiveMapModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+
+            setTimeout(() => {
+                if (!welcomeLeafletMapInstance) {
+                    welcomeLeafletMapInstance = L.map('welcomeUzbekistanLeafletMap').setView([41.2995, 69.2401], 11);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(welcomeLeafletMapInstance);
+
+                    if (welcomeMapProductsData && welcomeMapProductsData.length > 0) {
+                        const markersGroup = L.featureGroup();
+
+                        welcomeMapProductsData.forEach(item => {
+                            const customIcon = L.divIcon({
+                                className: 'custom-map-pin',
+                                html: `<div style="background: #0084ff; color: white; font-weight: 800; font-size: 11px; padding: 5px 10px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,132,255,0.4); border: 2px solid white; white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+                                           <i class="fas fa-home"></i> ${item.price}
+                                       </div>`,
+                                iconSize: [90, 30],
+                                iconAnchor: [45, 15]
+                            });
+
+                            const popupHtml = `
+                                <div style="width: 220px; font-family: 'Inter', sans-serif; text-align: left; padding: 2px;">
+                                    <img src="${item.image}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 8px;">
+                                    <span style="background: #eff6ff; color: #0066FF; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${item.category} | ${item.sub_category}</span>
+                                    <h4 style="font-size: 13px; font-weight: 800; color: #0f172a; margin: 4px 0 2px; line-height: 1.3;">${item.name}</h4>
+                                    <div style="font-size: 15px; font-weight: 800; color: #ff9e0d; margin-bottom: 4px;">${item.price}</div>
+                                    <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;"><i class="fas fa-map-marker-alt" style="color: #0084ff;"></i> ${item.region}, ${item.city}</p>
+                                    <a href="${item.url}" style="display: block; width: 100%; padding: 8px; background: #061c3f; color: white; text-align: center; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 2px 6px rgba(6,28,63,0.3);">
+                                        Ko'rish sahifasiga o'tish &rarr;
+                                    </a>
+                                </div>
+                            `;
+
+                            const marker = L.marker([item.lat, item.lng], { icon: customIcon })
+                                .bindPopup(popupHtml)
+                                .addTo(welcomeLeafletMapInstance);
+
+                            markersGroup.addLayer(marker);
+                        });
+
+                        welcomeLeafletMapInstance.fitBounds(markersGroup.getBounds().pad(0.2));
+                    }
+                } else {
+                    welcomeLeafletMapInstance.invalidateSize();
+                }
+            }, 200);
+        }
+
+        function closeInteractiveMapModal() {
+            const modal = document.getElementById('interactiveMapModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        // ================= REGIONAL ANALYTICS INTERACTIVE PAGINATED 5-ITEM LIST SCRIPT =================
+        const regionAnalyticsData = @json($regionAnalytics ?? []);
+        let currentAnalyticsCities = [];
+        let currentAnalyticsPage = 1;
+        const ANALYTICS_PER_PAGE = 5;
+
+        function onAnalyticsRegionChange(regionId) {
+            if (!regionAnalyticsData || regionAnalyticsData.length === 0) return;
+            
+            const selectedRegion = regionAnalyticsData.find(r => r.id == regionId) || regionAnalyticsData[0];
+            if (!selectedRegion) return;
+
+            // Update Region Name & Hero Average Price
+            const nameEl = document.getElementById('selectedRegionNameDisplay');
+            const avgPriceEl = document.getElementById('regionAvgPriceDisplay');
+
+            if (nameEl) nameEl.innerText = selectedRegion.name;
+            if (avgPriceEl) avgPriceEl.innerText = '$' + Number(selectedRegion.avg_price).toLocaleString();
+
+            currentAnalyticsCities = selectedRegion.cities || [];
+            currentAnalyticsPage = 1;
+            renderAnalyticsDistrictPage();
+        }
+
+        function renderAnalyticsDistrictPage() {
+            const container = document.getElementById('districtAnalyticsSlider');
+            const pageIndicator = document.getElementById('districtPageIndicator');
+            const prevBtn = document.getElementById('prevDistrictPageBtn');
+            const nextBtn = document.getElementById('nextDistrictPageBtn');
+
+            if (!container) return;
+
+            const totalItems = currentAnalyticsCities.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / ANALYTICS_PER_PAGE));
+
+            if (currentAnalyticsPage > totalPages) currentAnalyticsPage = totalPages;
+            if (currentAnalyticsPage < 1) currentAnalyticsPage = 1;
+
+            if (pageIndicator) pageIndicator.innerText = `${currentAnalyticsPage} / ${totalPages}`;
+            if (prevBtn) {
+                prevBtn.disabled = (currentAnalyticsPage <= 1);
+                prevBtn.style.opacity = currentAnalyticsPage <= 1 ? '0.35' : '1';
+            }
+            if (nextBtn) {
+                nextBtn.disabled = (currentAnalyticsPage >= totalPages);
+                nextBtn.style.opacity = currentAnalyticsPage >= totalPages ? '0.35' : '1';
+            }
+
+            if (totalItems === 0) {
+                container.innerHTML = '<div style="padding:16px;text-align:center;font-size:11px;color:#475569;">Ushbu hudud bo\'yicha ma\'lumotlar kiritilmoqda...</div>';
+                return;
+            }
+
+            const startIndex = (currentAnalyticsPage - 1) * ANALYTICS_PER_PAGE;
+            const pageCities = currentAnalyticsCities.slice(startIndex, startIndex + ANALYTICS_PER_PAGE);
+
+            // Find max price for progress bar scaling on this page
+            const maxPrice = Math.max(...pageCities.map(c => c.avg_price || 0)) || 1;
+            const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+            const barColors = [
+                'linear-gradient(90deg,#f59e0b,#fbbf24)',
+                'linear-gradient(90deg,#94a3b8,#cbd5e1)',
+                'linear-gradient(90deg,#d97706,#f59e0b)',
+                'linear-gradient(90deg,#3b82f6,#60a5fa)',
+                'linear-gradient(90deg,#6366f1,#818cf8)',
+            ];
+
+            let html = '';
+            pageCities.forEach((c, idx) => {
+                const globalIdx = startIndex + idx;
+                const barWidthPct = maxPrice > 0 ? Math.round((c.avg_price / maxPrice) * 100) : 0;
+                const medal = globalIdx < 3 ? medals[globalIdx] : String(globalIdx + 1);
+                const isMedal = globalIdx < 3;
+                const barColor = barColors[idx % barColors.length];
+
+                html += `
+                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:9px 11px;transition:background 0.2s;cursor:default;"
+                         onmouseenter="this.style.background='rgba(255,255,255,0.09)'"
+                         onmouseleave="this.style.background='rgba(255,255,255,0.04)'">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+                            <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+                                <div style="font-size:${isMedal ? '15px' : '9px'};font-weight:900;color:${isMedal ? 'inherit' : '#64748b'};${!isMedal ? 'background:rgba(255,255,255,0.06);width:18px;height:18px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;' : 'flex-shrink:0;'}">${medal}</div>
+                                <div style="min-width:0;flex:1;">
+                                    <div style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${c.name}">${c.name}</div>
+                                    <div style="font-size:9px;color:#475569;font-weight:500;">${c.count > 0 ? c.count + ' ta e\'lon' : 'Faol bozor'}</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right;flex-shrink:0;margin-left:6px;">
+                                <div style="font-size:12px;font-weight:900;color:#fbbf24;">$${Number(c.avg_price).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div style="height:2.5px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
+                            <div style="height:100%;width:${barWidthPct}%;background:${barColor};border-radius:99px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function changeDistrictPage(direction) {
+            currentAnalyticsPage += direction;
+            renderAnalyticsDistrictPage();
+        }
+
+        // Initialize default region analytics on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectEl = document.getElementById('analyticsRegionSelect');
+            if (selectEl && selectEl.value) {
+                onAnalyticsRegionChange(selectEl.value);
             }
         });
     </script>

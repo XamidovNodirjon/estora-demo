@@ -3,10 +3,10 @@
 @section('title', 'Makler Admin Paneli')
 
 @section('content')
-<div class="flex flex-col lg:flex-row gap-5 items-start w-full">
+<div class="flex flex-col lg:flex-row gap-5 items-start w-full min-w-full">
 
     <!-- ================= COLUMN 1: LEFT SIDEBAR NAVIGATION ================= -->
-    <aside class="w-full lg:w-60 flex-shrink-0 space-y-4">
+    <aside class="w-full lg:w-60 flex-shrink-0 space-y-4 hidden lg:block">
         
         <!-- Main Vertical Navigation Box -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-xs space-y-1">
@@ -37,6 +37,9 @@
                     <i class="fa-regular fa-comments text-base {{ $section === 'chats' ? 'text-white' : 'text-slate-400' }}"></i>
                     <span>Chatlar</span>
                 </div>
+                @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
+                    <span class="bg-red-500 text-white font-extrabold text-[11px] px-2 py-0.5 rounded-full animate-pulse">{{ $unreadNotificationCount }}</span>
+                @endif
             </a>
 
             <!-- 4. Statistika (NEW DEDICATED STATS PAGE) -->
@@ -85,13 +88,12 @@
             </a>
 
             <!-- 9. Profildan Chiqish (Logout) -->
-            <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="pt-2 border-t border-slate-100 mt-2">
-                @csrf
-                <button type="submit" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl px-3.5 py-2.5 flex items-center gap-3 text-xs sm:text-sm transition-all cursor-pointer text-left">
+            <div class="pt-2 border-t border-slate-100 mt-2">
+                <button type="button" onclick="openLogoutConfirmModal()" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl px-3.5 py-2.5 flex items-center gap-3 text-xs sm:text-sm transition-all cursor-pointer text-left">
                     <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
                     <span>Profildan chiqish</span>
                 </button>
-            </form>
+            </div>
 
         </div>
 
@@ -295,24 +297,142 @@
         @elseif($section === 'chats')
             <!-- ================= CHATLAR SAHIFASI ================= -->
             <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
-                        <i class="fa-regular fa-comments text-blue-600"></i>
-                        <span>Chatlar va Mijozlar Muloqoti</span>
-                    </h2>
-                    <span class="bg-red-500 text-white font-extrabold text-xs px-2.5 py-0.5 rounded-full">3 ta yangi</span>
-                </div>
-                
-                <div class="text-center py-12 space-y-3">
-                    <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mx-auto">
-                        <i class="fa-regular fa-comments"></i>
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
+                            <i class="fa-regular fa-comments text-blue-600"></i>
+                            <span>Chatlar va Muloqotlar Ro'yxati</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">Mijozlar va e'lon egalari bilan kelgan barcha habarlar ro'yxati</p>
                     </div>
-                    <h4 class="font-extrabold text-slate-900 text-base">Chatlar Bo'limi Active</h4>
-                    <p class="text-xs text-slate-500 max-w-sm mx-auto">
-                        Mijozlariz bilan to'g'ridan-to'g'ri xabarlashing va savollarga tezkor javob bering.
-                    </p>
+                    @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
+                        <span class="bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full animate-pulse">{{ $unreadNotificationCount }} ta yangi xabar</span>
+                    @else
+                        <span class="bg-slate-100 text-slate-600 font-bold text-xs px-3 py-1 rounded-full">Yangi xabar yo'q</span>
+                    @endif
                 </div>
+
+                @if($conversations->count() > 0)
+                    <!-- Conversations Container -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs text-slate-400 font-bold px-1">
+                            <span>Suhbatlar ({{ $conversations->count() }} ta)</span>
+                            <span>Aktivlash uchun tanlang</span>
+                        </div>
+
+                        <!-- Thread List Items -->
+                        <div class="space-y-3">
+                            @foreach($conversations as $index => $conv)
+                                <div class="border border-slate-200/90 hover:border-blue-300 rounded-2xl p-4 transition-all bg-white shadow-2xs">
+                                    <!-- Conversation Header / Item Card -->
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-extrabold flex items-center justify-center text-sm flex-shrink-0 shadow-xs">
+                                                {{ strtoupper(substr($conv['partner']?->name ?? 'F', 0, 2)) }}
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <h3 class="font-extrabold text-sm text-slate-900">{{ $conv['partner']?->name ?? 'Foydalanuvchi' }}</h3>
+                                                    @if($conv['unread_count'] > 0)
+                                                        <span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">{{ $conv['unread_count'] }} yangi</span>
+                                                    @endif
+                                                </div>
+                                                <a href="{{ route('products.show', $conv['product_id']) }}" target="_blank" class="text-xs text-blue-600 font-extrabold hover:underline flex items-center gap-1 mt-0.5">
+                                                    <i class="fa-solid fa-house text-[11px]"></i>
+                                                    <span>{{ $conv['product']?->title ?? 'E\'lon' }}</span>
+                                                    <i class="fa-solid fa-external-link text-[10px]"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                                            <span class="text-[11px] text-slate-400 font-semibold">{{ $conv['latest_message']?->created_at?->diffForHumans() }}</span>
+                                            <button type="button" onclick="toggleThreadWindow({{ $index }}, {{ $conv['product_id'] }}, {{ $conv['partner_id'] }})" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 border border-blue-100">
+                                                <span>Suhbatni ochish</span>
+                                                <i class="fa-solid fa-chevron-down text-[10px] transition-transform" id="chevron-icon-{{ $index }}"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Collapsible Chat Window for this Thread -->
+                                    <div id="thread-window-{{ $index }}" class="hidden pt-4 space-y-4">
+                                        <!-- Messages List -->
+                                        <div class="bg-slate-50/70 border border-slate-100 rounded-2xl p-4 max-h-[350px] overflow-y-auto space-y-3">
+                                            @foreach($conv['messages'] as $msg)
+                                                @php $isMe = $msg->sender_id === Auth::id(); @endphp
+                                                <div class="flex flex-col {{ $isMe ? 'items-end' : 'items-start' }}">
+                                                    <div class="{{ $isMe ? 'bg-blue-600 text-white rounded-2xl rounded-tr-xs' : 'bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-xs' }} max-w-[85%] p-3.5 text-xs leading-relaxed shadow-2xs">
+                                                        {{ $msg->message }}
+                                                    </div>
+                                                    <span class="text-[10px] text-slate-400 font-medium mt-1 px-1">
+                                                        {{ $msg->created_at->format('H:i') }}
+                                                        @if($isMe)
+                                                            <i class="fa-solid {{ $msg->read_at ? 'fa-check-double text-blue-500' : 'fa-check text-slate-400' }} ml-0.5"></i>
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <!-- Reply Form -->
+                                        <form action="{{ route('messages.reply') }}" method="POST" class="flex gap-2">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $conv['product_id'] }}">
+                                            <input type="hidden" name="receiver_id" value="{{ $conv['partner_id'] }}">
+                                            <input type="text" name="message" required placeholder="Javobingizni yozing..." class="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-blue-600 shadow-2xs">
+                                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-1.5">
+                                                <span>Yuborish</span>
+                                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-12 space-y-3">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-regular fa-comments"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-900 text-base">Hozircha xabarlar yo'q</h4>
+                        <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                            E'lonlar bo'yicha kelgan va yuborilgan xabarlar shu yerda aks etadi.
+                        </p>
+                    </div>
+                @endif
             </div>
+
+            <script>
+                function toggleThreadWindow(index, productId, partnerId) {
+                    const el = document.getElementById('thread-window-' + index);
+                    const icon = document.getElementById('chevron-icon-' + index);
+                    if (el) {
+                        const isHidden = el.classList.contains('hidden');
+                        if (isHidden) {
+                            el.classList.remove('hidden');
+                            if (icon) icon.style.transform = 'rotate(180deg)';
+                            markAsRead(productId, partnerId);
+                        } else {
+                            el.classList.add('hidden');
+                            if (icon) icon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+
+                function markAsRead(productId, partnerId) {
+                    fetch('{{ route("messages.read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ product_id: productId, partner_id: partnerId })
+                    }).then(res => res.json()).then(data => {
+                        console.log('Marked read:', data);
+                    });
+                }
+            </script>
 
         @elseif($section === 'subscription')
             <!-- ================= OBUNA VA TO'LOVLAR SAHIFASI ================= -->
@@ -701,55 +821,80 @@
         @else
             <!-- ================= DEFAULT MAIN DASHBOARD & E'LONLARIM VIEW ================= -->
             
-            <!-- 1. HERO WELCOME BANNER WITH HOUSE GRAPHIC -->
-            <div class="bg-[#0B1A30] rounded-2xl p-6 sm:p-7 relative overflow-hidden text-white shadow-md border border-slate-800/80">
-                
-                <!-- Right side house graphic image -->
-                <img src="/images/hero.png" alt="Luxury House" class="absolute right-0 bottom-0 top-0 h-full w-2/5 md:w-1/2 object-cover object-left opacity-90 hidden sm:block pointer-events-none">
-                <div class="absolute inset-0 bg-gradient-to-r from-[#0B1A30] via-[#0B1A30]/95 to-transparent z-10 pointer-events-none"></div>
-
-                <div class="relative z-20 space-y-5 max-w-xl">
-                    <div>
-                        <h2 class="font-black text-2xl sm:text-3xl text-white tracking-tight leading-tight">
-                            Xush kelibsiz, {{ Auth::user()->name ?? 'Akmaljon' }}!
-                        </h2>
-                        <p class="text-slate-300 text-xs sm:text-sm font-medium mt-1">
-                            Bugun ham samarali kun tilaymiz.
-                        </p>
-                    </div>
-
-                    <!-- View Count Statistics Cards Row (FAQT VIEW COUNT) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 max-w-md">
-                        
-                        <!-- Stat 1: Jami ko'rishlar (Total Views) -->
-                        <a href="{{ route('client.dashboard', ['section' => 'stats']) }}" class="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-xl p-3 flex items-center gap-3 hover:border-blue-500 transition-all group">
-                            <div class="w-10 h-10 rounded-lg bg-blue-600/30 text-blue-400 flex items-center justify-center text-base flex-shrink-0 border border-blue-500/30 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                <i class="fa-regular fa-eye"></i>
+            <!-- 1. USER PROFILE HEADER CARD (AS IN USER REQUEST IMAGE) -->
+            <div class="bg-[#0B172A] rounded-3xl p-6 text-white shadow-xl border border-slate-800 space-y-5">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-2xl ring-4 ring-blue-500/20 shadow-md uppercase">
+                                {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
                             </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] text-slate-300 font-semibold block leading-tight truncate">Jami ko'rishlar soni</span>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <span class="text-xl font-black text-white">{{ $totalViews }}</span>
-                                    <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-extrabold px-1.5 py-0.2 rounded border border-emerald-500/30">Ko'rishlar</span>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Stat 2: Mening e'lonlarim soni -->
-                        <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-xl p-3 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-slate-800/90 text-slate-300 flex items-center justify-center text-base flex-shrink-0">
-                                <i class="fa-regular fa-folder-open"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <span class="text-[11px] text-slate-300 font-semibold block leading-tight truncate">Mening e'lonlarim</span>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <span class="text-xl font-black text-white">{{ $productCount }} ta</span>
-                                    <span class="text-[10px] bg-blue-500/20 text-blue-400 font-extrabold px-1.5 py-0.2 rounded border border-blue-500/30">Faol</span>
-                                </div>
+                            <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-[#0B172A]" title="Tasdiqlangan">
+                                <i class="fa-solid fa-check"></i>
                             </div>
                         </div>
 
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 class="text-xl font-black text-white tracking-tight">
+                                    {{ Auth::user()->name }}
+                                </h3>
+                                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 font-extrabold text-xs px-2.5 py-0.5 rounded-full capitalize">
+                                    {{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Client' }}
+                                </span>
+                                <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Faol
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-slate-400 font-medium flex items-center gap-2">
+                                <span>&#64;{{ Auth::user()->username ?? 'user' }}</span>
+                                <span>&bull;</span>
+                                <span>{{ Auth::user()->email }}</span>
+                            </p>
+
+                            <div class="text-[11px] text-slate-400">
+                                Ro'yxatdan o'tgan sana: <strong class="text-slate-200">{{ Auth::user()->created_at ? Auth::user()->created_at->format('d.m.Y') : '10.08.2026' }}</strong>
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                <!-- 3 Stats Pills Grid -->
+                <div class="grid grid-cols-3 gap-3 pt-2">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 text-center space-y-0.5">
+                        <span class="text-xs font-bold text-slate-400 block">E'lonlar</span>
+                        <span class="text-lg font-black text-white block">{{ $productCount }} ta</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 text-center space-y-0.5">
+                        <span class="text-xs font-bold text-slate-400 block">Ko'rishlar</span>
+                        <span class="text-lg font-black text-emerald-400 block">{{ $totalViews }}</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 text-center space-y-0.5">
+                        <span class="text-xs font-bold text-slate-400 block">Reyting</span>
+                        <span class="text-lg font-black text-amber-400 block">4.9 &#9733;</span>
+                    </div>
+                </div>
+
+                <!-- Personal Link Share Strip -->
+                <div class="pt-3 border-t border-slate-800/80 space-y-3">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5 flex-shrink-0">
+                            <i class="fa-solid fa-link text-blue-400"></i> Shaxsiy havola:
+                        </span>
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-blue-400 font-mono font-bold truncate w-full sm:flex-1">
+                            {{ route('users.show', Auth::id()) }}
+                        </div>
+                    </div>
+
+                    <button type="button" 
+                            onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                            class="w-full sm:w-auto bg-[#0066FF] hover:bg-blue-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Havolani nusxalash</span>
+                    </button>
                 </div>
             </div>
 
@@ -872,9 +1017,11 @@
                                         <img src="/images/apartment1.png" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                     @endif
 
-                                    @if($loop->first)
+                                    @if($product->is_top)
                                         <div class="absolute top-2 left-2">
-                                            <span class="bg-amber-400 text-amber-950 font-black text-[10px] px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">TOP</span>
+                                            <span class="bg-amber-400 text-amber-950 font-black text-[10px] px-2 py-0.5 rounded shadow-xs uppercase tracking-wider flex items-center gap-1">
+                                                <i class="fa-solid fa-crown text-[9px]"></i> TOP
+                                            </span>
                                         </div>
                                     @endif
                                 </div>
@@ -882,6 +1029,12 @@
                                 <!-- Middle Info -->
                                 <div class="flex-1 min-w-0 space-y-1">
                                     <div class="flex items-center gap-2 flex-wrap">
+                                        @if($product->is_top)
+                                            <span class="bg-amber-100 text-amber-800 font-extrabold text-[11px] px-2.5 py-0.5 rounded-md border border-amber-200 flex items-center gap-1">
+                                                <i class="fa-solid fa-crown text-amber-600 text-[10px]"></i> TOP E'lon
+                                            </span>
+                                        @endif
+
                                         @if(($product->status ?? 'active') === 'active')
                                             <span class="bg-emerald-100 text-emerald-700 font-extrabold text-[11px] px-2.5 py-0.5 rounded-md border border-emerald-200">Faol</span>
                                         @else
@@ -925,19 +1078,20 @@
 
                                 <!-- Right Actions -->
                                 <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                                    <button type="button" onclick="openTopModal({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->is_top ? 'true' : 'false' }})" class="{{ $product->is_top ? 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100' : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700' }} border font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center cursor-pointer">
+                                        <i class="fa-solid fa-crown"></i>
+                                        <span>{{ $product->is_top ? 'TOPdan olish' : 'TOPga chiqarish' }}</span>
+                                    </button>
+
                                     <a href="{{ route('client.products.edit', $product->id) }}" class="border border-blue-400 text-blue-600 hover:bg-blue-50 font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                         <span>Tahrirlash</span>
                                     </a>
 
-                                    <form action="{{ route('client.products.delete', $product->id) }}" method="POST" onsubmit="return confirm('E\'lonni o\'chirishni tasdiqlaysizmi?')" class="w-full sm:w-auto">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="border border-red-200 text-red-600 hover:bg-red-50 font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full justify-center">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                            <span>O'chirish</span>
-                                        </button>
-                                    </form>
+                                    <button type="button" onclick="openDeleteProductModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="border border-red-200 text-red-600 hover:bg-red-50 font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full justify-center">
+                                         <i class="fa-regular fa-trash-can"></i>
+                                         <span>O'chirish</span>
+                                     </button>
                                 </div>
 
                             </div>
@@ -983,7 +1137,7 @@
 
 
     <!-- ================= COLUMN 3: RIGHT SIDEBAR ================= -->
-    <aside class="w-full lg:w-72 xl:w-80 flex-shrink-0 space-y-4">
+    <aside class="w-full lg:w-72 xl:w-80 flex-shrink-0 space-y-4 hidden lg:block">
         
         <!-- CARD 1: MAKLER PROFILE CARD -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs text-center space-y-4 relative">
@@ -1006,10 +1160,6 @@
                 <p class="text-xs text-slate-400 font-medium mt-0.5">
                     &#64;{{ Auth::user()->username ?? 'foydalanuvchi' }}
                 </p>
-
-                <div class="text-xs font-bold text-slate-600 mt-1.5">
-                    <span class="text-amber-500">★</span> <strong>4.9</strong> <span class="text-slate-400">(128 ta baho)</span>
-                </div>
             </div>
 
             <!-- Key-Value Info Rows -->
@@ -1136,5 +1286,121 @@ function showCopySuccess(btnElement) {
         btnElement.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
     }, 2000);
 }
+
+function openDeleteProductModal(productId, productName) {
+    const modal = document.getElementById('deleteProductModal');
+    const form = document.getElementById('deleteProductForm');
+    const nameEl = document.getElementById('deleteProductName');
+    if (modal && form) {
+        form.action = '/client/products/' + productId;
+        if (nameEl) nameEl.innerText = productName;
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+function closeDeleteProductModal() {
+    const modal = document.getElementById('deleteProductModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
+
+function openTopModal(productId, productName, isTop) {
+    const modal = document.getElementById('topConfirmModal');
+    const form = document.getElementById('topConfirmForm');
+    const nameEl = document.getElementById('topConfirmProductName');
+    const titleEl = document.getElementById('topModalTitle');
+    const descEl = document.getElementById('topModalDesc');
+    const btnText = document.getElementById('topModalBtnText');
+
+    if (modal && form) {
+        form.action = '/client/products/' + productId + '/toggle-top';
+        if (nameEl) nameEl.innerText = productName;
+
+        if (isTop) {
+            if (titleEl) titleEl.innerText = "TOP darajasidan olish";
+            if (descEl) descEl.innerText = "Haqiqatan ham ushbu e'lonni TOP e'lonlar safidan olib tashlamoqchimisiz?";
+            if (btnText) btnText.innerText = "TOPdan olish";
+        } else {
+            if (titleEl) titleEl.innerText = "TOPga chiqarish";
+            if (descEl) descEl.innerText = "Haqiqatan ham ushbu e'lonni TOPga chiqarmoqchimisiz? E'loningiz barcha qidiruv va asosiy sahifada eng birinchi bo'lib ko'rinadi.";
+            if (btnText) btnText.innerText = "Ha, TOPga chiqarish";
+        }
+
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+    }
+}
+
+function closeTopModal() {
+    const modal = document.getElementById('topConfirmModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
 </script>
+
+<!-- Delete Product Confirmation Modal -->
+<div id="deleteProductModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 24px; max-width: 420px; width: 100%; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; position: relative;">
+        <button type="button" onclick="closeDeleteProductModal()" style="position: absolute; top: 16px; right: 16px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+
+        <div style="width: 68px; height: 68px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border: 4px solid #fee2e2;">
+            <i class="fa-regular fa-trash-can" style="font-size: 26px; color: #ef4444;"></i>
+        </div>
+
+        <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">E'lonni o'chirish</h3>
+        <p id="deleteProductName" style="font-size: 13px; font-weight: 700; color: #3b82f6; margin-bottom: 8px;"></p>
+        <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+            Haqiqatan ham ushbu e'lonni o'chirmoqchimisiz? Ushbu amalni ortga qaytarib bo'lmaydi.
+        </p>
+
+        <div style="display: flex; gap: 12px;">
+            <button type="button" onclick="closeDeleteProductModal()" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; background: #f1f5f9; color: #334155; border: none; cursor: pointer;">
+                Bekor qilish
+            </button>
+            
+            <form id="deleteProductForm" method="POST" action="" style="flex: 1; margin: 0;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; background: #ef4444; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                    <i class="fa-regular fa-trash-can"></i> O'chirish
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- TOP Product Confirmation Modal -->
+<div id="topConfirmModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 24px; max-width: 420px; width: 100%; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; position: relative;">
+        <button type="button" onclick="closeTopModal()" style="position: absolute; top: 16px; right: 16px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+
+        <div style="width: 68px; height: 68px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border: 4px solid #fde68a;">
+            <i class="fa-solid fa-crown" style="font-size: 26px; color: #d97706;"></i>
+        </div>
+
+        <h3 id="topModalTitle" style="font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">TOPga chiqarish</h3>
+        <p id="topConfirmProductName" style="font-size: 13px; font-weight: 700; color: #d97706; margin-bottom: 8px;"></p>
+        <p id="topModalDesc" style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+            Haqiqatan ham ushbu e'lonni TOPga chiqarmoqchimisiz? E'loningiz barcha qidiruv va asosiy sahifada eng birinchi bo'lib ko'rinadi.
+        </p>
+
+        <div style="display: flex; gap: 12px;">
+            <button type="button" onclick="closeTopModal()" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; background: #f1f5f9; color: #334155; border: none; cursor: pointer;">
+                Bekor qilish
+            </button>
+            
+            <form id="topConfirmForm" method="POST" action="" style="flex: 1; margin: 0;">
+                @csrf
+                <button type="submit" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; background: #d97706; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);">
+                    <i class="fa-solid fa-crown"></i> <span id="topModalBtnText">Ha, TOPga chiqarish</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

@@ -11,7 +11,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Vite Assets -->
+    <!-- Vite Assets (Tailwind v4 via @tailwindcss/vite plugin) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -69,7 +69,7 @@
             
             <!-- Left Side: Hamburger & Logo -->
             <div class="flex items-center gap-4 sm:gap-6 min-w-0">
-                <button type="button" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all focus:outline-none" title="Menyu">
+                <button type="button" onclick="toggleMobileNavDrawer()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all focus:outline-none flex items-center justify-center border border-slate-200 lg:hidden" title="Menyu">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
 
@@ -94,17 +94,21 @@
             <div class="flex items-center gap-3 sm:gap-4 flex-shrink-0">
 
                 <!-- Chatlar Button -->
-                <a href="#" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all hidden sm:flex items-center gap-1.5 text-xs font-semibold" title="Chatlar">
+                @php
+                    $unreadMessagesCount = Auth::check() ? Auth::user()->unreadNotifications->count() : 0;
+                @endphp
+                <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all hidden sm:flex items-center gap-1.5 text-xs font-semibold" title="Chatlar">
                     <i class="fa-regular fa-comments text-base"></i>
                     <span>Chatlar</span>
-                    <span class="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full absolute -top-1 -right-1 shadow-xs">3</span>
+                    @if($unreadMessagesCount > 0)
+                        <span class="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full absolute -top-1 -right-1 shadow-xs animate-pulse">{{ $unreadMessagesCount }}</span>
+                    @endif
                 </a>
 
                 <!-- Yangiliklar Notification Bell -->
-                <a href="#" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold" title="Yangiliklar">
+                <a href="{{ route('client.dashboard', ['section' => 'news']) }}" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold" title="Yangiliklar">
                     <div class="relative">
                         <i class="fa-regular fa-bell text-base"></i>
-                        <span class="bg-blue-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center absolute -top-1.5 -right-1.5 shadow-xs">5</span>
                     </div>
                     <span class="hidden md:inline">Yangiliklar</span>
                 </a>
@@ -131,16 +135,169 @@
                 </a>
 
                 <!-- Quick Logout Button in Header -->
-                <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Haqiqatan ham profildan chiqmoqchimisiz?');" class="inline">
-                    @csrf
-                    <button type="submit" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer flex items-center justify-center" title="Profildan chiqish">
-                        <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
-                    </button>
-                </form>
+                <button type="button" onclick="openLogoutConfirmModal()" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer flex items-center justify-center" title="Profildan chiqish">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
+                </button>
 
             </div>
         </div>
     </header>
+
+    <!-- Mobile Drawer Menu Modal with Smooth Slide Animation -->
+    <div id="mobileNavDrawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none lg:hidden" onclick="toggleMobileNavDrawer()">
+        <div id="mobileNavContent" class="w-72 max-w-[85vw] bg-white h-full shadow-2xl p-5 overflow-y-auto space-y-5 transform -translate-x-full transition-transform duration-300 ease-in-out" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <img src="/images/logo.svg" alt="Estora" class="h-8 w-auto">
+                </div>
+                <button type="button" onclick="toggleMobileNavDrawer()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-lg hover:bg-slate-200 transition-all">
+                    &times;
+                </button>
+            </div>
+
+            @auth
+            <!-- User Info Card in Drawer -->
+            <div class="bg-blue-50/70 border border-blue-100 rounded-2xl p-3.5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-extrabold flex items-center justify-center text-sm">
+                    {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 class="font-extrabold text-xs text-slate-900 truncate">{{ Auth::user()->name ?? 'Foydalanuvchi' }}</h4>
+                    <p class="text-[11px] text-slate-500 capitalize">{{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Client' }}</p>
+                </div>
+            </div>
+            @endauth
+
+            <!-- Drawer Links -->
+            <div class="space-y-1">
+                <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-house-chimney text-blue-600"></i>
+                        <span>Bosh sahifa</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-folder-open text-blue-600"></i>
+                        <span>E'lonlarim</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-comments text-blue-600"></i>
+                        <span>Chatlar</span>
+                    </div>
+                    @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+                        <span class="bg-red-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full animate-pulse">{{ $unreadMessagesCount }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'stats']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-chart-line text-blue-600"></i>
+                        <span>Statistika</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-credit-card text-blue-600"></i>
+                        <span>Obuna va to'lovlar</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-globe text-blue-600"></i>
+                        <span>Mening sahifam</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'news']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-bell text-blue-600"></i>
+                        <span>Yangiliklar</span>
+                    </div>
+                </a>
+                <a href="{{ route('client.dashboard', ['section' => 'settings']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-sliders text-blue-600"></i>
+                        <span>Sozlamalar</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100">
+                <button type="button" onclick="openLogoutConfirmModal()" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl p-3 flex items-center gap-3 text-xs text-left transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Profildan chiqish</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function toggleMobileNavDrawer() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const content = document.getElementById('mobileNavContent');
+            if (drawer && content) {
+                const isOpen = !drawer.classList.contains('pointer-events-none');
+                if (isOpen) {
+                    content.classList.add('-translate-x-full');
+                    drawer.classList.add('opacity-0');
+                    setTimeout(() => {
+                        drawer.classList.add('pointer-events-none');
+                    }, 300);
+                } else {
+                    drawer.classList.remove('pointer-events-none');
+                    drawer.classList.remove('opacity-0');
+                    content.classList.remove('-translate-x-full');
+                }
+            }
+        }
+
+        function openLogoutConfirmModal() {
+            const modal = document.getElementById('logoutConfirmModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeLogoutConfirmModal() {
+            const modal = document.getElementById('logoutConfirmModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutConfirmModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 24px; max-width: 400px; width: 100%; padding: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; position: relative;">
+            <button type="button" onclick="closeLogoutConfirmModal()" style="position: absolute; top: 16px; right: 16px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+
+            <div style="width: 68px; height: 68px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border: 4px solid #fee2e2;">
+                <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 26px; color: #ef4444;"></i>
+            </div>
+
+            <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Profildan chiqish</h3>
+            <p style="font-size: 13.5px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+                Haqiqatan ham profildan chiqmoqchimisiz?
+            </p>
+
+            <div style="display: flex; gap: 12px;">
+                <button type="button" onclick="closeLogoutConfirmModal()" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; background: #f1f5f9; color: #334155; border: none; cursor: pointer;">
+                    Yo'q, qolaman
+                </button>
+                
+                <form method="POST" action="{{ route('logout') }}" style="flex: 1; margin: 0;">
+                    @csrf
+                    <button type="submit" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; background: #ef4444; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Chiqish
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Container Layout -->
     <div class="max-w-[1520px] mx-auto px-3 sm:px-6 lg:px-8 py-5 flex-1 w-full min-w-0">
