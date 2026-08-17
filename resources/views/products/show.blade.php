@@ -4034,7 +4034,7 @@
                     document.execCommand('copy');
                     showAppToast("E'lon havolasi nusxalandi!", 'share');
                 } catch (err) {
-                    alert("E'lon havolasi: " + text);
+                    showAppToast("E'lon havolasi: " + text, 'info');
                 }
                 document.body.removeChild(textArea);
             }
@@ -4044,29 +4044,49 @@
                 if (!toast) {
                     toast = document.createElement('div');
                     toast.id = 'appToastNotice';
-                    toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 14px 22px; border-radius: 14px; font-weight: 700; font-size: 14px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none; display: flex; align-items: center; gap: 10px; font-family: sans-serif;';
+                    toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 100000; display: flex; align-items: center; gap: 14px; padding: 14px 22px; background: rgba(6, 28, 63, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0, 132, 255, 0.3); border-radius: 16px; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 132, 255, 0.15); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; transform: translateY(30px) scale(0.95); pointer-events: none;';
                     document.body.appendChild(toast);
                 }
 
-                let iconHtml = '<i class="fas fa-info-circle text-blue-400"></i>';
+                let iconBg = 'background: linear-gradient(135deg, #0084ff, #0052cc);';
+                let iconClass = 'fa-solid fa-link';
+                let subtext = "Ma'lumotlar yangilandi";
+
                 if (type === 'favorite') {
-                    toast.style.backgroundColor = '#061c3f';
-                    iconHtml = '<i class="fas fa-heart text-red-500"></i>';
+                    iconBg = 'background: linear-gradient(135deg, #ff4757, #ff6b81);';
+                    iconClass = 'fa-solid fa-heart';
+                    subtext = "Saralanganlarga saqlandi";
                 } else if (type === 'share') {
-                    toast.style.backgroundColor = '#0084ff';
-                    iconHtml = '<i class="fas fa-share-square text-white"></i>';
-                } else {
-                    toast.style.backgroundColor = '#374151';
+                    iconBg = 'background: linear-gradient(135deg, #10b981, #059669);';
+                    iconClass = 'fa-solid fa-check';
+                    subtext = "Vaqtincha xotiraga nusxalandi";
+                } else if (type === 'error') {
+                    iconBg = 'background: linear-gradient(135deg, #ef4444, #dc2626);';
+                    iconClass = 'fa-solid fa-exclamation';
+                    subtext = "Xatolik yuz berdi";
                 }
 
-                toast.innerHTML = iconHtml + ' <span>' + message + '</span>';
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateY(0)';
+                toast.innerHTML = `
+                    <div style="width: 36px; height: 36px; border-radius: 10px; ${iconBg} display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        <i class="${iconClass}" style="color: #ffffff; font-size: 15px;"></i>
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-size: 14px; font-weight: 700; color: #ffffff; line-height: 1.2;">${message}</span>
+                        <span style="font-size: 11px; font-weight: 400; color: rgba(255, 255, 255, 0.7); margin-top: 2px;">${subtext}</span>
+                    </div>
+                `;
 
-                setTimeout(() => {
+                requestAnimationFrame(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateY(0) scale(1)';
+                });
+
+                if (toast.timeoutId) clearTimeout(toast.timeoutId);
+
+                toast.timeoutId = setTimeout(() => {
                     toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(20px)';
-                }, 2500);
+                    toast.style.transform = 'translateY(20px) scale(0.95)';
+                }, 3000);
             }
         });
 

@@ -2061,7 +2061,7 @@
             </div>
 
             <!-- Slider Wrapper for Infinite Auto Sliding -->
-            <div class="overflow-hidden relative w-full py-2">
+            <div style="overflow: hidden; position: relative; width: 100%; padding: 8px 0;">
                 <div id="topOffersSlider" style="display: flex; flex-direction: row; gap: 20px; width: 100%; transition: transform 0.5s ease-in-out;">
                     @forelse($topProducts as $topItem)
                         @php
