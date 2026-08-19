@@ -46,113 +46,125 @@
 
         <!-- Filter Box (Images 1 & 2) -->
         <div class="filter-box">
-            <!-- Single Horizontal Row: 6 Select Fields + 2 Action Buttons -->
-            <div class="filter-fields-row" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)) auto auto; gap: 8px; align-items: flex-end; width: 100%;">
-                <!-- 1. Mulk turi -->
-                <div class="filter-field">
-                    <label>Mulk turi</label>
-                    <div class="filter-select-wrapper">
-                        <select name="property_type" id="search_property_type">
-                            <option value="">Tanlang</option>
-                            @foreach($allPropertyTypes as $pt)
-                                <option value="{{ $pt }}" {{ $currentProp == $pt ? 'selected' : '' }}>{{ $pt }}</option>
-                            @endforeach
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-
-                <!-- 2. Viloyat -->
-                <div class="filter-field">
-                    <label>Viloyat</label>
-                    <div class="filter-select-wrapper">
-                        <select name="region_id" id="search_region_id" onchange="filterCitiesByRegion()">
-                            <option value="">Tanlang</option>
-                            @if(isset($regions))
-                                @foreach($regions as $region)
-                                    <option value="{{ $region->id }}" {{ $currentRegion == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
+            <!-- Main Filter Row (Mulk turi, Viloyat, Tuman + Actions) -->
+            <div class="filter-main-row">
+                <div class="filter-fields-grid">
+                    <!-- 1. Mulk turi -->
+                    <div class="filter-field">
+                        <label>Mulk turi</label>
+                        <div class="filter-select-wrapper">
+                            <select name="property_type" id="search_property_type">
+                                <option value="">Tanlang</option>
+                                @foreach($allPropertyTypes as $pt)
+                                    <option value="{{ $pt }}" {{ $currentProp == $pt ? 'selected' : '' }}>{{ $pt }}</option>
                                 @endforeach
-                            @endif
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
-                </div>
 
-                <!-- 3. Tuman -->
-                <div class="filter-field">
-                    <label>Tuman</label>
-                    <div class="filter-select-wrapper">
-                        <select name="city_id" id="search_city_id">
-                            <option value="">Tanlang</option>
-                            @if(isset($regions))
-                                @foreach($regions as $region)
-                                    @foreach($region->cities as $city)
-                                        <option value="{{ $city->id }}" data-region="{{ $region->id }}" {{ $currentCity == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                    <!-- 2. Viloyat -->
+                    <div class="filter-field">
+                        <label>Viloyat</label>
+                        <div class="filter-select-wrapper">
+                            <select name="region_id" id="search_region_id" onchange="filterCitiesByRegion()">
+                                <option value="">Tanlang</option>
+                                @if(isset($regions))
+                                    @foreach($regions as $region)
+                                        <option value="{{ $region->id }}" {{ $currentRegion == $region->id ? 'selected' : '' }}>{{ $region->name }}</option>
                                     @endforeach
-                                @endforeach
-                            @endif
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
+                                @endif
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- 3. Tuman -->
+                    <div class="filter-field">
+                        <label>Tuman</label>
+                        <div class="filter-select-wrapper">
+                            <select name="city_id" id="search_city_id">
+                                <option value="">Tanlang</option>
+                                @if(isset($regions))
+                                    @foreach($regions as $region)
+                                        @foreach($region->cities as $city)
+                                            <option value="{{ $city->id }}" data-region="{{ $region->id }}" {{ $currentCity == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4. Metro Bekati -->
-                <div class="filter-field">
-                    <label>Metro</label>
-                    <div class="filter-select-wrapper">
-                        <select name="metro_id" id="search_metro_id">
-                            <option value="">Tanlang</option>
-                            @if(isset($metros))
-                                @foreach($metros as $metro)
-                                    <option value="{{ $metro->id }}" {{ $currentMetro == $metro->id ? 'selected' : '' }}>{{ $metro->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
+                <div class="filter-actions-group">
+                    @php
+                        $showAdvanced = !empty($currentMetro) || !empty($currentUni) || !empty($currentTime);
+                    @endphp
+                    <!-- FILTR Button -->
+                    <button type="button" class="btn-filter-settings {{ $showAdvanced ? 'active' : '' }}" id="btnToggleAdvancedFilters" onclick="toggleAdvancedFilters()" title="Qo'shimcha filtrlar">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>FILTR</span>
+                    </button>
+
+                    <!-- QIDIRISH Button -->
+                    <button type="submit" class="btn-filter-search">
+                        <i class="fas fa-search"></i>
+                        <span>QIDIRISH</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Advanced Filter Row (Metro, Universitet, So'ngi e'lonlar) - Collapsible -->
+            <div class="filter-advanced-row" id="advancedFiltersRow" style="{{ $showAdvanced ? 'display: block;' : 'display: none;' }}">
+                <div class="filter-fields-grid">
+                    <!-- 4. Metro Bekati -->
+                    <div class="filter-field">
+                        <label>Metro</label>
+                        <div class="filter-select-wrapper">
+                            <select name="metro_id" id="search_metro_id">
+                                <option value="">Tanlang</option>
+                                @if(isset($metros))
+                                    @foreach($metros as $metro)
+                                        <option value="{{ $metro->id }}" {{ $currentMetro == $metro->id ? 'selected' : '' }}>{{ $metro->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- 5. Universitet / OTM -->
+                    <div class="filter-field">
+                        <label>Universitet</label>
+                        <div class="filter-select-wrapper">
+                            <select name="university_id" id="search_university_id">
+                                <option value="">Tanlang</option>
+                                @if(isset($universities))
+                                    @foreach($universities as $uni)
+                                        <option value="{{ $uni->id }}" {{ $currentUni == $uni->id ? 'selected' : '' }}>{{ $uni->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- 6. So'ngi e'lonlar -->
+                    <div class="filter-field">
+                        <label>So'ngi e'lonlar</label>
+                        <div class="filter-select-wrapper">
+                            <select name="time_filter" id="search_time_filter">
+                                <option value="">Tanlang</option>
+                                <option value="Bugungi" {{ $currentTime == 'Bugungi' ? 'selected' : '' }}>Bugungi</option>
+                                <option value="Haftalik" {{ $currentTime == 'Haftalik' ? 'selected' : '' }}>Haftalik</option>
+                                <option value="Oylik" {{ $currentTime == 'Oylik' ? 'selected' : '' }}>Oylik</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 5. Universitet / OTM -->
-                <div class="filter-field">
-                    <label>Universitet</label>
-                    <div class="filter-select-wrapper">
-                        <select name="university_id" id="search_university_id">
-                            <option value="">Tanlang</option>
-                            @if(isset($universities))
-                                @foreach($universities as $uni)
-                                    <option value="{{ $uni->id }}" {{ $currentUni == $uni->id ? 'selected' : '' }}>{{ $uni->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-
-                <!-- 6. So'ngi e'lonlar -->
-                <div class="filter-field">
-                    <label>So'ngi e'lonlar</label>
-                    <div class="filter-select-wrapper">
-                        <select name="time_filter" id="search_time_filter">
-                            <option value="">Tanlang</option>
-                            <option value="Bugungi" {{ $currentTime == 'Bugungi' ? 'selected' : '' }}>Bugungi</option>
-                            <option value="Haftalik" {{ $currentTime == 'Haftalik' ? 'selected' : '' }}>Haftalik</option>
-                            <option value="Oylik" {{ $currentTime == 'Oylik' ? 'selected' : '' }}>Oylik</option>
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-
-                <!-- FILTR Button -->
-                <button type="button" class="btn-filter-settings" onclick="openSearchByIdModal()" title="Qo'shimcha filtrlar">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>FILTR</span>
-                </button>
-
-                <!-- QIDIRISH Button -->
-                <button type="submit" class="btn-filter-search">
-                    <i class="fas fa-search"></i>
-                    <span>QIDIRISH</span>
-                </button>
             </div>
 
             <!-- Bottom Actions Row (Exact Image 2) -->
@@ -208,6 +220,20 @@
 </div>
 
 <script>
+function toggleAdvancedFilters() {
+    const row = document.getElementById('advancedFiltersRow');
+    const btn = document.getElementById('btnToggleAdvancedFilters');
+    if (!row || !btn) return;
+    
+    if (row.style.display === 'none') {
+        row.style.display = 'block';
+        btn.classList.add('active');
+    } else {
+        row.style.display = 'none';
+        btn.classList.remove('active');
+    }
+}
+
 function selectSearchTab(tabName) {
     document.getElementById('hidden_transaction_type').value = tabName;
     document.querySelectorAll('.filter-tab').forEach(btn => {
