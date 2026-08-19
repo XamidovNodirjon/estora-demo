@@ -683,9 +683,9 @@
                                         <button type="button" class="action-icon-btn js-favorite-btn {{ $isFav ? 'is-favorite' : '' }}" data-id="{{ $product->id }}" title="Saralanganlar">
                                             <i class="{{ $isFav ? 'fas fa-heart text-red-500' : 'far fa-heart' }}"></i>
                                         </button>
-                                         <button type="button" class="action-icon-btn share-btn" data-id="{{ $product->id }}" title="Ulashish">
-                                             <i class="far fa-share-square"></i>
-                                         </button>
+                                        <button type="button" class="action-icon-btn share-btn" onclick="navigator.clipboard.writeText(window.location.origin + '/products/{{ $product->id }}'); alert('E\'lon havolasi nusxalandi!');" title="Ulashish">
+                                            <i class="far fa-share-square"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 
@@ -808,93 +808,7 @@
                 })
                 .catch(err => console.error('Favorite toggle error:', err));
             });
-        document.addEventListener('click', function(e) {
-            const shareBtn = e.target.closest('.share-btn');
-            if (shareBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                const productId = shareBtn.dataset.id;
-                const productUrl = productId ? (window.location.origin + '/products/' + productId) : window.location.href;
-
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(productUrl).then(() => {
-                        showAppToast("E'lon havolasi nusxalandi!", 'share');
-                    }).catch(() => {
-                        fallbackCopyTextToClipboard(productUrl);
-                    });
-                } else {
-                    fallbackCopyTextToClipboard(productUrl);
-                }
-            }
         });
-
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-999999px";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showAppToast("E'lon havolasi nusxalandi!", 'share');
-            } catch (err) {
-                showAppToast("E'lon havolasi nusxalandi!", 'share');
-            }
-            document.body.removeChild(textArea);
-        }
-
-        function showAppToast(message, type = 'info') {
-            let toast = document.getElementById('appToastNotice');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'appToastNotice';
-                toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 100000; display: flex; align-items: center; gap: 14px; padding: 14px 22px; background: rgba(6, 28, 63, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0, 132, 255, 0.3); border-radius: 16px; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 132, 255, 0.15); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; transform: translateY(30px) scale(0.95); pointer-events: none;';
-                document.body.appendChild(toast);
-            }
-
-            let iconBg = 'background: linear-gradient(135deg, #0084ff, #0052cc);';
-            let iconClass = 'fa-solid fa-link';
-            let subtext = "Ma'lumotlar yangilandi";
-
-            if (type === 'favorite') {
-                iconBg = 'background: linear-gradient(135deg, #ff4757, #ff6b81);';
-                iconClass = 'fa-solid fa-heart';
-                subtext = "Saralanganlarga saqlandi";
-            } else if (type === 'share') {
-                iconBg = 'background: linear-gradient(135deg, #10b981, #059669);';
-                iconClass = 'fa-solid fa-check';
-                subtext = "Vaqtincha xotiraga nusxalandi";
-            } else if (type === 'error') {
-                iconBg = 'background: linear-gradient(135deg, #ef4444, #dc2626);';
-                iconClass = 'fa-solid fa-exclamation';
-                subtext = "Xatolik yuz berdi";
-            }
-
-            toast.innerHTML = `
-                <div style="width: 36px; height: 36px; border-radius: 10px; ${iconBg} display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-                    <i class="${iconClass}" style="color: #ffffff; font-size: 15px;"></i>
-                </div>
-                <div style="display: flex; flex-direction: column;">
-                    <span style="font-size: 14px; font-weight: 700; color: #ffffff; line-height: 1.2;">${message}</span>
-                    <span style="font-size: 11px; font-weight: 400; color: rgba(255, 255, 255, 0.7); margin-top: 2px;">${subtext}</span>
-                </div>
-            `;
-
-            requestAnimationFrame(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateY(0) scale(1)';
-            });
-
-            if (toast.timeoutId) clearTimeout(toast.timeoutId);
-
-            toast.timeoutId = setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(20px) scale(0.95)';
-            }, 3000);
-        }
     });
     </script>
 </body>

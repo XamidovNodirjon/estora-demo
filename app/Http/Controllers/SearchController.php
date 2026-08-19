@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\Region;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\Metro;
+use App\Models\University;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -16,7 +18,7 @@ class SearchController extends Controller
      */
     public function maniDashboard(Request $request)
     {
-        $query = Product::with(['category', 'subCategory', 'region', 'city', 'items'])
+        $query = Product::with(['category', 'subCategory', 'region', 'city', 'items', 'metros', 'universities'])
             ->where('status', 'active');
 
         // 1. Filter by Transaction Type (Category, e.g. Sotuv, Ijara, Xonadosh...)
@@ -57,7 +59,31 @@ class SearchController extends Controller
             $query->where('city_id', $request->input('city_id'));
         }
 
-        // 5. Filter by Time (So'ngi e'lonlar)
+        // 5. Filter by Metro Station
+        if ($request->filled('metro_id') && !in_array($request->input('metro_id'), ['Tanlang', 'Barchasi', 'all', ''])) {
+            $metroId = $request->input('metro_id');
+            $query->whereHas('metros', function ($q) use ($metroId) {
+                if (is_numeric($metroId)) {
+                    $q->where('metros.id', $metroId);
+                } else {
+                    $q->where('metros.name', 'like', "%{$metroId}%");
+                }
+            });
+        }
+
+        // 6. Filter by University
+        if ($request->filled('university_id') && !in_array($request->input('university_id'), ['Tanlang', 'Barchasi', 'all', ''])) {
+            $uniId = $request->input('university_id');
+            $query->whereHas('universities', function ($q) use ($uniId) {
+                if (is_numeric($uniId)) {
+                    $q->where('universities.id', $uniId);
+                } else {
+                    $q->where('universities.name', 'like', "%{$uniId}%");
+                }
+            });
+        }
+
+        // 7. Filter by Time (So'ngi e'lonlar)
         if ($request->filled('time_filter') && !in_array($request->input('time_filter'), ['Tanlang', 'Barchasi', 'all', ''])) {
             $timeFilter = $request->input('time_filter');
             if ($timeFilter === 'Bugungi') {
@@ -69,7 +95,16 @@ class SearchController extends Controller
             }
         }
 
-        // 6. Sorting (Always prioritize TOP announcements first!)
+        // 8. Filter by Product ID (e.g. 10523 or direct id)
+        if ($request->filled('product_id')) {
+            $rawId = (int)$request->input('product_id');
+            $actualId = $rawId > 10000 ? ($rawId - 10000) : $rawId;
+            $query->where(function($q) use ($rawId, $actualId) {
+                $q->where('id', $rawId)->orWhere('id', $actualId);
+            });
+        }
+
+        // 9. Sorting (Always prioritize TOP announcements first!)
         $query->orderBy('is_top', 'desc');
 
         $sortBy = $request->input('sort_by', 'newest');
@@ -84,8 +119,15 @@ class SearchController extends Controller
         // Paginate results
         $products = $query->paginate(12)->withQueryString();
 
+        // Total active count for CTA badge
+        $totalActiveProductsCount = Product::where('status', 'active')->count();
+
         // Get regions with cities for dynamic cascading select
         $regions = Region::with('cities')->get();
+
+        // Get metros & universities
+        $metros = Metro::orderBy('name')->get();
+        $universities = University::orderBy('name')->get();
 
         // Get categories (excluding internal admin role names)
         $categories = Category::whereNotIn('name', ['admin'])->get();
@@ -126,6 +168,6 @@ class SearchController extends Controller
                 ];
             });
 
-        return view('maniDashboard', compact('products', 'regions', 'categories', 'propertyTypes', 'mapProducts'));
+        return view('maniDashboard', compact('products', 'regions', 'categories', 'propertyTypes', 'mapProducts', 'metros', 'universities', 'totalActiveProductsCount'));
     }
 }
