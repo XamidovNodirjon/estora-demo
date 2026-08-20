@@ -46,7 +46,7 @@
 
         <!-- Filter Box (Images 1 & 2) -->
         <div class="filter-box">
-            <!-- Main Filter Row (Mulk turi, Viloyat, Tuman + Actions) -->
+            <!-- Main Filter Row with All 6 Fields in 1 Row + Actions -->
             <div class="filter-main-row">
                 <div class="filter-fields-grid">
                     <!-- 1. Mulk turi -->
@@ -96,29 +96,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
-                </div>
 
-                <div class="filter-actions-group">
-                    @php
-                        $showAdvanced = !empty($currentMetro) || !empty($currentUni) || !empty($currentTime);
-                    @endphp
-                    <!-- FILTR Button -->
-                    <button type="button" class="btn-filter-settings {{ $showAdvanced ? 'active' : '' }}" id="btnToggleAdvancedFilters" onclick="toggleAdvancedFilters()" title="Qo'shimcha filtrlar">
-                        <i class="fas fa-sliders-h"></i>
-                        <span>FILTR</span>
-                    </button>
-
-                    <!-- QIDIRISH Button -->
-                    <button type="submit" class="btn-filter-search">
-                        <i class="fas fa-search"></i>
-                        <span>QIDIRISH</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Advanced Filter Row (Metro, Universitet, So'ngi e'lonlar) - Collapsible -->
-            <div class="filter-advanced-row" id="advancedFiltersRow" style="{{ $showAdvanced ? 'display: block;' : 'display: none;' }}">
-                <div class="filter-fields-grid">
                     <!-- 4. Metro Bekati -->
                     <div class="filter-field">
                         <label>Metro</label>
@@ -165,23 +143,51 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="filter-actions-group">
+                    <!-- FILTR / TOZALASH Button -->
+                    @php
+                        $hasActiveFilters = !empty($currentProp) || !empty($currentRegion) || !empty($currentCity) || !empty($currentMetro) || !empty($currentUni) || !empty($currentTime);
+                    @endphp
+                    @if($hasActiveFilters)
+                        <a href="{{ route('maniDashboard', ['transaction_type' => $currentTrans]) }}" class="btn-filter-settings active" title="Filtrlarni tozalash">
+                            <i class="fas fa-undo"></i>
+                            <span>TOZALASH</span>
+                        </a>
+                    @else
+                        <button type="submit" class="btn-filter-settings" title="Filtr bo'yicha saralash">
+                            <i class="fas fa-sliders-h"></i>
+                            <span>FILTR</span>
+                        </button>
+                    @endif
+
+                    <!-- QIDIRISH Button -->
+                    <button type="submit" class="btn-filter-search">
+                        <i class="fas fa-search"></i>
+                        <span>QIDIRISH</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Bottom Actions Row (Exact Image 2) -->
             <div class="filter-bottom-actions-row">
-                <!-- 1. ID orqali qidirish -->
-                <button type="button" class="btn-action-id-search" onclick="openSearchByIdModal()">
-                    <span>ID orqali qidirish</span>
-                </button>
+                <div class="filter-bottom-secondary-actions">
+                    <!-- 1. ID orqali qidirish -->
+                    <button type="button" class="btn-action-id-search" onclick="openSearchByIdModal()">
+                        <i class="fas fa-hashtag" style="font-size: 11px;"></i>
+                        <span>ID orqali qidirish</span>
+                    </button>
 
-                <!-- 2. Xaritadan ko'rish -->
-                <button type="button" class="btn-action-map-view" onclick="openInteractiveMapModal()">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <span>Xaritadan ko'rish</span>
-                </button>
+                    <!-- 2. Xaritadan ko'rish -->
+                    <button type="button" class="btn-action-map-view" onclick="openInteractiveMapModal()">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Xaritadan ko'rish</span>
+                    </button>
+                </div>
 
                 <!-- 3. Ko'rish {count} e'lonlar -->
                 <button type="submit" class="btn-action-primary-search">
+                    <i class="fas fa-search" style="font-size: 12px;"></i>
                     <span>Ko'rish {{ $activeCountDisplay }} e'lonlar</span>
                 </button>
             </div>
