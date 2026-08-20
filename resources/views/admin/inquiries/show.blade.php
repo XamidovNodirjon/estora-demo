@@ -43,10 +43,21 @@
         </div>
 
         <div class="space-y-6">
-            <!-- 1. Phone number -->
+            <!-- 1. Customer Name -->
+            <div>
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Mijoz (Ismi)</span>
+                <div class="flex items-center gap-3 text-lg font-bold text-[#061c3f] bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200/80">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-[#0084ff] flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span>{{ $inquiry->name ?: 'Mijoz ismi kiritilmagan' }}</span>
+                </div>
+            </div>
+
+            <!-- 2. Phone number -->
             <div>
                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">Telefon raqam</span>
-                <a href="tel:{{ $inquiry->phone }}" class="inline-flex items-center gap-3 text-xl font-bold text-[#0084ff] hover:underline bg-blue-50/30 px-4 py-2.5 rounded-xl border border-blue-100/50 w-full sm:w-auto">
+                <a href="tel:{{ $inquiry->phone }}" class="inline-flex items-center gap-3 text-xl font-bold text-[#0084ff] hover:underline bg-blue-50/30 px-4 py-2.5 rounded-xl border border-blue-100/50 w-full sm:w-auto font-mono">
                     <i class="fa-solid fa-phone"></i>
                     {{ $inquiry->phone }}
                 </a>

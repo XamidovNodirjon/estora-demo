@@ -27,6 +27,7 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th class="px-6 py-4">Mijoz (Ismi)</th>
                         <th class="px-6 py-4">Telefon raqam</th>
                         <th class="px-6 py-4">Qisqacha tavsif (savol)</th>
                         <th class="px-6 py-4">Holat</th>
@@ -37,9 +38,19 @@
                 <tbody class="divide-y divide-gray-100 text-sm">
                     @forelse ($inquiries as $inquiry)
                         <tr class="hover:bg-gray-50/30 transition-colors">
-                            <!-- 1st Column: Phone number -->
+                            <!-- 1st Column: Customer Name -->
+                            <td class="px-6 py-4 font-bold text-[#061c3f]">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-[#0084ff] flex items-center justify-center font-bold text-xs">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <span>{{ $inquiry->name ?: 'Noma\'lum mijoz' }}</span>
+                                </div>
+                            </td>
+
+                            <!-- 2nd Column: Phone number -->
                             <td class="px-6 py-4 font-semibold text-gray-900">
-                                <a href="tel:{{ $inquiry->phone }}" class="text-[#0084ff] hover:underline flex items-center gap-2">
+                                <a href="tel:{{ $inquiry->phone }}" class="text-[#0084ff] hover:underline flex items-center gap-2 font-mono">
                                     <i class="fa-solid fa-phone text-xs"></i>
                                     {{ $inquiry->phone }}
                                 </a>
@@ -98,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-400">
                                 <i class="fa-regular fa-folder-open text-3xl mb-2 block"></i>
                                 Hozircha murojaatlar kelib tushmagan.
                             </td>

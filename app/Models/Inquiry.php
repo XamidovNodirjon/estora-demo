@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inquiry extends Model
 {
     protected $fillable = [
+        'name',
         'phone',
         'description',
         'status',
