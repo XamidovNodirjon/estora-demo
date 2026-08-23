@@ -1,6 +1,6 @@
 # Walkthrough - Dedicated `maniDashboard` Results Page, Product Details & Real Estate Filters
 
-We have implemented the public real estate search engine, dynamic product show page, and optimized their responsiveness. This includes:
+We have implemented the public real estate search engine, dynamic product show page, optimized their responsiveness, and configured the main logo to use `public/image/orginal.png`. This includes:
 1. Routing filter submissions from the welcome landing page directly to `/maniDashboard`.
 2. Reverting the welcome landing page to its original visual layout (without search results rendering there).
 3. Implementing the dedicated results view `maniDashboard.blade.php` matching the exact PDF design.
@@ -11,6 +11,7 @@ We have implemented the public real estate search engine, dynamic product show p
 8. Implementing the dynamic Product Show (detail) page `/products/{product}` with exact PDF matching layout and similarity recommendations.
 9. Optimizing mobile CSS layouts using fluid Flexbox grids across both main search results and product show pages.
 10. Providing full automated test coverage for all features.
+11. Creating the new `public/image` directory, copying the main logo to `public/image/orginal.png` (along with fallback spellings), and updating view references to load `/image/orginal.png`.
 
 ---
 
