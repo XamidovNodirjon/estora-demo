@@ -85,7 +85,7 @@
         <!-- Logo and Brand -->
         <div class="text-center mb-5 sm:mb-8">
             <a href="/" class="inline-flex items-center gap-2 mb-1.5 hover:opacity-90 transition-opacity" title="Bosh sahifa">
-                <img src="/images/logo-exact.png" alt="ESTORA Real Estate" class="h-10 sm:h-12 w-auto object-contain mx-auto">
+                <img src="/image/orginal.png" alt="ESTORA Real Estate" class="h-10 sm:h-12 w-auto object-contain mx-auto">
             </a>
             <p class="text-gray-400 text-xs sm:text-sm">Ko'chmas mulkning yagona raqamli ekotizimi</p>
         </div>

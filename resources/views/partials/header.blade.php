@@ -4,7 +4,7 @@
         <div class="header-content">
             <div class="logo-area">
                 <a href="{{ url('/') }}" class="brand-logo-link">
-                    <img src="{{ asset('images/logo-exact.png') }}" alt="Estora Real Estate" class="brand-logo-img">
+                    <img src="{{ asset('image/orginal.png') }}" alt="Estora Real Estate" class="brand-logo-img">
                 </a>
             </div>
 
