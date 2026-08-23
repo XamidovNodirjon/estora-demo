@@ -19,10 +19,24 @@ class RegisterRequest extends FormRequest
             'username' => 'required|string|max:255|unique:users|alpha_dash',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'passport' => 'nullable|string|max:20',
-            'jshshir' => 'nullable|string|max:20',
+            'passport' => ['nullable', 'string', 'regex:/^[A-Za-z]{2}[0-9]{7}$/'],
+            'jshshir' => ['nullable', 'string', 'regex:/^[0-9]{14}$/'],
             'role' => 'nullable|string|in:client,makler',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('passport') && $this->passport) {
+            $this->merge([
+                'passport' => strtoupper(trim($this->passport)),
+            ]);
+        }
+        if ($this->has('jshshir') && $this->jshshir) {
+            $this->merge([
+                'jshshir' => trim($this->jshshir),
+            ]);
+        }
     }
 
     public function messages(): array
@@ -38,6 +52,8 @@ class RegisterRequest extends FormRequest
             'password.required' => 'Parol kiritilishi shart',
             'password.min' => 'Parol kamida 6 ta belgidan iborat bo\'lishi shart',
             'password.confirmed' => 'Parollar mos kelmadi',
+            'passport.regex' => 'Pasport seriyasi 2 ta harf va 7 ta raqamdan iborat bo\'lishi kerak (masalan: AA1234567)',
+            'jshshir.regex' => 'JSHSHIR 14 ta raqamdan iborat bo\'lishi kerak',
         ];
     }
 }

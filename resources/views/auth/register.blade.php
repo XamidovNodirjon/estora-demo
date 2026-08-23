@@ -110,21 +110,19 @@
             @php $currentRole = old('role', 'client'); @endphp
             <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10">
                 <button type="button" id="tab-client" onclick="selectRole('client')"
-                    class="role-tab flex flex-col items-center justify-center py-2.5 px-2 sm:py-3 sm:px-4 rounded-lg sm:rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'client' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
-                    <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5">
+                    class="role-tab flex items-center justify-center py-2.5 px-3 sm:py-3 sm:px-4 rounded-lg sm:rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'client' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
                         <i class="fa-solid fa-user text-sm sm:text-base text-[#0084ff]"></i>
                         <span class="font-display font-bold text-xs sm:text-sm">Mijoz (Uy egasi)</span>
                     </div>
-                    <span class="text-[10px] sm:text-[11px] opacity-80 leading-tight">Maksimal 2 ta tekin e'lon</span>
                 </button>
 
                 <button type="button" id="tab-makler" onclick="selectRole('makler')"
-                    class="role-tab flex flex-col items-center justify-center py-2.5 px-2 sm:py-3 sm:px-4 rounded-lg sm:rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'makler' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
-                    <div class="flex items-center gap-1.5 sm:gap-2 mb-0.5">
+                    class="role-tab flex items-center justify-center py-2.5 px-3 sm:py-3 sm:px-4 rounded-lg sm:rounded-xl border border-transparent text-center transition-all cursor-pointer {{ $currentRole === 'makler' ? 'active text-white' : 'text-gray-400 hover:text-gray-200' }}">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
                         <i class="fa-solid fa-user-tie text-sm sm:text-base text-amber-400"></i>
                         <span class="font-display font-bold text-xs sm:text-sm">Makler (Rieltor)</span>
                     </div>
-                    <span class="text-[10px] sm:text-[11px] opacity-80 leading-tight">Cheksiz e'lonlar joylash</span>
                 </button>
             </div>
 
@@ -205,9 +203,11 @@
                                 <i class="fa-regular fa-id-card"></i>
                             </span>
                             <input type="text" name="passport" id="passport" value="{{ old('passport') }}"
-                                class="form-input-uniform block w-full pl-9 sm:pl-10 pr-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
+                                maxlength="9" autocomplete="off"
+                                class="form-input-uniform uppercase block w-full pl-9 sm:pl-10 pr-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
                                 placeholder="AA1234567">
                         </div>
+                        <p class="text-[10px] text-gray-400 mt-1 pl-1">2 ta harf va 7 ta raqam (masalan: AA1234567)</p>
                     </div>
                     <div>
                         <label for="jshshir" class="form-label-uniform">JShShIR (Ixtiyoriy)</label>
@@ -216,9 +216,11 @@
                                 <i class="fa-solid fa-fingerprint"></i>
                             </span>
                             <input type="text" name="jshshir" id="jshshir" value="{{ old('jshshir') }}"
+                                maxlength="14" inputmode="numeric" autocomplete="off"
                                 class="form-input-uniform block w-full pl-9 sm:pl-10 pr-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
                                 placeholder="14 xonali raqam">
                         </div>
+                        <p class="text-[10px] text-gray-400 mt-1 pl-1">Faqat 14 ta raqam</p>
                     </div>
                 </div>
 
@@ -231,8 +233,11 @@
                                 <i class="fa-solid fa-lock"></i>
                             </span>
                             <input type="password" name="password" id="password" required
-                                class="form-input-uniform block w-full pl-9 sm:pl-10 pr-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
+                                class="form-input-uniform block w-full pl-9 sm:pl-10 pr-10 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
                                 placeholder="Kamida 6 belgi">
+                            <button type="button" onclick="togglePasswordVisibility('password', 'password-icon')" class="absolute inset-y-0 right-0 pr-3 sm:pr-3.5 flex items-center text-gray-400 hover:text-white transition-colors cursor-pointer" tabindex="-1" title="Parolni ko'rsatish/yashirish">
+                                <i id="password-icon" class="fa-regular fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                     <div>
@@ -242,8 +247,11 @@
                                 <i class="fa-solid fa-lock-open"></i>
                             </span>
                             <input type="password" name="password_confirmation" id="password_confirmation" required
-                                class="form-input-uniform block w-full pl-9 sm:pl-10 pr-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
+                                class="form-input-uniform block w-full pl-9 sm:pl-10 pr-10 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-xs sm:text-sm"
                                 placeholder="Parolni takrorlang">
+                            <button type="button" onclick="togglePasswordVisibility('password_confirmation', 'password-confirm-icon')" class="absolute inset-y-0 right-0 pr-3 sm:pr-3.5 flex items-center text-gray-400 hover:text-white transition-colors cursor-pointer" tabindex="-1" title="Parolni ko'rsatish/yashirish">
+                                <i id="password-confirm-icon" class="fa-regular fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -285,7 +293,111 @@
                 clientTab.classList.add('text-gray-400');
             }
         }
-    </script>
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const passportInput = document.getElementById('passport');
+            const jshshirInput = document.getElementById('jshshir');
+
+            // Passport formatting: first 2 uppercase letters + next 7 digits (max 9 chars)
+            if (passportInput) {
+                function formatPassport(raw) {
+                    let val = raw.toUpperCase();
+                    let letters = '';
+                    let digits = '';
+
+                    for (let i = 0; i < val.length; i++) {
+                        const ch = val[i];
+                        if (letters.length < 2) {
+                            if (/[A-Z]/.test(ch)) {
+                                letters += ch;
+                            }
+                        } else if (digits.length < 7) {
+                            if (/[0-9]/.test(ch)) {
+                                digits += ch;
+                            }
+                        }
+                    }
+                    return letters + digits;
+                }
+
+                passportInput.addEventListener('input', function() {
+                    const formatted = formatPassport(this.value);
+                    if (this.value !== formatted) {
+                        this.value = formatted;
+                    }
+                });
+
+                passportInput.addEventListener('keydown', function(e) {
+                    // Allow special navigation/control keys
+                    if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'].includes(e.key) || e.ctrlKey || e.metaKey) {
+                        return;
+                    }
+
+                    const key = e.key;
+                    const pos = this.selectionStart;
+                    const val = this.value;
+
+                    if (pos < 2) {
+                        // In the first 2 characters, only allow letters A-Z
+                        if (!/^[a-zA-Z]$/.test(key)) {
+                            e.preventDefault();
+                        }
+                    } else {
+                        // After first 2 characters, only allow digits 0-9 up to 9 chars total
+                        if (!/^[0-9]$/.test(key) || val.length >= 9) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+                passportInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    this.value = formatPassport(text);
+                });
+            }
+
+            // JSHSHIR formatting: exactly up to 14 digits, no letters
+            if (jshshirInput) {
+                jshshirInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 14);
+                });
+
+                jshshirInput.addEventListener('keydown', function(e) {
+                    // Allow control/nav keys
+                    if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'].includes(e.key) || e.ctrlKey || e.metaKey) {
+                        return;
+                    }
+
+                    // Only allow digits 0-9
+                    if (!/^[0-9]$/.test(e.key) || this.value.length >= 14) {
+                        e.preventDefault();
+                    }
+                });
+
+                jshshirInput.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    this.value = text.replace(/\D/g, '').slice(0, 14);
+                });
+            }
+        });
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash', 'text-[#0084ff]');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash', 'text-[#0084ff]');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>
