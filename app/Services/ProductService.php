@@ -158,7 +158,7 @@ class ProductService
                 
                 $fullPath = storage_path('app/public/' . $path);
                 file_put_contents($fullPath, $decoded);
-                $processed[] = Storage::url($path);
+                $processed[] = '/storage/' . $path;
             } else {
                 // Already stored image URL, keep it
                 $processed[] = $img;
