@@ -23,8 +23,9 @@ class AuthService
      */
     public function register(RegisterDto $dto): User
     {
-        $roleName = in_array($dto->role, ['client', 'makler']) ? $dto->role : 'client';
-        $userRole = Role::where('name', $roleName)->first() ?? Role::where('name', 'client')->first();
+        $allowedRoles = ['client', 'owner', 'makler', 'hotel', 'builder'];
+        $roleName = in_array($dto->role, $allowedRoles) ? $dto->role : 'client';
+        $userRole = Role::firstOrCreate(['name' => $roleName]);
         
         $data = $dto->toArray();
         unset($data['role']); // Remove transient role key from array before user creation if needed
