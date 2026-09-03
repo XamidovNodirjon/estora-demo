@@ -417,82 +417,24 @@
             </script>
 
         @elseif($section === 'subscription')
-            <!-- ================= OBUNA VA TO'LOVLAR SAHIFASI (TEZ ORADA) ================= -->
-            <div class="space-y-6">
-                <!-- Header Card -->
-                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <h2 class="font-black text-2xl text-slate-900 flex items-center gap-2.5 tracking-tight">
-                                <i class="fa-regular fa-credit-card text-blue-600 text-xl"></i>
-                                <span>Obuna va To'lovlar</span>
-                            </h2>
-                            <span class="bg-blue-50 text-blue-600 border border-blue-200 font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
-                                <i class="fa-solid fa-clock text-[11px]"></i>
-                                <span>Tez orada</span>
-                            </span>
-                        </div>
-                        <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-                            Ushbu xizmat hozirda ishlab chiqilmoqda va tez kunlarda to'liq ishga tushiriladi
-                        </p>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <span class="bg-amber-500/10 text-amber-600 border border-amber-500/20 font-black text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5">
-                            <i class="fa-solid fa-crown text-amber-500"></i>
-                            <span>PRO REJA</span>
-                        </span>
-                    </div>
+            <!-- ================= OBUNA VA TO'LOVLAR SAHIFASI ================= -->
+            <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
+                        <i class="fa-regular fa-credit-card text-blue-600"></i>
+                        <span>Obuna va To'lovlar</span>
+                    </h2>
+                    <span class="bg-amber-500 text-white font-black text-xs px-3 py-1 rounded-md">PRO STATUS</span>
                 </div>
 
-                <!-- Main Muted Coming Soon Subscription Banner -->
-                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs">
-                    <!-- Background Visual Banner with Muted/Blurry Style -->
-                    <div class="relative rounded-2xl bg-gradient-to-r from-blue-600/75 to-indigo-700/75 p-6 sm:p-8 text-white opacity-70 filter grayscale-[15%] select-none">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="bg-white/20 backdrop-blur-md text-white font-bold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
-                                <i class="fa-regular fa-hourglass-half"></i>
-                                <span>Tez kunda ishga tushadi</span>
-                            </span>
-                        </div>
-                        <h3 class="font-black text-2xl sm:text-3xl tracking-tight mb-2">Rieltor PRO Obuna</h3>
-                        <p class="text-xs sm:text-sm text-blue-100 max-w-xl leading-relaxed mb-6">
-                            Cheksiz e'lonlar joylash, qidiruv natijalarida TOP o'rinlar, shaxsiy brend sahifasi va VIP tavsiya xizmatlari.
-                        </p>
-                        
-                        <div class="flex items-center gap-3">
-                            <button type="button" disabled class="bg-white/90 text-slate-500 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs cursor-not-allowed opacity-80 flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-slate-400"></i>
-                                <span>Tez kunda mavjud bo'ladi</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Subtle Coming Soon Info Box Below -->
-                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
-                            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
-                                <i class="fa-solid fa-layer-group text-sm"></i>
-                            </div>
-                            <h4 class="font-bold text-sm text-slate-800 mb-1">Cheksiz E'lonlar</h4>
-                            <p class="text-xs text-slate-500">Mulk egalari va rieltorlar uchun cheklovlarsiz e'lon joylash imkoniyati.</p>
-                        </div>
-
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
-                            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
-                                <i class="fa-solid fa-bolt text-sm"></i>
-                            </div>
-                            <h4 class="font-bold text-sm text-slate-800 mb-1">TOP & VIP Reyting</h4>
-                            <p class="text-xs text-slate-500">E'lonlaringiz qidiruv natijalarining eng yuqori qismida ko'rsatiladi.</p>
-                        </div>
-
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3">
-                                <i class="fa-solid fa-chart-line text-sm"></i>
-                            </div>
-                            <h4 class="font-bold text-sm text-slate-800 mb-1">Kengaytirilgan Statistika</h4>
-                            <p class="text-xs text-slate-500">Mijozlar qiziqishi, ko'rishlar soni va batafsil hisobotlar.</p>
-                        </div>
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white space-y-3">
+                    <span class="bg-white/20 text-white font-bold text-xs px-3 py-1 rounded-full">Faol Tarif</span>
+                    <h3 class="font-black text-2xl">Rieltor PRO Obuna</h3>
+                    <p class="text-xs text-blue-100">Cheksiz e'lon joylash va VIP tavsiya xizmatlari</p>
+                    <div class="pt-2 flex items-center gap-3">
+                        <button class="bg-white text-blue-600 font-extrabold text-xs px-4 py-2 rounded-xl shadow-xs">
+                            Obunani uzaytirish
+                        </button>
                     </div>
                 </div>
             </div>
@@ -529,6 +471,52 @@
                     </div>
                 </div>
 
+                <!-- VERIFICATION PROGRESS BANNER -->
+                <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-blue-500/30 rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 relative z-10">
+                        <div class="space-y-2 flex-1">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 text-lg flex-shrink-0">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-extrabold text-base text-white">Hisob tasdiqlanganlik darajasi</h3>
+                                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30' }}">
+                                            {{ $verificationStatus['percentage'] }}%
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 font-medium mt-0.5">
+                                        @if($verificationStatus['can_create_ad'])
+                                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> E'lon joylash huquqi faol.</span> Barcha shartlar bajarilgan.
+                                        @else
+                                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon joylash uchun:</span> Email tasdiqlash (+35%), Pasport (+25%) va JShShIR (+25%) talab etiladi.
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-white/10 mt-2">
+                                <div class="h-full rounded-full transition-all duration-700 bg-gradient-to-r {{ $verificationStatus['percentage'] == 100 ? 'from-emerald-500 to-teal-400' : 'from-blue-500 to-amber-400' }}" style="width: {{ $verificationStatus['percentage'] }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Badges -->
+                        <div class="flex items-center gap-2 flex-wrap">
+                            @if($verificationStatus['email_verified'])
+                                <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                    <i class="fa-solid fa-check"></i> Email tasdiqlangan
+                                </span>
+                            @else
+                                <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
+                                    <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 2. PROFILNING ASOSIY MA'LUMOTLAR KARTASI (OVERVIEW CARD) -->
                 <div class="bg-gradient-to-br from-slate-900 via-[#0B1A30] to-blue-950 rounded-2xl p-6 text-white shadow-md relative overflow-hidden border border-slate-800">
                     <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -540,8 +528,8 @@
                                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-2xl sm:text-3xl ring-4 ring-white/10 shadow-lg uppercase">
                                     {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
                                 </div>
-                                <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-slate-900" title="Tasdiqlangan Makler">
-                                    <i class="fa-solid fa-check"></i>
+                                <div class="absolute -bottom-1 -right-1 {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500' : 'bg-amber-500' }} text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-slate-900" title="{{ $verificationStatus['percentage'] }}% Tasdiqlangan">
+                                    <i class="fa-solid {{ $verificationStatus['percentage'] == 100 ? 'fa-check' : 'fa-shield' }}"></i>
                                 </div>
                             </div>
 
@@ -581,8 +569,8 @@
                                 <span class="text-lg font-black text-emerald-400">{{ $totalViews }}</span>
                             </div>
                             <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-xl p-3 flex-1 md:flex-initial text-center min-w-[100px]">
-                                <span class="text-[11px] text-slate-300 font-medium block">Reyting</span>
-                                <span class="text-lg font-black text-amber-400">4.9 &#9733;</span>
+                                <span class="text-[11px] text-slate-300 font-medium block">Ishonch</span>
+                                <span class="text-lg font-black {{ $verificationStatus['percentage'] == 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ $verificationStatus['percentage'] }}%</span>
                             </div>
                         </div>
                     </div>
@@ -594,13 +582,13 @@
                                 <i class="fa-solid fa-link text-blue-400 mr-1"></i> Shaxsiy havola:
                             </span>
                             <div class="bg-black/30 border border-white/15 rounded-lg px-3 py-1.5 text-xs text-blue-300 font-mono font-bold truncate max-w-md">
-                                {{ route('users.show', Auth::id()) }}
+                                {{ route('users.show', Auth::user()->username ?? Auth::id()) }}
                             </div>
                         </div>
 
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <button type="button" 
-                                    onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                                    onclick="copyToClipboard('{{ route('users.show', Auth::user()->username ?? Auth::id()) }}', this)" 
                                     class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-xs cursor-pointer">
                                 <i class="fa-regular fa-copy"></i>
                                 <span>Havolani nusxalash</span>
@@ -681,9 +669,20 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Email -->
                             <div class="space-y-1.5">
-                                <label for="email" class="block text-xs font-extrabold text-slate-700">
-                                    Elektron pochta (Email) <span class="text-red-500">*</span>
-                                </label>
+                                <div class="flex items-center justify-between">
+                                    <label for="email" class="block text-xs font-extrabold text-slate-700">
+                                        Elektron pochta (Email) <span class="text-red-500">*</span>
+                                    </label>
+                                    @if(Auth::user()->email_verified_at)
+                                        <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-check"></i> Tasdiqlangan
+                                        </span>
+                                    @else
+                                        <button type="button" onclick="openEmailVerificationModal()" class="text-[10px] font-black text-amber-700 bg-amber-50 border border-amber-300 hover:bg-amber-100 px-2 py-0.5 rounded-full inline-flex items-center gap-1 cursor-pointer">
+                                            <i class="fa-solid fa-triangle-exclamation"></i> Tasdiqlanmagan (Kod olish)
+                                        </button>
+                                    @endif
+                                </div>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                         <i class="fa-regular fa-envelope text-sm"></i>
@@ -704,7 +703,7 @@
                             <!-- Phone -->
                             <div class="space-y-1.5">
                                 <label for="phone" class="block text-xs font-extrabold text-slate-700">
-                                    Telefon raqam
+                                    Telefon raqam <span class="text-slate-400 font-normal">(+15% daraja)</span>
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -726,10 +725,15 @@
                         <!-- ROW 3: Pasport va JSHSHIR -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Passport -->
-                            <div class="space-y-1.5">
-                                <label for="passport" class="block text-xs font-extrabold text-slate-700">
-                                    Pasport seriya va raqami
-                                </label>
+                            <div class="space-y-1.5" id="passport-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="passport" class="block text-xs font-extrabold text-slate-700">
+                                        Pasport seriya va raqami <span class="text-blue-600 font-bold">*</span>
+                                    </label>
+                                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                                        E'lon berish uchun majburiy (+25%)
+                                    </span>
+                                </div>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                         <i class="fa-regular fa-id-card text-sm"></i>
@@ -747,10 +751,15 @@
                             </div>
 
                             <!-- JSHSHIR -->
-                            <div class="space-y-1.5">
-                                <label for="jshshir" class="block text-xs font-extrabold text-slate-700">
-                                    JSHSHIR (PINFL)
-                                </label>
+                            <div class="space-y-1.5" id="jshshir-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="jshshir" class="block text-xs font-extrabold text-slate-700">
+                                        14 xonali JShShIR (PINFL) <span class="text-blue-600 font-bold">*</span>
+                                    </label>
+                                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                                        E'lon berish uchun majburiy (+25%)
+                                    </span>
+                                </div>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                         <i class="fa-solid fa-fingerprint text-sm"></i>
@@ -758,9 +767,9 @@
                                     <input type="text" 
                                            id="jshshir" 
                                            name="jshshir" 
-                                           maxlength="20"
+                                           maxlength="14"
                                            value="{{ old('jshshir', Auth::user()->jshshir) }}" 
-                                           placeholder="14 xonali shaxsiy identifikatsiya raqami" 
+                                           placeholder="14 xonali raqam (masalan: 31201950000000)" 
                                            class="w-full bg-slate-50 border @error('jshshir') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
                                 </div>
                                 @error('jshshir')
@@ -861,6 +870,72 @@
         @else
             <!-- ================= DEFAULT MAIN DASHBOARD & E'LONLARIM VIEW ================= -->
             
+            <!-- VERIFICATION PROGRESS BANNER -->
+            <div class="bg-gradient-to-r from-[#0B172A] via-blue-950 to-[#0B172A] border border-blue-500/30 rounded-3xl p-5 sm:p-6 text-white shadow-xl space-y-4">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="space-y-2 flex-1">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 text-xl flex-shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-black text-base sm:text-lg text-white">Hisobni tasdiqlash holati</h3>
+                                    <span class="text-xs font-black px-2.5 py-0.5 rounded-full {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30' }}">
+                                        {{ $verificationStatus['percentage'] }}% Tasdiqlangan
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-300 font-medium mt-0.5">
+                                    @if($verificationStatus['can_create_ad'])
+                                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> E'lon joylash huquqi faol.</span> Barcha tasdiqlar bajarilgan.
+                                    @else
+                                        <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon joylash uchun:</span> Elektron pochtani tasdiqlang hamda pasport va 14 xonali JShShIR ni kiriting.
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-white/10 mt-3">
+                            <div id="dashboard-progress-bar" class="h-full rounded-full transition-all duration-700 bg-gradient-to-r {{ $verificationStatus['percentage'] == 100 ? 'from-emerald-500 to-teal-400' : 'from-blue-500 to-amber-400' }}" style="width: {{ $verificationStatus['percentage'] }}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Badges -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @if($verificationStatus['email_verified'])
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                <i class="fa-solid fa-check"></i> Email (35%)
+                            </span>
+                        @else
+                            <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
+                                <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash (+35%)
+                            </button>
+                        @endif
+
+                        @if($verificationStatus['passport_filled'])
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                <i class="fa-solid fa-check"></i> Pasport (25%)
+                            </span>
+                        @else
+                            <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#passport-field" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
+                                <i class="fa-regular fa-id-card"></i> Pasport (+25%)
+                            </a>
+                        @endif
+
+                        @if($verificationStatus['jshshir_filled'])
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                <i class="fa-solid fa-check"></i> JShShIR (25%)
+                            </span>
+                        @else
+                            <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#jshshir-field" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
+                                <i class="fa-solid fa-fingerprint"></i> JShShIR (+25%)
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
             <!-- 1. USER PROFILE HEADER CARD (AS IN USER REQUEST IMAGE) -->
             <div class="bg-[#0B172A] rounded-3xl p-6 text-white shadow-xl border border-slate-800 space-y-5">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -869,8 +944,8 @@
                             <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-black text-2xl ring-4 ring-blue-500/20 shadow-md uppercase">
                                 {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
                             </div>
-                            <div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-[#0B172A]" title="Tasdiqlangan">
-                                <i class="fa-solid fa-check"></i>
+                            <div class="absolute -bottom-1 -right-1 {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500' : 'bg-amber-500' }} text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-[#0B172A]" title="{{ $verificationStatus['percentage'] }}% Tasdiqlangan">
+                                <i class="fa-solid {{ $verificationStatus['percentage'] == 100 ? 'fa-check' : 'fa-shield' }}"></i>
                             </div>
                         </div>
 
@@ -913,8 +988,8 @@
                     </div>
 
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 text-center space-y-0.5">
-                        <span class="text-xs font-bold text-slate-400 block">Reyting</span>
-                        <span class="text-lg font-black text-amber-400 block">4.9 &#9733;</span>
+                        <span class="text-xs font-bold text-slate-400 block">Ishonch</span>
+                        <span class="text-lg font-black {{ $verificationStatus['percentage'] == 100 ? 'text-emerald-400' : 'text-amber-400' }} block">{{ $verificationStatus['percentage'] }}%</span>
                     </div>
                 </div>
 
@@ -925,12 +1000,12 @@
                             <i class="fa-solid fa-link text-blue-400"></i> Shaxsiy havola:
                         </span>
                         <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-blue-400 font-mono font-bold truncate w-full sm:flex-1">
-                            {{ route('users.show', Auth::id()) }}
+                            {{ route('users.show', Auth::user()->username ?? Auth::id()) }}
                         </div>
                     </div>
 
                     <button type="button" 
-                            onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                            onclick="copyToClipboard('{{ route('users.show', Auth::user()->username ?? Auth::id()) }}', this)" 
                             class="w-full sm:w-auto bg-[#0066FF] hover:bg-blue-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                         <i class="fa-regular fa-copy"></i>
                         <span>Havolani nusxalash</span>
@@ -938,20 +1013,34 @@
                 </div>
             </div>
 
-
             <!-- 2. QUICK ACTION CARDS (4 HORIZONTAL CARDS) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5">
                 
                 <!-- Quick Action 1 -->
-                <a href="{{ route('client.products.create') }}" class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 group">
-                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Yangi e'lon joylash</h4>
-                        <p class="text-[11px] text-slate-400 font-medium truncate">Sotuv yoki ijara e'lonini yarating</p>
-                    </div>
-                </a>
+                @if($verificationStatus['can_create_ad'])
+                    <a href="{{ route('client.products.create') }}" class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 group">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Yangi e'lon joylash</h4>
+                            <p class="text-[11px] text-slate-400 font-medium truncate">Sotuv yoki ijara e'lonini yarating</p>
+                        </div>
+                    </a>
+                @else
+                    <button type="button" onclick="handleBlockedAdCreation()" class="w-full bg-white border border-amber-200 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 group text-left cursor-pointer">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center text-sm shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate flex items-center gap-1.5">
+                                <span>Yangi e'lon</span>
+                                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.2 rounded">Tasdiqlang</span>
+                            </h4>
+                            <p class="text-[11px] text-amber-600 font-medium truncate">E'lon berish uchun hisobni tasdiqlang</p>
+                        </div>
+                    </button>
+                @endif
 
                 <!-- Quick Action 2 -->
                 <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all flex items-center gap-3.5 group">
@@ -998,10 +1087,17 @@
                         <h3 class="font-extrabold text-xl text-slate-900">Mening E'lonlarim</h3>
                         <p class="text-xs text-slate-400 font-medium">Faqat o'zingiz joylashtirgan e'lonlar ro'yxati</p>
                     </div>
-                    <a href="{{ route('client.products.create') }}" class="text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition-all">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Yangi e'lon</span>
-                    </a>
+                    @if($verificationStatus['can_create_ad'])
+                        <a href="{{ route('client.products.create') }}" class="text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition-all">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Yangi e'lon</span>
+                        </a>
+                    @else
+                        <button type="button" onclick="handleBlockedAdCreation()" class="text-xs font-extrabold bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-300 px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Yangi e'lon (Tasdiqlang)</span>
+                        </button>
+                    @endif
                 </div>
 
                 <!-- Status Category Filter Tabs -->
@@ -1179,7 +1275,7 @@
     <!-- ================= COLUMN 3: RIGHT SIDEBAR ================= -->
     <aside class="w-full lg:w-72 xl:w-80 flex-shrink-0 space-y-4 hidden lg:block">
         
-        <!-- CARD 1: MAKLER PROFILE CARD -->
+        <!-- CARD 1: USER PROFILE & VERIFICATION CARD -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs text-center space-y-4 relative">
             
             <!-- Avatar photo with verified checkmark -->
@@ -1187,15 +1283,17 @@
                 <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-2xl uppercase ring-4 ring-slate-100 shadow-md">
                     {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
                 </div>
-                <div class="absolute right-0 bottom-0 bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-white shadow-xs" title="Verified Makler">
-                    <i class="fa-solid fa-check"></i>
+                <div class="absolute right-0 bottom-0 {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-600' : 'bg-amber-500' }} text-white rounded-full w-6 h-6 flex items-center justify-center text-xs ring-2 ring-white shadow-xs" title="{{ $verificationStatus['percentage'] }}% Tasdiqlangan">
+                    <i class="fa-solid {{ $verificationStatus['percentage'] == 100 ? 'fa-check' : 'fa-shield' }}"></i>
                 </div>
             </div>
 
             <div>
                 <h3 class="font-black text-slate-900 text-base flex items-center justify-center gap-1.5">
                     <span>{{ Auth::user()->name ?? 'Foydalanuvchi' }}</span>
-                    <i class="fa-solid fa-circle-check text-blue-600 text-sm" title="Verified"></i>
+                    @if($verificationStatus['percentage'] == 100)
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-sm" title="Tasdiqlangan"></i>
+                    @endif
                 </h3>
                 <p class="text-xs text-slate-400 font-medium mt-0.5">
                     &#64;{{ Auth::user()->username ?? 'foydalanuvchi' }}
@@ -1208,20 +1306,47 @@
                     <span class="text-slate-500 font-medium">Telefon:</span>
                     <span class="font-bold text-slate-800">{{ Auth::user()->phone ?? 'Kiritilmagan' }}</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-slate-500 font-medium">Ishonch darajasi</span>
-                    <span class="font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
-                        <i class="fa-solid fa-shield-check text-[10px]"></i> Yuqori
-                    </span>
+                
+                <div class="space-y-1.5 pt-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-500 font-medium">Tasdiqlash darajasi:</span>
+                        <span class="font-black {{ $verificationStatus['percentage'] == 100 ? 'text-emerald-600' : 'text-amber-600' }}">
+                            {{ $verificationStatus['percentage'] }}%
+                        </span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-700 bg-gradient-to-r {{ $verificationStatus['percentage'] == 100 ? 'from-emerald-500 to-teal-400' : 'from-blue-500 to-amber-500' }}" style="width: {{ $verificationStatus['percentage'] }}%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1.5 pt-1 text-[11px]">
+                    <div class="flex items-center gap-1 {{ $verificationStatus['email_verified'] ? 'text-emerald-600' : 'text-slate-400' }}">
+                        <i class="fa-solid {{ $verificationStatus['email_verified'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Email (35%)
+                    </div>
+                    <div class="flex items-center gap-1 {{ $verificationStatus['passport_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
+                        <i class="fa-solid {{ $verificationStatus['passport_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Pasport (25%)
+                    </div>
+                    <div class="flex items-center gap-1 {{ $verificationStatus['jshshir_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
+                        <i class="fa-solid {{ $verificationStatus['jshshir_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> JShShIR (25%)
+                    </div>
+                    <div class="flex items-center gap-1 {{ $verificationStatus['phone_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
+                        <i class="fa-solid {{ $verificationStatus['phone_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Telefon (15%)
+                    </div>
                 </div>
             </div>
 
+            @if(!$verificationStatus['can_create_ad'])
+                <button type="button" onclick="openEmailVerificationModal()" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs cursor-pointer">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> Hisobni tasdiqlash
+                </button>
+            @endif
+
             <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="w-full border border-blue-500 text-blue-600 hover:bg-blue-50 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs">
-                Profilni ko'rish va tahrirlash
+                Profilni tahrirlash
             </a>
         </div>
 
-        <!-- CARD 4: MENING SAHIFAM SHARE CARD -->
+        <!-- CARD 2: MENING SAHIFAM SHARE CARD -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-3">
             <h4 class="font-extrabold text-slate-900 text-sm">Mening sahifam</h4>
             <p class="text-xs text-slate-500 leading-relaxed font-medium">
@@ -1230,10 +1355,10 @@
 
             <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2 pl-3">
                 <span class="text-xs font-bold text-blue-600 truncate flex-1 font-mono">
-                    {{ route('users.show', Auth::id()) }}
+                    {{ route('users.show', Auth::user()->username ?? Auth::id()) }}
                 </span>
                 <button type="button" 
-                        onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                        onclick="copyToClipboard('{{ route('users.show', Auth::user()->username ?? Auth::id()) }}', this)" 
                         class="p-1.5 text-slate-500 hover:text-blue-600 bg-white rounded-lg border border-slate-200 shadow-xs cursor-pointer transition-all" 
                         title="Nusxalash">
                     <i class="fa-regular fa-copy"></i>
@@ -1241,13 +1366,13 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-1">
-                <a href="{{ route('users.show', Auth::id()) }}" target="_blank" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all text-center">
+                <a href="{{ route('users.show', Auth::user()->username ?? Auth::id()) }}" target="_blank" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all text-center">
                     <i class="fa-solid fa-arrow-up-right-from-square text-slate-500"></i>
                     <span>Ochish</span>
                 </a>
 
                 <button type="button" 
-                        onclick="copyToClipboard('{{ route('users.show', Auth::id()) }}', this)" 
+                        onclick="copyToClipboard('{{ route('users.show', Auth::user()->username ?? Auth::id()) }}', this)" 
                         class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer">
                     <i class="fa-solid fa-share-nodes text-slate-500"></i>
                     <span>Ulashish</span>
@@ -1259,7 +1384,7 @@
 
 </div>
 
-<!-- Global Clipboard Helper Script -->
+<!-- Global Clipboard Helper Script & Verification Handlers -->
 <script>
 function copyToClipboard(text, btnElement) {
     if (navigator.clipboard && window.isSecureContext) {
@@ -1356,7 +1481,198 @@ function closeTopModal() {
         modal.style.display = 'none';
     }
 }
+
+// EMAIL VERIFICATION MODAL LOGIC
+let resendTimer = null;
+let resendSeconds = 60;
+
+function openEmailVerificationModal() {
+    const modal = document.getElementById('emailVerificationModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        resetVerificationModalState();
+    }
+}
+
+function closeEmailVerificationModal() {
+    const modal = document.getElementById('emailVerificationModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
+
+function handleBlockedAdCreation() {
+    @if(!$verificationStatus['email_verified'])
+        openEmailVerificationModal();
+    @else
+        window.location.href = "{{ route('client.dashboard', ['section' => 'my_page']) }}#passport-field";
+    @endif
+}
+
+function resetVerificationModalState() {
+    document.getElementById('verify-code-input').value = '';
+    document.getElementById('verify-alert-box').classList.add('hidden');
+    document.getElementById('verify-alert-box').innerHTML = '';
+}
+
+function sendVerificationEmailCode() {
+    const sendBtn = document.getElementById('btn-send-code');
+    const statusBox = document.getElementById('verify-alert-box');
+    
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Kod yuborilmoqda...';
+
+    fetch('{{ route("email.send-code") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusBox.classList.remove('hidden');
+        if (data.success) {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold block mb-3';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ' + data.message;
+            startResendCountdown();
+            document.getElementById('verify-code-input').focus();
+        } else {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> ' + (data.message || 'Xatolik yuz berdi.');
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Kodni yuborish';
+        }
+    })
+    .catch(err => {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3';
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> Server bilan bog\'lanishda xatolik.';
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Kodni yuborish';
+    });
+}
+
+function startResendCountdown() {
+    const sendBtn = document.getElementById('btn-send-code');
+    resendSeconds = 60;
+    if (resendTimer) clearInterval(resendTimer);
+
+    resendTimer = setInterval(() => {
+        resendSeconds--;
+        if (resendSeconds <= 0) {
+            clearInterval(resendTimer);
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-rotate-right mr-1"></i> Kodni qayta yuborish';
+        } else {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Qayta yuborish (${resendSeconds}s)`;
+        }
+    }, 1000);
+}
+
+function submitEmailVerificationCode() {
+    const code = document.getElementById('verify-code-input').value.trim();
+    const statusBox = document.getElementById('verify-alert-box');
+    const submitBtn = document.getElementById('btn-verify-submit');
+
+    if (!code || code.length !== 6) {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold block mb-3';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Iltimos, 6 xonali tasdiqlash kodini to\'liq kiriting.';
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Tekshirilmoqda...';
+
+    fetch('{{ route("email.verify-code") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ code: code })
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusBox.classList.remove('hidden');
+        if (data.success) {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold block mb-3';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ' + data.message;
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 1200);
+        } else {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1 text-red-600"></i> ' + (data.message || 'Kod noto\'g\'ri.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Kodni tasdiqlash';
+        }
+    })
+    .catch(err => {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3';
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> Tekshirishda server xatoligi yuz berdi.';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Kodni tasdiqlash';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    @if(session('open_verification_modal'))
+        openEmailVerificationModal();
+    @endif
+});
 </script>
+
+<!-- EMAIL VERIFICATION MODAL -->
+<div id="emailVerificationModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 28px; max-width: 460px; width: 100%; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); position: relative; text-align: center;">
+        <button type="button" onclick="closeEmailVerificationModal()" style="position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
+
+        <div style="width: 72px; height: 72px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border: 4px solid #dbeafe;">
+            <i class="fa-regular fa-envelope" style="font-size: 28px; color: #0066FF;"></i>
+        </div>
+
+        <h3 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 6px;">Elektron pochtani tasdiqlash</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px;">
+            Tasdiqlash kodi <strong>notifications@estora.uz</strong> orqali quyidagi pochtaga yuboriladi:<br>
+            <span style="font-weight: 800; color: #0066FF; font-family: monospace;">{{ Auth::user()->email }}</span>
+        </p>
+
+        <!-- Dynamic Status Alert Box -->
+        <div id="verify-alert-box" class="hidden"></div>
+
+        <!-- Action Step 1: Send Code Button -->
+        <div style="margin-bottom: 20px;">
+            <button type="button" id="btn-send-code" onclick="sendVerificationEmailCode()" style="width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3); transition: all 0.2s;">
+                <i class="fa-solid fa-paper-plane"></i> Kodni yuborish
+            </button>
+        </div>
+
+        <!-- Action Step 2: Enter 6-digit Code -->
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: left;">
+            <label for="verify-code-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+                6 xonali tasdiqlash kodi:
+            </label>
+            <input type="text" 
+                   id="verify-code-input" 
+                   maxlength="6" 
+                   placeholder="------" 
+                   style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 22px; font-weight: 900; letter-spacing: 12px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
+            
+            <button type="button" id="btn-verify-submit" onclick="submitEmailVerificationCode()" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #10b981; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); transition: all 0.2s;">
+                <i class="fa-solid fa-check"></i> Kodni tasdiqlash
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Delete Product Confirmation Modal -->
 <div id="deleteProductModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
@@ -1419,3 +1735,4 @@ function closeTopModal() {
     </div>
 </div>
 @endsection
+

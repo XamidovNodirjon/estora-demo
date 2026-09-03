@@ -48,115 +48,32 @@ Route::get('/', function () {
         ->take(8)
         ->get();
 
-    // Calculate regional & district real estate market analytics from real products
-    $allActiveProducts = \App\Models\Product::with(['region', 'city'])
-        ->where('status', 'active')
-        ->get();
-
-    $regionCoordinates = [
-        1 => ['lat' => 41.2995, 'lng' => 69.2401, 'zoom' => 11], // Toshkent shahri
-        13 => ['lat' => 41.1500, 'lng' => 69.5000, 'zoom' => 9],  // Toshkent viloyati
-        10 => ['lat' => 39.6544, 'lng' => 66.9758, 'zoom' => 10], // Samarqand
-        3 => ['lat' => 39.7747, 'lng' => 64.4286, 'zoom' => 10],  // Buxoro
-        2 => ['lat' => 40.7821, 'lng' => 72.3442, 'zoom' => 10],  // Andijon
-        4 => ['lat' => 40.3842, 'lng' => 71.7843, 'zoom' => 10],  // Farg'ona
-        7 => ['lat' => 41.0001, 'lng' => 71.6726, 'zoom' => 10],  // Namangan
-        9 => ['lat' => 38.8606, 'lng' => 65.7891, 'zoom' => 9],   // Qashqadaryo
-        12 => ['lat' => 37.2286, 'lng' => 67.2755, 'zoom' => 9],  // Surxondaryo
-        8 => ['lat' => 40.0988, 'lng' => 65.3792, 'zoom' => 8],   // Navoiy
-        14 => ['lat' => 41.5505, 'lng' => 60.6315, 'zoom' => 10], // Xorazm
-        5 => ['lat' => 40.1158, 'lng' => 67.8422, 'zoom' => 10],  // Jizzax
-        11 => ['lat' => 40.5095, 'lng' => 68.7691, 'zoom' => 10], // Sirdaryo
-        6 => ['lat' => 42.4604, 'lng' => 59.6166, 'zoom' => 8],   // Qoraqalpog'iston
-    ];
-
-    // District benchmark estimates in case no products exist yet for that specific district
-    $districtBenchmarks = [
-        'Mirobod tumani' => ['avg_m2' => 1750, 'avg_price' => 85000],
-        'Yunusobod tumani' => ['avg_m2' => 1450, 'avg_price' => 72000],
-        'Shayxontohur tumani' => ['avg_m2' => 1400, 'avg_price' => 68000],
-        'Mirzo Ulug‘bek tumani' => ['avg_m2' => 1500, 'avg_price' => 75000],
-        'Yakkasaroy tumani' => ['avg_m2' => 1600, 'avg_price' => 78000],
-        'Chilonzor tumani' => ['avg_m2' => 1250, 'avg_price' => 58000],
-        'Yashnobod tumani' => ['avg_m2' => 1200, 'avg_price' => 55000],
-        'Olmazor tumani' => ['avg_m2' => 1150, 'avg_price' => 52000],
-        'Uchtepa tumani' => ['avg_m2' => 1100, 'avg_price' => 48000],
-        'Sirg‘ali tumani' => ['avg_m2' => 950, 'avg_price' => 42000],
-        'Bektemir tumani' => ['avg_m2' => 850, 'avg_price' => 38000],
-    ];
-
-    $regionAnalytics = \App\Models\Region::with('cities')->get()->map(function ($region) use ($allActiveProducts, $regionCoordinates, $districtBenchmarks) {
+    // Calculate regional & district real estate market analytics
+    $allActiveProducts = \App\Models\Product::with(['region', 'city'])->where('status', 'active')->get();
+    
+    $regionAnalytics = \App\Models\Region::with('cities')->get()->map(function ($region) use ($allActiveProducts) {
         $regionProducts = $allActiveProducts->where('region_id', $region->id);
-        $totalAds = $regionProducts->count();
+        $count = $regionProducts->count();
+        $avgPrice = $count > 0 ? round($regionProducts->avg('price')) : rand(35000, 75000);
         
-        $validM2Products = $regionProducts->filter(fn($p) => !empty($p->square) && $p->square > 0 && $p->price > 0);
-        $avgPriceM2 = $validM2Products->count() > 0 
-            ? round($validM2Products->avg(fn($p) => $p->price / $p->square))
-            : ($region->id == 1 ? 1350 : 750);
-            
-        $avgOverallPrice = $totalAds > 0 
-            ? round($regionProducts->avg('price'))
-            : ($region->id == 1 ? 65000 : 35000);
-
-        $citiesData = $region->cities->map(function ($city) use ($regionProducts, $districtBenchmarks, $region) {
+        $citiesData = $region->cities->map(function ($city) use ($regionProducts) {
             $cityProducts = $regionProducts->where('city_id', $city->id);
-            $count = $cityProducts->count();
-            
-            $validM2 = $cityProducts->filter(fn($p) => !empty($p->square) && $p->square > 0 && $p->price > 0);
-            
-            $bench = $districtBenchmarks[$city->name] ?? null;
-            
-            if ($count > 0 && $validM2->count() > 0) {
-                $avgM2 = round($validM2->avg(fn($p) => $p->price / $p->square));
-                $avgPrice = round($cityProducts->avg('price'));
-            } elseif ($count > 0) {
-                $avgPrice = round($cityProducts->avg('price'));
-                $avgM2 = round($avgPrice / 55);
-            } elseif ($bench) {
-                $avgM2 = $bench['avg_m2'];
-                $avgPrice = $bench['avg_price'];
-            } else {
-                $avgM2 = $region->id == 1 ? rand(900, 1500) : rand(450, 850);
-                $avgPrice = $avgM2 * 55;
-            }
-
-            // Clean short name (e.g. "Chilonzor tumani" -> "Chilonzor")
-            $shortName = preg_replace('/\s+(tumani|shahri|shahar)$/iu', '', $city->name);
-
+            $cityCount = $cityProducts->count();
+            $cityAvg = $cityCount > 0 ? round($cityProducts->avg('price')) : rand(25000, 65000);
             return [
                 'id' => $city->id,
-                'name' => $city->name,
-                'short_name' => $shortName,
-                'lat' => (float)($city->lat ?: (41.2995 + (crc32($city->name) % 1000) / 10000)),
-                'lng' => (float)($city->long ?: (69.2401 + (crc32($city->name . 'lng') % 1000) / 10000)),
-                'count' => $count,
-                'avg_price' => $avgPrice,
-                'avg_m2' => $avgM2,
-                'price_mln_uzs' => round($avgPrice * 0.0128, 1), // Approximate mln UZS or formatted
-                'price_formatted' => '$' . number_format($avgPrice),
-                'm2_formatted' => '$' . number_format($avgM2) . '/m²',
+                'name' => $city->name_uz ?? $city->name,
+                'avg_price' => $cityAvg,
+                'count' => $cityCount,
             ];
-        });
-
-        // Top 3-4 most expensive districts
-        $topDistricts = $citiesData->sortByDesc('avg_m2')->take(3)->values();
-
-        $coords = $regionCoordinates[$region->id] ?? ['lat' => 41.2995, 'lng' => 69.2401, 'zoom' => 10];
+        })->sortByDesc('avg_price')->values();
 
         return [
             'id' => $region->id,
             'name' => $region->name,
-            'lat' => $coords['lat'],
-            'lng' => $coords['lng'],
-            'zoom' => $coords['zoom'],
-            'count' => $totalAds,
-            'avg_price' => $avgOverallPrice,
-            'avg_m2' => $avgPriceM2,
-            'avg_price_formatted' => '$' . number_format($avgOverallPrice),
-            'avg_m2_formatted' => '$' . number_format($avgPriceM2) . '/m²',
-            'trend_pct' => 2.8,
-            'cities' => $citiesData->values(),
-            'top_districts' => $topDistricts,
+            'count' => $count,
+            'avg_price' => $avgPrice,
+            'cities' => $citiesData,
         ];
     });
 
@@ -308,8 +225,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
     });
 
-    // Client & Makler Dashboard
-    Route::middleware('role:client,makler')->group(function () {
+    // Email Verification Routes (Auth required)
+    Route::post('/email/send-code', [\App\Http\Controllers\EmailVerificationController::class, 'sendCode'])->name('email.send-code');
+    Route::post('/email/verify-code', [\App\Http\Controllers\EmailVerificationController::class, 'verifyCode'])->name('email.verify-code');
+
+    // Client, Owner, Makler, Hotel, Builder Dashboard
+    Route::middleware('role:client,makler,owner,hotel,builder')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
         Route::put('/client/profile', [\App\Http\Controllers\ClientProfileController::class, 'update'])->name('client.profile.update');
         

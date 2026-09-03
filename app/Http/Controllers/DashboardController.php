@@ -89,6 +89,7 @@ class DashboardController extends Controller
             ->get();
         $favoriteCount = $favoriteProducts->count();
 
+        $verificationStatus = app(\App\Services\ProductService::class)->getVerificationStatus($user);
         $isLimitReached = ($userRole === 'client' && $productCount >= 2);
         $canCreateProduct = app(\App\Services\ProductService::class)->canUserCreateProduct($user);
 
@@ -103,7 +104,7 @@ class DashboardController extends Controller
         return view('client.dashboard', compact(
             'user', 'userRole', 'userProducts', 'productCount', 'totalViews',
             'topViewedProduct', 'avgViews', 'favoriteProducts', 'favoriteCount',
-            'isLimitReached', 'canCreateProduct', 'section', 'conversations', 'unreadNotificationCount'
+            'isLimitReached', 'canCreateProduct', 'verificationStatus', 'section', 'conversations', 'unreadNotificationCount'
         ));
     }
 }

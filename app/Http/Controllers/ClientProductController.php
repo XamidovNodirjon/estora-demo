@@ -33,7 +33,16 @@ class ClientProductController extends Controller
      */
     public function create()
     {
-        if (!$this->service->canUserCreateProduct(Auth::user())) {
+        $user = Auth::user();
+        $verification = $this->service->getVerificationStatus($user);
+
+        if (!$verification['can_create_ad']) {
+            return redirect()->route('client.dashboard')
+                ->with('warning', 'E\'lon joylash uchun elektron pochtangizni tasdiqlang hamda pasport va 14 xonali JShShIR ma\'lumotlaringizni to\'ldiring.')
+                ->with('open_verification_modal', true);
+        }
+
+        if (!$this->service->canUserCreateProduct($user)) {
             return redirect()->route('client.dashboard')
                 ->withErrors(['limit' => 'Oddiy foydalanuvchilar (Mijozlar) maksimal 2 ta e\'lon qo\'sha oladi. Cheksiz e\'lon joylashtirish uchun Makler hisobi bilan ro\'yxatdan o\'ting!']);
         }

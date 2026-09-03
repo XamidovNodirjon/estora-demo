@@ -32,9 +32,73 @@ class ProductService
     }
 
     /**
+     * Calculate user profile verification status and percentage.
+     */
+    public function getVerificationStatus(?\App\Models\User $user = null): array
+    {
+        $user = $user ?? auth()->user();
+        if (!$user) {
+            return [
+                'percentage' => 0,
+                'email_verified' => false,
+                'passport_filled' => false,
+                'jshshir_filled' => false,
+                'phone_filled' => false,
+                'can_create_ad' => false,
+                'missing_fields' => ['email', 'passport', 'jshshir', 'phone']
+            ];
+        }
+
+        $emailVerified = !empty($user->email_verified_at);
+        $passportFilled = !empty($user->passport) && strlen(trim($user->passport)) >= 7;
+        $jshshirFilled = !empty($user->jshshir) && strlen(trim($user->jshshir)) === 14;
+        $phoneFilled = !empty($user->phone);
+
+        $percentage = 0;
+        $missing = [];
+
+        if ($emailVerified) {
+            $percentage += 35;
+        } else {
+            $missing[] = 'Elektron pochta tasdiqlanmagan';
+        }
+
+        if ($passportFilled) {
+            $percentage += 25;
+        } else {
+            $missing[] = 'Pasport seriya va raqami kiritilmagan';
+        }
+
+        if ($jshshirFilled) {
+            $percentage += 25;
+        } else {
+            $missing[] = '14 xonali JShShIR kiritilmagan';
+        }
+
+        if ($phoneFilled) {
+            $percentage += 15;
+        } else {
+            $missing[] = 'Telefon raqam kiritilmagan';
+        }
+
+        $canCreateAd = $emailVerified && $passportFilled && $jshshirFilled;
+
+        return [
+            'percentage' => $percentage,
+            'email_verified' => $emailVerified,
+            'passport_filled' => $passportFilled,
+            'jshshir_filled' => $jshshirFilled,
+            'phone_filled' => $phoneFilled,
+            'can_create_ad' => $canCreateAd,
+            'missing_fields' => $missing
+        ];
+    }
+
+    /**
      * Check if a user is allowed to create a new product.
+     * Requires email verification, passport and 14-digit JSHSHIR.
      * Ordinary clients: max 2 products.
-     * Maklers & Admins: unlimited.
+     * Maklers & Owners: unlimited.
      */
     public function canUserCreateProduct(?\App\Models\User $user = null): bool
     {
@@ -45,8 +109,15 @@ class ProductService
 
         $roleName = $user->role?->name ?? $user->type;
 
-        if (in_array($roleName, ['makler', 'admin', 'dev', 'manager'])) {
+        // Dev/Admin bypass
+        if (in_array($roleName, ['admin', 'dev'])) {
             return true;
+        }
+
+        // Email, Passport & JSHSHIR verification check
+        $status = $this->getVerificationStatus($user);
+        if (!$status['can_create_ad']) {
+            return false;
         }
 
         if ($roleName === 'client') {
@@ -151,14 +222,9 @@ class ProductService
                 
                 $fileName = Str::random(40) . '.' . $extension;
                 $path = 'products/' . $fileName;
-                $fullDir = storage_path('app/public/products');
-                if (!is_dir($fullDir)) {
-                    @mkdir($fullDir, 0755, true);
-                }
                 
-                $fullPath = storage_path('app/public/' . $path);
-                file_put_contents($fullPath, $decoded);
-                $processed[] = '/storage/' . $path;
+                Storage::disk('public')->put($path, $decoded);
+                $processed[] = Storage::url($path);
             } else {
                 // Already stored image URL, keep it
                 $processed[] = $img;

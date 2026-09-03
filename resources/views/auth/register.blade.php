@@ -661,34 +661,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Row 3: Passport & JSHSHIR -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label for="passport" class="form-label-styled">Pasport seriyasi (Ixtiyoriy)</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-regular fa-id-card"></i>
-                                </span>
-                                <input type="text" name="passport" id="passport" value="{{ old('passport') }}"
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="AA1234567">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="jshshir" class="form-label-styled">JShShIR (Ixtiyoriy)</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-solid fa-fingerprint"></i>
-                                </span>
-                                <input type="text" name="jshshir" id="jshshir" value="{{ old('jshshir') }}"
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="14 xonali raqam">
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Row 4: Password & Confirmation -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
