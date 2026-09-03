@@ -151,9 +151,14 @@ class ProductService
                 
                 $fileName = Str::random(40) . '.' . $extension;
                 $path = 'products/' . $fileName;
+                $fullDir = storage_path('app/public/products');
+                if (!is_dir($fullDir)) {
+                    @mkdir($fullDir, 0755, true);
+                }
                 
-                Storage::disk('public')->put($path, $decoded);
-                $processed[] = Storage::url($path);
+                $fullPath = storage_path('app/public/' . $path);
+                file_put_contents($fullPath, $decoded);
+                $processed[] = '/storage/' . $path;
             } else {
                 // Already stored image URL, keep it
                 $processed[] = $img;

@@ -417,24 +417,82 @@
             </script>
 
         @elseif($section === 'subscription')
-            <!-- ================= OBUNA VA TO'LOVLAR SAHIFASI ================= -->
-            <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-5">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h2 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
-                        <i class="fa-regular fa-credit-card text-blue-600"></i>
-                        <span>Obuna va To'lovlar</span>
-                    </h2>
-                    <span class="bg-amber-500 text-white font-black text-xs px-3 py-1 rounded-md">PRO STATUS</span>
+            <!-- ================= OBUNA VA TO'LOVLAR SAHIFASI (TEZ ORADA) ================= -->
+            <div class="space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <h2 class="font-black text-2xl text-slate-900 flex items-center gap-2.5 tracking-tight">
+                                <i class="fa-regular fa-credit-card text-blue-600 text-xl"></i>
+                                <span>Obuna va To'lovlar</span>
+                            </h2>
+                            <span class="bg-blue-50 text-blue-600 border border-blue-200 font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+                                <i class="fa-solid fa-clock text-[11px]"></i>
+                                <span>Tez orada</span>
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                            Ushbu xizmat hozirda ishlab chiqilmoqda va tez kunlarda to'liq ishga tushiriladi
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-500/10 text-amber-600 border border-amber-500/20 font-black text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5">
+                            <i class="fa-solid fa-crown text-amber-500"></i>
+                            <span>PRO REJA</span>
+                        </span>
+                    </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white space-y-3">
-                    <span class="bg-white/20 text-white font-bold text-xs px-3 py-1 rounded-full">Faol Tarif</span>
-                    <h3 class="font-black text-2xl">Rieltor PRO Obuna</h3>
-                    <p class="text-xs text-blue-100">Cheksiz e'lon joylash va VIP tavsiya xizmatlari</p>
-                    <div class="pt-2 flex items-center gap-3">
-                        <button class="bg-white text-blue-600 font-extrabold text-xs px-4 py-2 rounded-xl shadow-xs">
-                            Obunani uzaytirish
-                        </button>
+                <!-- Main Muted Coming Soon Subscription Banner -->
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs">
+                    <!-- Background Visual Banner with Muted/Blurry Style -->
+                    <div class="relative rounded-2xl bg-gradient-to-r from-blue-600/75 to-indigo-700/75 p-6 sm:p-8 text-white opacity-70 filter grayscale-[15%] select-none">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-white/20 backdrop-blur-md text-white font-bold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+                                <i class="fa-regular fa-hourglass-half"></i>
+                                <span>Tez kunda ishga tushadi</span>
+                            </span>
+                        </div>
+                        <h3 class="font-black text-2xl sm:text-3xl tracking-tight mb-2">Rieltor PRO Obuna</h3>
+                        <p class="text-xs sm:text-sm text-blue-100 max-w-xl leading-relaxed mb-6">
+                            Cheksiz e'lonlar joylash, qidiruv natijalarida TOP o'rinlar, shaxsiy brend sahifasi va VIP tavsiya xizmatlari.
+                        </p>
+                        
+                        <div class="flex items-center gap-3">
+                            <button type="button" disabled class="bg-white/90 text-slate-500 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs cursor-not-allowed opacity-80 flex items-center gap-2">
+                                <i class="fa-solid fa-lock text-slate-400"></i>
+                                <span>Tez kunda mavjud bo'ladi</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Subtle Coming Soon Info Box Below -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-layer-group text-sm"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 mb-1">Cheksiz E'lonlar</h4>
+                            <p class="text-xs text-slate-500">Mulk egalari va rieltorlar uchun cheklovlarsiz e'lon joylash imkoniyati.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
+                            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-bolt text-sm"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 mb-1">TOP & VIP Reyting</h4>
+                            <p class="text-xs text-slate-500">E'lonlaringiz qidiruv natijalarining eng yuqori qismida ko'rsatiladi.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-chart-line text-sm"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 mb-1">Kengaytirilgan Statistika</h4>
+                            <p class="text-xs text-slate-500">Mijozlar qiziqishi, ko'rishlar soni va batafsil hisobotlar.</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -950,7 +950,6 @@
         // Initialize state
         syncRoleToForm(currentSelectedRole);
     </script>
-
 </body>
 </html>
 

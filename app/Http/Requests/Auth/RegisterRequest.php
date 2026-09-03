@@ -25,6 +25,20 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('passport') && $this->passport) {
+            $this->merge([
+                'passport' => strtoupper(trim($this->passport)),
+            ]);
+        }
+        if ($this->has('jshshir') && $this->jshshir) {
+            $this->merge([
+                'jshshir' => trim($this->jshshir),
+            ]);
+        }
+    }
+
     public function messages(): array
     {
         return [
