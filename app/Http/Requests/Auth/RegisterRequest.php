@@ -14,9 +14,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'username' => 'required|string|max:255|unique:users|alpha_dash',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'username' => 'nullable|string|max:255',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'passport' => 'nullable|string|max:20',
@@ -27,26 +27,35 @@ class RegisterRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $firstName = trim($this->first_name ?? '');
+        $lastName = trim($this->last_name ?? '');
+
+        $dataToMerge = [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name' => trim("{$firstName} {$lastName}"),
+        ];
+
+        if ($this->has('username') && $this->username) {
+            $dataToMerge['username'] = strtolower(trim($this->username));
+        }
+
         if ($this->has('passport') && $this->passport) {
-            $this->merge([
-                'passport' => strtoupper(trim($this->passport)),
-            ]);
+            $dataToMerge['passport'] = strtoupper(trim($this->passport));
         }
+
         if ($this->has('jshshir') && $this->jshshir) {
-            $this->merge([
-                'jshshir' => trim($this->jshshir),
-            ]);
+            $dataToMerge['jshshir'] = trim($this->jshshir);
         }
+
+        $this->merge($dataToMerge);
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Ism kiritilishi shart',
-            'email.required' => 'Email kiritilishi shart',
-            'email.unique' => 'Bu email allaqachon ro\'yxatdan o\'tgan',
-            'username.required' => 'Username kiritilishi shart',
-            'username.unique' => 'Bu username allaqachon band qilingan',
+            'first_name.required' => 'Ismni kiritish shart',
+            'last_name.required' => 'Familiyani kiritish shart',
             'phone.required' => 'Telefon raqam kiritilishi shart',
             'phone.unique' => 'Bu telefon raqam allaqachon ro\'yxatdan o\'tgan',
             'password.required' => 'Parol kiritilishi shart',

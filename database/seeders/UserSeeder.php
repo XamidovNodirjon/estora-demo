@@ -15,12 +15,14 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = [
-            'name'     => 'dev',
-            'username' => 'developer',
-            'email'    => 'admin@gmail.com',
-            'password' => bcrypt('password'),
-            'role_id'  => Role::where('name', 'dev')->first()->id,
-            'type'     => 'dev',
+            'first_name' => 'Dev',
+            'last_name'  => 'Developer',
+            'name'       => 'Dev Developer',
+            'username'   => 'developer',
+            'email'      => 'admin@gmail.com',
+            'password'   => bcrypt('password'),
+            'role_id'    => Role::where('name', 'dev')->first()->id,
+            'type'       => 'dev',
         ];
 
         User::create($user);

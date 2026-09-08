@@ -16,6 +16,8 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'first_name',
+        'last_name',
         'name',
         'username',
         'password',
@@ -52,6 +54,19 @@ class User extends Authenticatable
     public function receivedMessages()
     {
         return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (User $user) {
+            if (empty($user->name) && (!empty($user->first_name) || !empty($user->last_name))) {
+                $user->name = trim("{$user->first_name} {$user->last_name}");
+            } elseif (!empty($user->name) && empty($user->first_name) && empty($user->last_name)) {
+                $parts = explode(' ', trim($user->name), 2);
+                $user->first_name = $parts[0] ?? null;
+                $user->last_name = $parts[1] ?? null;
+            }
+        });
     }
 
 

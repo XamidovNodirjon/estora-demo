@@ -382,7 +382,6 @@
                             <h3 class="font-extrabold text-slate-900 text-sm leading-tight mb-1.5">Oddiy foydalanuvchi</h3>
                             <p class="text-[11px] text-slate-500 leading-snug">Uy yoki xonadosh qidiraman</p>
                         </div>
-                        <div class="radio-indicator w-5 h-5 rounded-full border-2 border-[#0077FE] bg-[#0077FE] shadow-inner"></div>
                     </div>
 
                     <!-- 2. Uy egasi -->
@@ -398,7 +397,6 @@
                             <h3 class="font-extrabold text-slate-900 text-sm leading-tight mb-1.5">Uy egasi</h3>
                             <p class="text-[11px] text-slate-500 leading-snug">O'z mulkimni sotaman yoki ijaraga beraman</p>
                         </div>
-                        <div class="radio-indicator w-5 h-5 rounded-full border-2 border-slate-300 bg-white"></div>
                     </div>
 
                     <!-- 3. Makler -->
@@ -414,17 +412,21 @@
                             <h3 class="font-extrabold text-slate-900 text-sm leading-tight mb-1.5">Makler</h3>
                             <p class="text-[11px] text-slate-500 leading-snug">Ko'chmas mulk bilan professional ishlayman</p>
                         </div>
-                        <div class="radio-indicator w-5 h-5 rounded-full border-2 border-slate-300 bg-white"></div>
                     </div>
 
                     <!-- 4. Mehmonxona (Locked) -->
-                    <div class="desktop-role-card bg-white/70 border-2 border-slate-200/80 rounded-2xl p-5 flex flex-col items-center text-center justify-between cursor-not-allowed min-h-[260px] shadow-xs relative opacity-85 hover:opacity-100"
+                    <div class="desktop-role-card bg-white/70 border-2 border-slate-200/80 rounded-2xl p-5 flex flex-col items-center text-center justify-between cursor-not-allowed min-h-[260px] shadow-xs relative opacity-85 hover:opacity-100 transition-all"
                          onclick="showLockedNotification('Mehmonxona')">
                         <button type="button" class="absolute top-3.5 right-3.5 text-slate-300 hover:text-slate-500 text-sm" title="Batafsil">
                             <i class="fa-regular fa-circle-question"></i>
                         </button>
-                        <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-blue-400 text-2xl mt-3 filter blur-[1px] opacity-70">
-                            <i class="fa-solid fa-hotel"></i>
+                        <div class="relative mt-3">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-b from-slate-100 via-slate-50 to-slate-200/70 border border-slate-200 flex items-center justify-center text-slate-400 text-2xl shadow-inner">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-slate-400 text-[10px]" title="Mehmonxona">
+                                <i class="fa-solid fa-hotel"></i>
+                            </span>
                         </div>
                         <div class="my-3">
                             <h3 class="font-extrabold text-slate-800 text-sm leading-tight mb-1.5">Mehmonxona</h3>
@@ -432,28 +434,27 @@
                                 Tez orada
                             </span>
                         </div>
-                        <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs shadow-inner">
-                            <i class="fa-solid fa-lock"></i>
-                        </div>
                     </div>
 
                     <!-- 5. Qurilish (Locked) -->
-                    <div class="desktop-role-card bg-white/70 border-2 border-slate-200/80 rounded-2xl p-5 flex flex-col items-center text-center justify-between cursor-not-allowed min-h-[260px] shadow-xs relative opacity-85 hover:opacity-100"
+                    <div class="desktop-role-card bg-white/70 border-2 border-slate-200/80 rounded-2xl p-5 flex flex-col items-center text-center justify-between cursor-not-allowed min-h-[260px] shadow-xs relative opacity-85 hover:opacity-100 transition-all"
                          onclick="showLockedNotification('Qurilish')">
                         <button type="button" class="absolute top-3.5 right-3.5 text-slate-300 hover:text-slate-500 text-sm" title="Batafsil">
                             <i class="fa-regular fa-circle-question"></i>
                         </button>
-                        <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-blue-400 text-2xl mt-3 filter blur-[1px] opacity-70">
-                            <i class="fa-solid fa-city"></i>
+                        <div class="relative mt-3">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-b from-slate-100 via-slate-50 to-slate-200/70 border border-slate-200 flex items-center justify-center text-slate-400 text-2xl shadow-inner">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-slate-400 text-[10px]" title="Qurilish">
+                                <i class="fa-solid fa-city"></i>
+                            </span>
                         </div>
                         <div class="my-3">
                             <h3 class="font-extrabold text-slate-800 text-sm leading-tight mb-1.5">Qurilish</h3>
                             <span class="inline-block text-[10px] font-extrabold text-[#0077FE] bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full mb-1">
                                 Tez orada
                             </span>
-                        </div>
-                        <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs shadow-inner">
-                            <i class="fa-solid fa-lock"></i>
                         </div>
                     </div>
 
@@ -608,57 +609,43 @@
                     <!-- Dynamic Hidden Role Input -->
                     <input type="hidden" name="role" id="form_role_input" value="{{ old('role', 'client') }}">
 
-                    <!-- Row 1: Name & Username -->
+                    <!-- Row 1: First Name & Last Name -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label for="name" class="form-label-styled">Ism sharifingiz</label>
+                            <label for="first_name" class="form-label-styled">Ismingiz</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
                                     <i class="fa-regular fa-user"></i>
                                 </span>
-                                <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" required
                                     class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="Ali Valiyev">
+                                    placeholder="Masalan: Nodirjon">
                             </div>
                         </div>
 
                         <div>
-                            <label for="username" class="form-label-styled">Foydalanuvchi nomi</label>
+                            <label for="last_name" class="form-label-styled">Familiyangiz</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-solid fa-at"></i>
+                                    <i class="fa-regular fa-user"></i>
                                 </span>
-                                <input type="text" name="username" id="username" value="{{ old('username') }}" required
+                                <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" required
                                     class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="ali_valiyev">
+                                    placeholder="Masalan: Xamidov">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: Email & Phone -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label for="email" class="form-label-styled">Elektron pochta</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-regular fa-envelope"></i>
-                                </span>
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="example@mail.com">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="phone" class="form-label-styled">Telefon raqam</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-solid fa-phone"></i>
-                                </span>
-                                <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="+998901234567">
-                            </div>
+                    <!-- Row 2: Phone -->
+                    <div>
+                        <label for="phone" class="form-label-styled">Telefon raqam</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
+                                class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
+                                placeholder="+998901234567">
                         </div>
                     </div>
                     <!-- Row 4: Password & Confirmation -->
