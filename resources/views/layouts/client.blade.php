@@ -311,8 +311,8 @@
         </div>
     </div>
 
-    <!-- Main Container Layout -->
-    <div class="max-w-[1520px] mx-auto px-3 sm:px-6 lg:px-8 py-5 flex-1 w-full min-w-0">
+    <!-- Main Container Layout (Optimized for Mobile Margin & Spacing) -->
+    <div class="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 w-full min-w-0 box-border">
         
         <!-- Toast Notifications -->
         @if(session('success'))

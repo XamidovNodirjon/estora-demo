@@ -906,7 +906,7 @@
             <!-- ================= DEFAULT MAIN DASHBOARD & E'LONLARIM VIEW ================= -->
             
             <!-- VERIFICATION PROGRESS BANNER -->
-            <div class="bg-gradient-to-r from-[#0B172A] via-blue-950 to-[#0B172A] border border-blue-500/30 rounded-3xl p-5 sm:p-6 text-white shadow-xl space-y-4">
+            <div class="bg-gradient-to-r from-[#0B172A] via-blue-950 to-[#0B172A] border border-blue-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-xl space-y-4">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div class="space-y-2 flex-1">
                         <div class="flex items-center gap-3">
@@ -972,7 +972,7 @@
             </div>
 
             <!-- 1. USER PROFILE HEADER CARD (AS IN USER REQUEST IMAGE) -->
-            <div class="bg-[#0B172A] rounded-3xl p-6 text-white shadow-xl border border-slate-800 space-y-5">
+            <div class="bg-[#0B172A] rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-xl border border-slate-800 space-y-5">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
                         <div class="relative">
@@ -1176,12 +1176,12 @@
                 <div class="space-y-4">
                     
                     @forelse($userProducts as $product)
-                        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all space-y-3">
+                        <div class="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-5 shadow-xs hover:shadow-md transition-all space-y-3.5">
                             
-                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3.5 sm:gap-4">
                                 
                                 <!-- Left Thumbnail -->
-                                <div class="relative w-full sm:w-44 h-32 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                                <div class="relative w-full sm:w-44 h-40 sm:h-32 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                                     @if(!empty($product->images) && is_array($product->images) && count($product->images) > 0)
                                         <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                     @else
@@ -1198,7 +1198,7 @@
                                 </div>
 
                                 <!-- Middle Info -->
-                                <div class="flex-1 min-w-0 space-y-1">
+                                <div class="flex-1 min-w-0 space-y-1.5">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         @if($product->is_top)
                                             <span class="bg-amber-100 text-amber-800 font-extrabold text-[11px] px-2.5 py-0.5 rounded-md border border-amber-200 flex items-center gap-1">
@@ -1218,13 +1218,13 @@
                                     </div>
 
                                     <h4 class="font-black text-slate-900 text-base hover:text-blue-600 transition-colors">
-                                        <a href="{{ route('products.show', $product->id) }}" class="hover:underline">
+                                        <a href="{{ route('products.show', $product->id) }}" class="hover:underline line-clamp-1">
                                             {{ $product->name }}
                                         </a>
                                     </h4>
 
-                                    <div class="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
-                                        <span class="flex items-center gap-1">
+                                    <div class="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
+                                        <span class="flex items-center gap-1 truncate max-w-[200px] sm:max-w-none">
                                             <i class="fa-solid fa-location-dot text-slate-400"></i> 
                                             {{ $product->city->name_uz ?? ($product->region->name_uz ?? ($product->landmark ?? 'Toshkent shahar')) }}
                                         </span>
@@ -1239,7 +1239,7 @@
                                     </div>
 
                                     <!-- Metric Row: FAQAT VIEW COUNT (Ko'rishlar soni) -->
-                                    <div class="flex items-center gap-4 text-xs text-slate-500 pt-1 flex-wrap">
+                                    <div class="flex items-center gap-4 text-xs text-slate-500 pt-0.5 flex-wrap">
                                         <span class="flex items-center gap-1.5 font-bold text-slate-800 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
                                             <i class="fa-regular fa-eye text-blue-600 text-sm"></i> 
                                             <span>Ko'rishlar soni: <strong>{{ $product->views->count() }}</strong></span>
@@ -1271,12 +1271,12 @@
                             </div>
 
                             <!-- Bottom Price Recommendation Bar -->
-                            <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl px-3.5 sm:px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span class="text-slate-600 font-medium">Tavsiya etilgan narx: <strong>{{ number_format($product->price * 0.95, 0, '', ' ') }} &ndash; {{ number_format($product->price * 1.05, 0, '', ' ') }} so'm</strong></span>
                                     <span class="bg-emerald-100 text-emerald-700 font-extrabold text-[11px] px-2.5 py-0.5 rounded-md border border-emerald-200">Narx mos</span>
                                 </div>
-                                <a href="{{ route('products.show', $product->id) }}" class="text-blue-600 font-extrabold hover:underline flex items-center gap-1">
+                                <a href="{{ route('products.show', $product->id) }}" class="text-blue-600 font-extrabold hover:underline flex items-center gap-1 self-end sm:self-auto">
                                     <span>Tafsilotlarni ko'rish</span>
                                     <i class="fa-solid fa-chevron-right text-[9px]"></i>
                                 </a>
