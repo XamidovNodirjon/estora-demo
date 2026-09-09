@@ -510,7 +510,7 @@
                         </button>
 
                         <!-- Google Button -->
-                        <button type="button" onclick="handleSocialAuth('Google')"
+                        <a id="google-signup-btn" href="{{ route('auth.google', ['role' => old('role', 'client')]) }}"
                                 class="social-card rounded-2xl py-3 px-2 flex flex-col items-center justify-center gap-1 cursor-pointer">
                             <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shadow-xs">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -523,7 +523,7 @@
                             <span class="text-[11px] font-bold text-slate-700 leading-tight text-center">
                                 Google <br><span class="text-[10px] font-normal text-slate-400">orqali</span>
                             </span>
-                        </button>
+                        </a>
 
                     </div>
 
@@ -578,9 +578,11 @@
         function syncRole(role) {
             const roleInput = document.getElementById('form_role_input');
             const roleBadge = document.getElementById('badge-selected-role');
+            const googleBtn = document.getElementById('google-signup-btn');
             
             if (roleInput) roleInput.value = role;
             if (roleBadge) roleBadge.textContent = roleLabels[role] || "Oddiy foydalanuvchi";
+            if (googleBtn) googleBtn.href = "{{ route('auth.google') }}?role=" + role;
         }
 
         // Navigate to Step 2

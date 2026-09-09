@@ -21,6 +21,11 @@ class UserRepository
         return User::where('email', $email)->first();
     }
 
+    public function findByGoogleId(string $googleId): ?User
+    {
+        return User::where('google_id', $googleId)->first();
+    }
+
     public function findByUsername(string $username): ?User
     {
         return User::where('username', $username)->first();

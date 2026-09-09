@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -82,5 +84,43 @@ class AuthController extends Controller
         $this->authService->logout();
         return redirect()->route('login')
             ->with('success', 'Tizimdan chiqdingiz.');
+    }
+
+    /**
+     * Redirect the user to the Google authentication page.
+     */
+    public function redirectToGoogle(Request $request)
+    {
+        if ($request->has('role')) {
+            session(['oauth_preferred_role' => $request->get('role')]);
+        }
+
+        return Socialite::driver('google')->redirect();
+    }
+
+    /**
+     * Obtain the user information from Google.
+     */
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')
+                ->withErrors(['login' => 'Google orqali kirishda xatolik yuz berdi: ' . $e->getMessage()]);
+        }
+
+        $preferredRole = session()->pull('oauth_preferred_role', 'client');
+        $user = $this->authService->findOrCreateGoogleUser($googleUser, $preferredRole);
+
+        Auth::login($user, true);
+
+        $intendedUrl = session()->pull('url.intended');
+        if ($intendedUrl) {
+            return redirect()->to($intendedUrl);
+        }
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Google orqali muvaffaqiyatli kirdingiz!');
     }
 }

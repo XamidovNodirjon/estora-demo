@@ -120,4 +120,63 @@ class AuthService
         request()->session()->invalidate();
         request()->session()->regenerateToken();
     }
+
+    /**
+     * Find or create a user from Google OAuth callback data.
+     *
+     * @param \Laravel\Socialite\Contracts\User $googleUser
+     * @param string|null $preferredRole
+     * @return User
+     */
+    public function findOrCreateGoogleUser($googleUser, ?string $preferredRole = 'client'): User
+    {
+        // 1. Try to find user by google_id
+        $user = $this->userRepository->findByGoogleId($googleUser->getId());
+
+        if ($user) {
+            $this->userRepository->update($user, [
+                'avatar' => $googleUser->getAvatar() ?: $user->avatar,
+            ]);
+            return $user;
+        }
+
+        // 2. Try to find user by email
+        $user = $this->userRepository->findByEmail($googleUser->getEmail());
+
+        if ($user) {
+            $this->userRepository->update($user, [
+                'google_id' => $googleUser->getId(),
+                'avatar' => $googleUser->getAvatar() ?: $user->avatar,
+            ]);
+            return $user;
+        }
+
+        // 3. User does not exist, create new
+        $allowedRoles = ['client', 'owner', 'makler', 'hotel', 'builder'];
+        $roleName = in_array($preferredRole, $allowedRoles) ? $preferredRole : 'client';
+        $userRole = Role::firstOrCreate(['name' => $roleName]);
+
+        $fullName = $googleUser->getName() ?? '';
+        $nameParts = explode(' ', trim($fullName), 2);
+        $firstName = $nameParts[0] ?? 'User';
+        $lastName = $nameParts[1] ?? '';
+
+        $emailPrefix = explode('@', $googleUser->getEmail())[0];
+        $username = $this->generateUniqueUsername($firstName, $lastName, $emailPrefix);
+
+        return $this->userRepository->create([
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name' => trim($fullName) ?: $username,
+            'email' => $googleUser->getEmail(),
+            'username' => $username,
+            'google_id' => $googleUser->getId(),
+            'avatar' => $googleUser->getAvatar(),
+            'role_id' => $userRole ? $userRole->id : null,
+            'type' => $roleName,
+            'status' => 1,
+            'password' => null,
+        ]);
+    }
 }
+

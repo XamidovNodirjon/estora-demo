@@ -26,6 +26,8 @@ class User extends Authenticatable
         'passport',
         'jshshir',
         'email',
+        'google_id',
+        'avatar',
         'type',
         'status',
         'role_id'
