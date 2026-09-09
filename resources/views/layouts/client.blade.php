@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>@yield('title', 'Makler Admin Paneli') - Estora Real Estate</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,13 +27,21 @@
         }
 
         html, body {
+            width: 100% !important;
             max-width: 100vw !important;
             overflow-x: hidden !important;
+            position: relative;
             margin: 0;
             padding: 0;
             background-color: var(--bg-canvas);
             font-family: var(--font-main);
             color: #0F172A;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Prevent any flex item from breaking parent bounds */
+        main, aside, section, div {
+            min-width: 0;
         }
 
         *, *::before, *::after {

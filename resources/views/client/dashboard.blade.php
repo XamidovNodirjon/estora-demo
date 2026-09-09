@@ -580,12 +580,12 @@
                     </div>
 
                     <!-- Public Page Link Share Strip -->
-                    <div class="mt-5 pt-4 border-t border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-2 min-w-0 w-full sm:w-auto">
+                    <div class="mt-5 pt-4 border-t border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 min-w-0 w-full">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 min-w-0 w-full sm:w-auto flex-1">
                             <span class="text-xs font-bold text-slate-300 flex-shrink-0">
                                 <i class="fa-solid fa-link text-blue-400 mr-1"></i> Shaxsiy havola:
                             </span>
-                            <div class="bg-black/30 border border-white/15 rounded-lg px-3 py-1.5 text-xs text-blue-300 font-mono font-bold truncate max-w-md">
+                            <div class="bg-black/30 border border-white/15 rounded-lg px-3 py-1.5 text-xs text-blue-300 font-mono font-bold break-all w-full sm:flex-1 min-w-0">
                                 {{ route('users.show', Auth::user()->username ?? Auth::id()) }}
                             </div>
                         </div>
@@ -1030,11 +1030,11 @@
 
                 <!-- Personal Link Share Strip -->
                 <div class="pt-3 border-t border-slate-800/80 space-y-3">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 min-w-0 w-full">
                         <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5 flex-shrink-0">
                             <i class="fa-solid fa-link text-blue-400"></i> Shaxsiy havola:
                         </span>
-                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-blue-400 font-mono font-bold truncate w-full sm:flex-1">
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-blue-400 font-mono font-bold break-all w-full sm:flex-1 min-w-0">
                             {{ route('users.show', Auth::user()->username ?? Auth::id()) }}
                         </div>
                     </div>
