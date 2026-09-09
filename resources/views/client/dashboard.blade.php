@@ -104,122 +104,136 @@
     <main class="flex-1 min-w-0 space-y-5">
 
         @if($section === 'stats')
-            <!-- ================= STATISTIKA SAHIFASI (NEW DEDICATED STATS VIEW) ================= -->
-            <div class="space-y-5">
+            <!-- ================= STATISTIKA SAHIFASI (RESPONSIVE & DEDICATED STATS VIEW) ================= -->
+            <div class="space-y-4 sm:space-y-5">
                 
                 <!-- Stats Header -->
-                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 sm:gap-4">
+                    <div class="min-w-0">
                         <div class="flex items-center gap-2">
-                            <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-2.5 py-0.5 rounded-md border border-blue-200">
-                                <i class="fa-solid fa-chart-line mr-1"></i> Ko'rishlar Analitikasi
+                            <span class="bg-blue-50 text-blue-700 text-[11px] sm:text-xs font-extrabold px-2.5 py-0.5 rounded-lg border border-blue-100 flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-line text-blue-600"></i> Ko'rishlar Analitikasi
                             </span>
+                            <span class="text-xs font-semibold text-slate-400">&bull;</span>
+                            <span class="text-xs font-bold text-slate-500">Real-vaqt hisoboti</span>
                         </div>
-                        <h2 class="font-black text-2xl text-slate-900 tracking-tight mt-1">E'lonlar Ko'rishlar Statistikasi</h2>
-                        <p class="text-xs text-slate-500 font-medium mt-0.5">Har bir ko'chmas mulk ob'yekti bo'yicha ko'rishlar soni va statistikasi</p>
+                        <h2 class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight mt-1.5 truncate">
+                            E'lonlar Ko'rishlar Statistikasi
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">Har bir ko'chmas mulk ob'yekti bo'yicha ko'rishlar soni va dinamikasi</p>
                     </div>
 
-                    <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                    <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="w-full sm:w-auto justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 flex-shrink-0">
                         <i class="fa-solid fa-arrow-left text-xs"></i>
                         <span>E'lonlarimga qaytish</span>
                     </a>
                 </div>
 
-                <!-- 4 Overview Stat Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- 4 Overview Stat Cards (Responsive Grid: 1 col on small mobile, 2 col on tablet, 4 col on desktop) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
                     <!-- Card 1: Jami Ko'rishlar -->
-                    <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex items-center gap-4">
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-xl flex-shrink-0">
                             <i class="fa-regular fa-eye"></i>
                         </div>
-                        <div>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Jami Ko'rishlar</span>
-                            <h3 class="font-black text-2xl text-slate-900 mt-0.5">{{ number_format($totalViews, 0, '', ' ') }}</h3>
+                        <div class="min-w-0">
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">Jami Ko'rishlar</span>
+                            <h3 class="font-black text-xl sm:text-2xl text-slate-900 mt-0.5">{{ number_format($totalViews, 0, '', ' ') }}</h3>
                         </div>
                     </div>
 
                     <!-- Card 2: Faol E'lonlar -->
-                    <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex items-center gap-4">
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-xl flex-shrink-0">
                             <i class="fa-regular fa-folder-open"></i>
                         </div>
-                        <div>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Faol E'lonlar</span>
-                            <h3 class="font-black text-2xl text-slate-900 mt-0.5">{{ $userProducts->where('status', 'active')->count() }} ta</h3>
+                        <div class="min-w-0">
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">Faol E'lonlar</span>
+                            <h3 class="font-black text-xl sm:text-2xl text-slate-900 mt-0.5">{{ $userProducts->where('status', 'active')->count() }} ta</h3>
                         </div>
                     </div>
 
                     <!-- Card 3: O'rtacha Ko'rishlar -->
-                    <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex items-center gap-4">
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center text-xl flex-shrink-0">
                             <i class="fa-solid fa-chart-simple"></i>
                         </div>
-                        <div>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">O'rtacha Ko'rish</span>
-                            <h3 class="font-black text-2xl text-slate-900 mt-0.5">{{ $avgViews }} ta</h3>
+                        <div class="min-w-0">
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">O'rtacha Ko'rish</span>
+                            <h3 class="font-black text-xl sm:text-2xl text-slate-900 mt-0.5">{{ $avgViews }} ta</h3>
                         </div>
                     </div>
 
                     <!-- Card 4: Eng Ko'p Ko'rilgan -->
-                    <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex items-center gap-4">
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4">
                         <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-xl flex-shrink-0">
                             <i class="fa-solid fa-fire"></i>
                         </div>
-                        <div class="min-w-0">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Top E'lon</span>
-                            <h3 class="font-extrabold text-sm text-slate-900 mt-0.5 truncate">
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block truncate">Eng Ommabop E'lon</span>
+                            <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 mt-0.5 truncate" title="{{ $topViewedProduct ? $topViewedProduct->name : "Hozircha yo'q" }}">
                                 {{ $topViewedProduct ? $topViewedProduct->name : "Hozircha yo'q" }}
                             </h3>
                             @if($topViewedProduct)
-                                <span class="text-xs font-extrabold text-amber-600">
-                                    {{ $topViewedProduct->views->count() }} ko'rish
+                                <span class="text-xs font-extrabold text-amber-600 flex items-center gap-1 mt-0.5">
+                                    <i class="fa-regular fa-eye text-[11px]"></i> {{ $topViewedProduct->views->count() }} ko'rish
                                 </span>
+                            @else
+                                <span class="text-xs text-slate-400">0 ko'rish</span>
                             @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Weekly Views Chart Visualization -->
-                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+                <!-- Weekly Views Chart Visualization (Responsive Container) -->
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h4 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-chart-area text-blue-600"></i>
-                            <span>Haftalik Ko'rishlar Dinamikasi</span>
-                        </h4>
-                        <span class="text-xs font-bold text-slate-400">Joriy hafta</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-blue-600"></i>
+                                <span>Haftalik Ko'rishlar Dinamikasi</span>
+                            </h4>
+                            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Oxirgi 7 kunlik e'lon ko'rishlar soni</p>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                            7 kunlik grafik
+                        </span>
                     </div>
 
-                    <!-- Chart Bars -->
-                    <div class="h-48 flex items-end justify-between gap-3 pt-6 px-4 border-b border-slate-100">
-                        @php
-                            $days = [
-                                ['day' => 'Dushanba', 'count' => 12, 'height' => 'h-24'],
-                                ['day' => 'Seshanba', 'count' => 18, 'height' => 'h-32'],
-                                ['day' => 'Chorshanba', 'count' => 24, 'height' => 'h-40'],
-                                ['day' => 'Payshanba', 'count' => 15, 'height' => 'h-28'],
-                                ['day' => 'Juma', 'count' => 30, 'height' => 'h-44'],
-                                ['day' => 'Shanba', 'count' => 22, 'height' => 'h-36'],
-                                ['day' => 'Yakshanba', 'count' => 14, 'height' => 'h-24'],
-                            ];
-                        @endphp
-
-                        @foreach($days as $item)
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
-                                <span class="text-[11px] font-black text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {{ $item['count'] }}
-                                </span>
-                                <div class="w-full bg-blue-100 group-hover:bg-blue-600 rounded-t-xl transition-all duration-300 {{ $item['height'] }}"></div>
-                                <span class="text-[11px] font-bold text-slate-500 truncate">{{ $item['day'] }}</span>
-                            </div>
-                        @endforeach
+                    <!-- Chart Bars Container with horizontal scroll safety -->
+                    <div class="overflow-x-auto no-scrollbar pt-2">
+                        <div class="h-44 sm:h-52 min-w-[280px] flex items-end justify-between gap-2 sm:gap-4 px-2 sm:px-4 pb-2 border-b border-slate-100">
+                            @if(isset($weeklyViewsData) && count($weeklyViewsData) > 0)
+                                @foreach($weeklyViewsData as $item)
+                                    <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer">
+                                        <span class="text-[10px] sm:text-[11px] font-black text-blue-600 transition-transform group-hover:-translate-y-0.5">
+                                            {{ $item['count'] }}
+                                        </span>
+                                        <div class="w-full max-w-[40px] bg-gradient-to-t from-blue-600 to-blue-400 group-hover:from-blue-700 group-hover:to-blue-500 rounded-t-lg sm:rounded-t-xl transition-all duration-300 shadow-xs" 
+                                             style="height: {{ $item['height'] }}%;"></div>
+                                        <span class="text-[10px] sm:text-xs font-bold text-slate-500">{{ $item['day'] }}</span>
+                                        <span class="text-[9px] text-slate-400 font-medium hidden sm:block">{{ $item['full_date'] }}</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="w-full text-center py-12 text-xs text-slate-400 font-medium">
+                                    Haftalik ko'rishlar ma'lumoti shakllanmoqda
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
                 <!-- Har bir e'lon bo'yicha Ko'rishlar Ro'yxati -->
-                <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-4">
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h4 class="font-extrabold text-slate-900 text-base">E'lonlar Bo'yicha Ko'rishlar Statistikasi</h4>
-                        <span class="text-xs font-bold text-blue-600">{{ $productCount }} ta e'lon</span>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-sm sm:text-base">E'lonlar Bo'yicha Ko'rishlar Statistikasi</h4>
+                            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Barcha e'lonlaringizning ko'rishlar ulushi</p>
+                        </div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 whitespace-nowrap">
+                            {{ $productCount }} ta e'lon
+                        </span>
                     </div>
 
                     <div class="space-y-3">
@@ -228,47 +242,68 @@
                                 $viewsCount = $product->views->count();
                                 $percentage = $totalViews > 0 ? min(100, round(($viewsCount / $totalViews) * 100)) : 0;
                             @endphp
-                            <div class="border border-slate-200/80 rounded-xl p-4 hover:border-blue-300 transition-all space-y-2">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                            <div class="border border-slate-200/80 rounded-2xl p-3 sm:p-4 hover:border-blue-300 hover:shadow-2xs transition-all space-y-2.5 bg-white">
+                                <div class="flex items-start sm:items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 relative">
                                             @if(!empty($product->images) && is_array($product->images) && count($product->images) > 0)
                                                 <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                             @else
                                                 <img src="/images/apartment1.png" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                             @endif
+
+                                            @if($product->is_top)
+                                                <div class="absolute top-1 left-1">
+                                                    <span class="bg-amber-400 text-amber-950 font-black text-[8px] px-1 py-0.2 rounded">TOP</span>
+                                                </div>
+                                            @endif
                                         </div>
 
-                                        <div class="min-w-0">
-                                            <h5 class="font-extrabold text-slate-900 text-sm truncate">{{ $product->name }}</h5>
-                                            <p class="text-xs text-slate-400 font-medium">
-                                                {{ $product->city->name_uz ?? ($product->region->name_uz ?? 'Toshkent') }} &middot; {{ number_format($product->price, 0, '', ' ') }} so'm
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <h5 class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">
+                                                    <a href="{{ route('products.show', $product->id) }}" class="hover:text-blue-600 transition-colors">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate mt-0.5">
+                                                {{ $product->city->name_uz ?? ($product->region->name_uz ?? 'Toshkent') }} &middot; <strong class="text-slate-700 font-extrabold">{{ number_format($product->price, 0, '', ' ') }} so'm</strong>
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-4 flex-shrink-0">
+                                    <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                                         <div class="text-right">
-                                            <span class="block text-xs font-bold text-slate-400">Ko'rishlar</span>
-                                            <span class="text-base font-black text-blue-600 flex items-center gap-1 justify-end">
-                                                <i class="fa-regular fa-eye text-xs"></i> {{ $viewsCount }} ta
+                                            <span class="block text-[10px] sm:text-xs font-bold text-slate-400">Ko'rishlar</span>
+                                            <span class="text-xs sm:text-base font-black text-blue-600 flex items-center gap-1 justify-end">
+                                                <i class="fa-regular fa-eye text-[11px] sm:text-xs"></i> {{ $viewsCount }} ta
                                             </span>
                                         </div>
 
-                                        <a href="{{ route('products.show', $product->id) }}" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Ko'rish">
-                                            <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                                        <a href="{{ route('products.show', $product->id) }}" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 border border-slate-200/80 rounded-xl transition-all shadow-2xs" title="E'lonni ko'rish">
+                                            <i class="fa-solid fa-arrow-up-right-from-square text-xs sm:text-sm"></i>
                                         </a>
                                     </div>
                                 </div>
 
                                 <!-- Progress Bar Share -->
-                                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                    <div class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: {{ max(5, $percentage) }}%"></div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                                        <span>Jami ko'rishlar ulushi</span>
+                                        <span>{{ $percentage }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5 sm:h-2 overflow-hidden">
+                                        <div class="bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: {{ max(4, $percentage) }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-8 text-slate-400 text-xs font-medium">
-                                Hozircha e'lonlaringiz statistikasi mavjud emas.
+                            <div class="text-center py-10 text-slate-400 text-xs font-medium space-y-2">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl">
+                                    <i class="fa-regular fa-folder-open"></i>
+                                </div>
+                                <p>Hozircha e'lonlaringiz statistikasi mavjud emas.</p>
                             </div>
                         @endforelse
                     </div>

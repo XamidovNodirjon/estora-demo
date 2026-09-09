@@ -101,10 +101,47 @@ class DashboardController extends Controller
             $conversations = app(\App\Services\MessageService::class)->getUserConversations($user);
         }
 
+        // Weekly views calculation (last 7 days)
+        $userProductIds = $userProducts->pluck('id')->toArray();
+        $weeklyViewsData = [];
+        $dayNames = [
+            1 => 'Dush',
+            2 => 'Sesh',
+            3 => 'Chor',
+            4 => 'Pay',
+            5 => 'Juma',
+            6 => 'Shan',
+            7 => 'Yak',
+        ];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $targetDate = now()->subDays($i);
+            $dayOfWeek = $targetDate->dayOfWeekIso; // 1 (Mon) to 7 (Sun)
+            $count = empty($userProductIds) ? 0 : \App\Models\ProductView::whereIn('product_id', $userProductIds)
+                ->whereDate('created_at', $targetDate->toDateString())
+                ->count();
+            
+            $weeklyViewsData[] = [
+                'day' => $dayNames[$dayOfWeek] ?? $targetDate->format('D'),
+                'full_date' => $targetDate->format('d.m'),
+                'count' => $count,
+            ];
+        }
+
+        $maxWeeklyCount = max(array_column($weeklyViewsData, 'count') ?: [1]);
+        if ($maxWeeklyCount == 0) $maxWeeklyCount = 1;
+
+        foreach ($weeklyViewsData as &$dayItem) {
+            $heightPercent = round(($dayItem['count'] / $maxWeeklyCount) * 100);
+            $dayItem['height'] = max(12, $heightPercent); // at least 12% so bar is visible
+        }
+        unset($dayItem);
+
         return view('client.dashboard', compact(
             'user', 'userRole', 'userProducts', 'productCount', 'totalViews',
             'topViewedProduct', 'avgViews', 'favoriteProducts', 'favoriteCount',
-            'isLimitReached', 'canCreateProduct', 'verificationStatus', 'section', 'conversations', 'unreadNotificationCount'
+            'isLimitReached', 'canCreateProduct', 'verificationStatus', 'section', 'conversations', 'unreadNotificationCount',
+            'weeklyViewsData'
         ));
     }
 }
