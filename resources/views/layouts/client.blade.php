@@ -339,61 +339,12 @@
         @yield('content')
     </div>
 
-    <!-- Minimal Clean Footer (Desktop & Tablet) -->
-    <footer class="bg-white border-t border-slate-200/80 py-4 mt-auto mb-16 lg:mb-0">
+    <!-- Minimal Clean Footer -->
+    <footer class="bg-white border-t border-slate-200/80 py-4 mt-auto">
         <div class="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 font-medium">
             &copy; {{ date('Y') }} Estora Real Estate. Barcha huquqlar himoyalangan.
         </div>
     </footer>
-
-    <!-- ============================================================ -->
-    <!-- MOBILE FIXED BOTTOM NAVIGATION BAR (Smart App UX) -->
-    <!-- ============================================================ -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-2 py-1.5 flex items-center justify-around safe-area-pb">
-        @php
-            $currentSection = request()->get('section', 'my_products');
-        @endphp
-
-        <!-- 1. Bosh sahifa / E'lonlarim -->
-        <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" 
-           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all {{ $currentSection === 'my_products' ? 'text-blue-600 font-extrabold' : 'text-slate-500 font-semibold hover:text-slate-800' }}">
-            <i class="fa-solid fa-house-chimney text-lg {{ $currentSection === 'my_products' ? 'scale-110' : '' }} transition-transform"></i>
-            <span class="text-[10px] mt-0.5 tracking-tight">E'lonlarim</span>
-        </a>
-
-        <!-- 2. Chatlar -->
-        <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" 
-           class="relative flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all {{ $currentSection === 'chats' ? 'text-blue-600 font-extrabold' : 'text-slate-500 font-semibold hover:text-slate-800' }}">
-            <i class="fa-regular fa-comments text-lg {{ $currentSection === 'chats' ? 'scale-110' : '' }} transition-transform"></i>
-            <span class="text-[10px] mt-0.5 tracking-tight">Chatlar</span>
-            @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
-                <span class="absolute top-0 right-1 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white"></span>
-            @endif
-        </a>
-
-        <!-- 3. Markaziy Yangi E'lon Qo'shish Tugmasi -->
-        <a href="{{ route('client.products.create') }}" 
-           class="flex flex-col items-center justify-center -mt-5 group" title="Yangi e'lon">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/35 ring-4 ring-white group-active:scale-95 transition-all">
-                <i class="fa-solid fa-plus text-lg"></i>
-            </div>
-            <span class="text-[10px] font-black text-blue-600 mt-0.5 tracking-tight">Qo'shish</span>
-        </a>
-
-        <!-- 4. Statistika -->
-        <a href="{{ route('client.dashboard', ['section' => 'stats']) }}" 
-           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all {{ $currentSection === 'stats' ? 'text-blue-600 font-extrabold' : 'text-slate-500 font-semibold hover:text-slate-800' }}">
-            <i class="fa-solid fa-chart-line text-lg {{ $currentSection === 'stats' ? 'scale-110' : '' }} transition-transform"></i>
-            <span class="text-[10px] mt-0.5 tracking-tight">Statistika</span>
-        </a>
-
-        <!-- 5. Profil / Sozlamalar -->
-        <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" 
-           class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all {{ in_array($currentSection, ['my_page', 'settings']) ? 'text-blue-600 font-extrabold' : 'text-slate-500 font-semibold hover:text-slate-800' }}">
-            <i class="fa-regular fa-user text-lg {{ in_array($currentSection, ['my_page', 'settings']) ? 'scale-110' : '' }} transition-transform"></i>
-            <span class="text-[10px] mt-0.5 tracking-tight">Profil</span>
-        </a>
-    </nav>
 
 </body>
 </html>
