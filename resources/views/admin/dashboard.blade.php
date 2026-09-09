@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <!-- Card 1 -->
         <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex items-center justify-between">
             <div>

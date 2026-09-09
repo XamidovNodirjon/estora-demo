@@ -3,7 +3,7 @@
 @section('title', 'Makler Admin Paneli')
 
 @section('content')
-<div class="flex flex-col lg:flex-row gap-5 items-start w-full min-w-full">
+<div class="flex flex-col lg:flex-row gap-5 items-start w-full min-w-0 max-w-full">
 
     <!-- ================= COLUMN 1: LEFT SIDEBAR NAVIGATION ================= -->
     <aside class="w-full lg:w-60 flex-shrink-0 space-y-4 hidden lg:block">
@@ -1247,21 +1247,24 @@
                                     </div>
                                 </div>
 
-                                <!-- Right Actions -->
-                                <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                                    <button type="button" onclick="openTopModal({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->is_top ? 'true' : 'false' }})" class="{{ $product->is_top ? 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100' : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700' }} border font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center cursor-pointer">
-                                        <i class="fa-solid fa-crown"></i>
-                                        <span>{{ $product->is_top ? 'TOPdan olish' : 'TOPga chiqarish' }}</span>
+                                <!-- Right Actions: Mobile 3-Button Grid & Desktop Column -->
+                                <div class="grid grid-cols-3 sm:flex sm:flex-col items-stretch sm:items-end gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 flex-shrink-0">
+                                    <button type="button" onclick="openTopModal({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->is_top ? 'true' : 'false' }})" 
+                                            class="{{ $product->is_top ? 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100' : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700' }} border font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer text-center">
+                                        <i class="fa-solid fa-crown text-[11px]"></i>
+                                        <span class="truncate">{{ $product->is_top ? 'TOPdan' : 'TOPga' }}</span>
                                     </button>
 
-                                    <a href="{{ route('client.products.edit', $product->id) }}" class="border border-blue-400 text-blue-600 hover:bg-blue-50 font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full sm:w-auto justify-center">
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                        <span>Tahrirlash</span>
+                                    <a href="{{ route('client.products.edit', $product->id) }}" 
+                                       class="border border-blue-400 text-blue-600 hover:bg-blue-50 font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs text-center">
+                                        <i class="fa-regular fa-pen-to-square text-[11px]"></i>
+                                        <span class="truncate">Tahrir</span>
                                     </a>
 
-                                    <button type="button" onclick="openDeleteProductModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="border border-red-200 text-red-600 hover:bg-red-50 font-extrabold text-xs px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-xs w-full justify-center">
-                                         <i class="fa-regular fa-trash-can"></i>
-                                         <span>O'chirish</span>
+                                    <button type="button" onclick="openDeleteProductModal({{ $product->id }}, '{{ addslashes($product->name) }}')" 
+                                            class="border border-red-200 text-red-600 hover:bg-red-50 font-extrabold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer text-center">
+                                         <i class="fa-regular fa-trash-can text-[11px]"></i>
+                                         <span class="truncate">O'chirish</span>
                                      </button>
                                 </div>
 
