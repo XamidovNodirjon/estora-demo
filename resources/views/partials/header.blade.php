@@ -56,6 +56,12 @@
                 <li>
                     <a href="{{ route('maniDashboard', ['transaction_type' => 'Xalqaro']) }}" class="nav-item {{ $currentTrans == 'Xalqaro' ? 'active' : '' }}">Xalqaro</a>
                 </li>
+                <li>
+                    <a href="{{ route('map') }}" class="nav-item {{ request()->routeIs('map') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-map-marked-alt text-[#0084ff]" style="color: #38bdf8;"></i>
+                        <span>Xaritadan ko'rish</span>
+                    </a>
+                </li>
             </ul>
 
             <div class="nav-contacts">

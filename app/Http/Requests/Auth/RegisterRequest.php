@@ -17,7 +17,20 @@ class RegisterRequest extends FormRequest
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'username' => 'nullable|string|max:255',
-            'phone' => 'required|string|unique:users',
+            'phone' => [
+                'required',
+                'string',
+                'unique:users',
+                function ($attribute, $value, $fail) {
+                    $sessionPhone = session('verified_phone');
+                    $token = $this->input('verified_token') ?? session('verified_token');
+                    $cacheToken = \Illuminate\Support\Facades\Cache::get('verified_phone_' . md5($value));
+
+                    if (!$sessionPhone || $sessionPhone !== $value || !$token || $token !== $cacheToken) {
+                        $fail('Telefon raqamingiz Telegram orqali tasdiqlanmagan. Iltimos, kodni tasdiqlang.');
+                    }
+                },
+            ],
             'password' => 'required|string|min:6|confirmed',
             'passport' => 'nullable|string|max:20',
             'jshshir' => 'nullable|string|max:20',

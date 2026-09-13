@@ -170,4 +170,54 @@ class SearchController extends Controller
 
         return view('maniDashboard', compact('products', 'regions', 'categories', 'propertyTypes', 'mapProducts', 'metros', 'universities', 'totalActiveProductsCount'));
     }
+
+    /**
+     * Dedicated Fullscreen/Full-page Interactive Real Estate Map
+     */
+    public function mapPage(Request $request)
+    {
+        $regions = Region::with('cities')->get();
+        $metros = Metro::orderBy('name')->get();
+        $universities = University::orderBy('name')->get();
+        $categories = Category::whereNotIn('name', ['admin'])->get();
+
+        $allActiveProducts = Product::with(['category', 'subCategory', 'region', 'city', 'metros', 'universities'])
+            ->where('status', 'active')
+            ->get();
+
+        $mapProducts = $allActiveProducts->map(function ($product) {
+            // Default center around Tashkent if coordinates not set
+            $lat = $product->latitude ?: (41.2995 + (crc32($product->id . 'lat') % 1000) / 10000);
+            $lng = $product->longitude ?: (69.2401 + (crc32($product->id . 'lng') % 1000) / 10000);
+
+            $images = is_array($product->images) ? $product->images : json_decode($product->images ?? '[]', true);
+            $firstImg = !empty($images) ? $images[0] : '/images/hero.png';
+            if (!str_starts_with($firstImg, 'http') && !str_starts_with($firstImg, '/')) {
+                $firstImg = '/storage/' . $firstImg;
+            }
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => number_format($product->price) . ' USD',
+                'raw_price' => (float)$product->price,
+                'lat' => (float)$lat,
+                'lng' => (float)$lng,
+                'category_id' => $product->category_id,
+                'category' => $product->category->name ?? 'Sotuv',
+                'sub_category_id' => $product->subcategory_id,
+                'sub_category' => $product->subCategory->name ?? 'Kvartira',
+                'region_id' => $product->region_id,
+                'region' => $product->region->name ?? 'Toshkent shahar',
+                'city_id' => $product->city_id,
+                'city' => $product->city->name ?? 'Yashnobod tumani',
+                'image' => $firstImg,
+                'url' => route('products.show', $product->id),
+            ];
+        });
+
+        $totalActiveProductsCount = $allActiveProducts->count();
+
+        return view('map', compact('regions', 'metros', 'universities', 'categories', 'mapProducts', 'totalActiveProductsCount'));
+    }
 }

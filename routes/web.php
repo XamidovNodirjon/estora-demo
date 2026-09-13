@@ -83,6 +83,7 @@ Route::get('/', function () {
 });
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
+Route::get('/map', [\App\Http\Controllers\SearchController::class, 'mapPage'])->name('map');
 Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
@@ -103,6 +104,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+
+    // Verification routes (Telegram Gateway)
+    Route::post('/auth/send-code', [\App\Http\Controllers\Auth\VerificationController::class, 'sendCode'])->name('auth.send-code');
+    Route::post('/auth/verify-code', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyCode'])->name('auth.verify-code');
+    Route::post('/auth/check-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'checkStatus'])->name('auth.check-verification');
 
     // Google OAuth Routes
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');

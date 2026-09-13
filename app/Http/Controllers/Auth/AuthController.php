@@ -70,7 +70,7 @@ class AuthController extends Controller
 
         // Auto-login after registration
         Auth::login($user);
-        session()->forget('url.intended');
+        session()->forget(['url.intended', 'verified_phone', 'verified_token']);
 
         return redirect()->route('dashboard')
             ->with('success', 'Ro\'yxatdan muvaffaqiyatli o\'tdingiz!');

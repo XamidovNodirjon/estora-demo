@@ -455,6 +455,8 @@
                                    class="w-full pl-3.5 bg-transparent text-sm text-slate-900 placeholder-slate-400 font-medium outline-none">
                         </div>
 
+                        <input type="hidden" name="verified_token" id="verified_token_input" value="">
+
                         <!-- Input 3: Parol -->
                         <div class="form-input-box rounded-2xl flex items-center px-4">
                             <span class="text-slate-400 text-base mr-3.5 flex-shrink-0">
@@ -469,12 +471,54 @@
                             </button>
                         </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit"
+                        <!-- Submit Button (Ro'yxatdan o'tish) -->
+                        <button type="button" id="btn_register_submit" onclick="handleRegisterInitialClick()"
                                 class="btn-blue-cta w-full h-[52px] rounded-2xl font-black text-sm sm:text-base flex items-center justify-center gap-3 shadow-md cursor-pointer mt-1">
-                            <span>Ro'yxatdan o'tish</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                            <span id="btn_register_submit_text">Ro'yxatdan o'tish</span>
+                            <i id="btn_register_submit_icon" class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
+
+                        <!-- Verification Block (Ro'yxatdan o'tish bosilgandan so'ng chiqadi yoki avval yuborilgan bo'lsa) -->
+                        <div id="telegram_verify_container" class="hidden mt-3 p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-3 shadow-sm anim-fade-step">
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-8 h-8 rounded-xl bg-[#0077FE] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                                    <i class="fa-brands fa-telegram text-base"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-xs font-black text-slate-900">Telegram orqali tasdiqlash</h4>
+                                    <p id="telegram_verify_message" class="text-[11px] text-slate-600 font-medium mt-0.5 leading-snug">
+                                        Telegram orqali yuborilgan 5 xonali tasdiqlash kodini kiriting.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Kod kiritish maydoni -->
+                            <div class="flex items-center gap-2">
+                                <div class="form-input-box rounded-xl flex items-center px-3.5 bg-white border border-blue-200 flex-1">
+                                    <input type="text" id="verification_code_input" maxlength="5"
+                                           placeholder="5 xonali kod"
+                                           class="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 font-black tracking-widest text-center outline-none">
+                                </div>
+                                <button type="button" id="btn_confirm_code" onclick="submitVerificationCodeAndRegister()"
+                                        class="px-4 h-[44px] bg-[#0077FE] text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all shadow-sm cursor-pointer flex-shrink-0 flex items-center gap-1.5">
+                                    <span>Tasdiqlash</span>
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- 2 minut taymer va qayta yuborish -->
+                            <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5 font-medium">
+                                <span id="verify_countdown_box" class="flex items-center gap-1">
+                                    <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
+                                    <span>Kod muddati:</span>
+                                    <strong id="verify_timer_display" class="text-slate-800 font-bold font-mono">02:00</strong>
+                                </span>
+                                <button type="button" id="btn_resend_sms" onclick="resendTelegramCode()"
+                                        class="hidden text-[#0077FE] font-bold hover:underline cursor-pointer">
+                                    Kodni qayta yuborish
+                                </button>
+                            </div>
+                        </div>
                     </form>
 
                     <!-- Divider -->
@@ -484,20 +528,9 @@
                         <div class="flex-grow border-t border-slate-200"></div>
                     </div>
 
-                    <!-- 3 Social / Alternative Register Options -->
-                    <div class="grid grid-cols-3 gap-2.5 mb-5">
+                    <!-- 2 Social / Alternative Register Options (QR and Google) -->
+                    <div class="grid grid-cols-2 gap-2.5 mb-5">
                         
-                        <!-- Telegram Button -->
-                        <button type="button" onclick="handleSocialAuth('Telegram')"
-                                class="social-card rounded-2xl py-3 px-2 flex flex-col items-center justify-center gap-1 cursor-pointer">
-                            <div class="w-8 h-8 rounded-full bg-[#0088CC] flex items-center justify-center text-white text-base shadow-xs">
-                                <i class="fa-brands fa-telegram"></i>
-                            </div>
-                            <span class="text-[11px] font-bold text-slate-700 leading-tight text-center">
-                                Telegram <br><span class="text-[10px] font-normal text-slate-400">orqali</span>
-                            </span>
-                        </button>
-
                         <!-- QR-kod Button -->
                         <button type="button" onclick="handleSocialAuth('QR-kod')"
                                 class="social-card rounded-2xl py-3 px-2 flex flex-col items-center justify-center gap-1 cursor-pointer">
@@ -701,12 +734,296 @@
 
         // Auto-sync before submit
         document.getElementById('registerForm').addEventListener('submit', function(e) {
+            if (!isPhoneVerified) {
+                e.preventDefault();
+                showToast("Iltimos, avval telefon raqamingizni Telegram orqali tasdiqlang!");
+                return false;
+            }
+
             splitFullName();
 
             const password = document.getElementById('password_input').value;
             document.getElementById('password_confirmation_input').value = password;
 
             // Ensure clean +998 format for phone
+            if (phoneElem) {
+                const digits = phoneElem.value.replace(/\D/g, '');
+                if (digits.length === 9) {
+                    phoneElem.value = '+998' + digits;
+                } else if (digits.length === 12 && digits.startsWith('998')) {
+                    phoneElem.value = '+' + digits;
+                }
+            }
+        });
+
+        // ================= Telegram Gateway Verification & Register Flow =================
+        let isPhoneVerified = false;
+        let resendTimerInterval = null;
+        let activeCountdownSeconds = 0;
+
+        function getCleanPhone() {
+            const raw = (phoneElem ? phoneElem.value : '').replace(/\D/g, '');
+            if (raw.length === 9) return '+998' + raw;
+            if (raw.length === 12 && raw.startsWith('998')) return '+' + raw;
+            return raw ? '+' + raw : '';
+        }
+
+        // 1. Foydalanuvchi "Ro'yxatdan o'tish" tugmasini bosganda ishlaydi
+        async function handleRegisterInitialClick() {
+            if (isPhoneVerified) {
+                // Agar allaqachon kod tasdiqlangan bo'lsa, formani jo'natamiz
+                document.getElementById('registerForm').submit();
+                return;
+            }
+
+            // Maydonlarni dastlabki tekshirish
+            const fullNameVal = (document.getElementById('full_name_input')?.value || '').trim();
+            const phoneVal = getCleanPhone();
+            const passVal = document.getElementById('password_input')?.value || '';
+
+            if (!fullNameVal) {
+                showToast("Iltimos, ism va familiyangizni kiriting.");
+                document.getElementById('full_name_input')?.focus();
+                return;
+            }
+
+            if (!phoneVal || phoneVal.length < 12) {
+                showToast("Iltimos, telefon raqamingizni to'liq kiriting (masalan: 90 123 45 67).");
+                phoneElem?.focus();
+                return;
+            }
+
+            if (!passVal || passVal.length < 6) {
+                showToast("Parol kamida 6 ta belgidan iborat bo'lishi kerak.");
+                document.getElementById('password_input')?.focus();
+                return;
+            }
+
+            // Agar verification konteyneri allaqachon ochiq bo'lsa, foydalanuvchiga kod kiritishni eslatamiz
+            const verifyContainer = document.getElementById('telegram_verify_container');
+            if (!verifyContainer.classList.contains('hidden')) {
+                const codeInput = document.getElementById('verification_code_input');
+                if (!codeInput.value || codeInput.value.length !== 5) {
+                    showToast("Telegram orqali yuborilgan 5 xonali kodni kiriting!");
+                    codeInput.focus();
+                    return;
+                }
+                submitVerificationCodeAndRegister();
+                return;
+            }
+
+            // Yangi kod yuborish yoki mavjud aktiv kod sessiyasini tekshirish
+            await requestTelegramCode(false);
+        }
+
+        // 2. Telegram Gateway orqali kod yuborish / mavjud sessiyani davom ettirish
+        async function requestTelegramCode(force = false) {
+            const phone = getCleanPhone();
+            const submitBtn = document.getElementById('btn_register_submit');
+            const submitBtnText = document.getElementById('btn_register_submit_text');
+            const submitBtnIcon = document.getElementById('btn_register_submit_icon');
+            const verifyContainer = document.getElementById('telegram_verify_container');
+            const verifyMsg = document.getElementById('telegram_verify_message');
+
+            submitBtn.disabled = true;
+            submitBtnText.textContent = force ? "Kodni qayta yuborilmoqda..." : "Kod yuborilmoqda...";
+            if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-spinner fa-spin text-xs";
+
+            try {
+                const response = await fetch("{{ route('auth.send-code') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({ phone: phone, force: force })
+                });
+
+                const data = await response.json();
+
+                submitBtn.disabled = false;
+                submitBtnText.textContent = "Ro'yxatdan o'tish";
+                if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+
+                if (!response.ok || !data.success) {
+                    showToast(data.message || "Xatolik yuz berdi. Qayta urinib ko'ring.");
+                    return;
+                }
+
+                // UI ni ochamiz
+                verifyContainer.classList.remove('hidden');
+
+                if (data.already_sent) {
+                    verifyMsg.innerHTML = `<strong>Eslatma:</strong> Ushbu raqamga kod Telegram orqali yuborilgan (2 daqiqa amal qiladi). Telegramingizni tekshiring va kodni kiriting.`;
+                    showToast("Telegramingizga yuborilgan kodni kiriting (2 daqiqa amal qiladi).");
+                } else {
+                    verifyMsg.innerHTML = `<strong>Diqqat!</strong> Tasdiqlovchi SMS kod Telegram xizmati orqali yuborildi. Telegramingizni tekshiring.`;
+                    showToast("Tasdiqlovchi SMS kod Telegram orqali yuborildi!");
+                }
+
+                // Test rejimida bo'lsa
+                if (data.mock_code) {
+                    showToast(`Telegram kodi (Test): ${data.mock_code}`);
+                    const codeInput = document.getElementById('verification_code_input');
+                    if (codeInput) codeInput.value = data.mock_code;
+                }
+
+                // Taymerni ishga tushirish (qolgan soniya bo'yicha)
+                const remaining = data.remaining_seconds || 120;
+                startVerificationTimer(remaining);
+
+                const codeInput = document.getElementById('verification_code_input');
+                if (codeInput) codeInput.focus();
+
+            } catch (err) {
+                console.error(err);
+                showToast("Server bilan aloqa uzildi.");
+                submitBtn.disabled = false;
+                submitBtnText.textContent = "Ro'yxatdan o'tish";
+                if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+            }
+        }
+
+        // 3. 2 minutlik vaqt hisoblagichi (Countdown timer)
+        function startVerificationTimer(seconds) {
+            clearInterval(resendTimerInterval);
+            activeCountdownSeconds = seconds;
+
+            const timerBox = document.getElementById('verify_countdown_box');
+            const timerDisplay = document.getElementById('verify_timer_display');
+            const resendBtn = document.getElementById('btn_resend_sms');
+
+            timerBox.classList.remove('hidden');
+            resendBtn.classList.add('hidden');
+
+            function updateDisplay(sec) {
+                const mins = Math.floor(sec / 60);
+                const remainingSec = sec % 60;
+                timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(remainingSec).padStart(2, '0')}`;
+            }
+
+            updateDisplay(activeCountdownSeconds);
+
+            resendTimerInterval = setInterval(() => {
+                activeCountdownSeconds--;
+                if (activeCountdownSeconds <= 0) {
+                    clearInterval(resendTimerInterval);
+                    timerBox.classList.add('hidden');
+                    resendBtn.classList.remove('hidden');
+                } else {
+                    updateDisplay(activeCountdownSeconds);
+                }
+            }, 1000);
+        }
+
+        // 4. Kodni qayta yuborish (2 minut o'tgandan keyin)
+        function resendTelegramCode() {
+            requestTelegramCode(true);
+        }
+
+        // 5. Kodni tekshirish va ro'yxatdan o'tkazish
+        async function submitVerificationCodeAndRegister() {
+            const phone = getCleanPhone();
+            const codeInput = document.getElementById('verification_code_input');
+            const code = (codeInput ? codeInput.value : '').trim();
+
+            if (!code || code.length !== 5) {
+                showToast("Telegram orqali yuborilgan 5 xonali tasdiqlash kodini to'liq kiriting!");
+                if (codeInput) codeInput.focus();
+                return;
+            }
+
+            const confirmBtn = document.getElementById('btn_confirm_code');
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Tekshirilmoqda...</span>`;
+
+            try {
+                const response = await fetch("{{ route('auth.verify-code') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({ phone: phone, code: code })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    showToast(data.message || "Noto'g'ri kod kiritildi.");
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = `<span>Tasdiqlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+                    return;
+                }
+
+                // Muvaffaqiyatli!
+                isPhoneVerified = true;
+                clearInterval(resendTimerInterval);
+
+                document.getElementById('verified_token_input').value = data.verified_token || '';
+
+                confirmBtn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Tasdiqlandi!</span>`;
+                confirmBtn.classList.replace('bg-[#0077FE]', 'bg-emerald-600');
+
+                showToast("Telefon raqamingiz muvaffaqiyatli tasdiqlandi! Ro'yxatdan o'tish yakunlanmoqda...");
+
+                // Formani serverga jo'natish
+                setTimeout(() => {
+                    document.getElementById('registerForm').submit();
+                }, 600);
+
+            } catch (err) {
+                console.error(err);
+                showToast("Tasdiqlashda xatolik yuz berdi.");
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = `<span>Tasdiqlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+            }
+        }
+
+        // 6. Agar foydalanuvchi sahifani refresh qilsa yoki qayta kelsa, telefon raqam bo'yicha aktiv sessiyani tiklash
+        async function checkExistingVerificationStatus() {
+            const phone = getCleanPhone();
+            if (!phone || phone.length < 12) return;
+
+            try {
+                const response = await fetch("{{ route('auth.check-verification') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({ phone: phone })
+                });
+
+                const data = await response.json();
+                if (data.success && data.has_active_code && data.remaining_seconds > 0) {
+                    const verifyContainer = document.getElementById('telegram_verify_container');
+                    const verifyMsg = document.getElementById('telegram_verify_message');
+                    verifyContainer.classList.remove('hidden');
+                    verifyMsg.innerHTML = `<strong>Eslatma:</strong> Sizning raqamingizga kod yuborilgan (2 daqiqa amal qiladi). Telegram orqali yuborilgan tasdiqlash kodini kiriting.`;
+                    startVerificationTimer(data.remaining_seconds);
+                }
+            } catch (e) {
+                // Ignore background check error
+            }
+        }
+
+        // Telefon raqam o'zgarganda yoki sahifa yuklanganda tekshirish
+        if (phoneElem) {
+            phoneElem.addEventListener('blur', checkExistingVerificationStatus);
+        }
+        document.addEventListener('DOMContentLoaded', checkExistingVerificationStatus);
+
+        // Auto-sync before submit
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            splitFullName();
+
+            const password = document.getElementById('password_input').value;
+            document.getElementById('password_confirmation_input').value = password;
+
             if (phoneElem) {
                 const digits = phoneElem.value.replace(/\D/g, '');
                 if (digits.length === 9) {

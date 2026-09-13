@@ -178,11 +178,11 @@
                         <span>ID orqali qidirish</span>
                     </button>
 
-                    <!-- 2. Xaritadan ko'rish -->
-                    <button type="button" class="btn-action-map-view" onclick="openInteractiveMapModal()">
+                    <!-- 2. Xaritadan ko'rish (alohida sahifa) -->
+                    <a href="{{ route('map') }}" class="btn-action-map-view" style="text-decoration: none;">
                         <i class="fas fa-map-marked-alt"></i>
                         <span>Xaritadan ko'rish</span>
-                    </button>
+                    </a>
                 </div>
 
                 <!-- 3. Ko'rish {count} e'lonlar -->
