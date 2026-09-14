@@ -4,7 +4,9 @@
     if (!str_starts_with($firstImg, 'http') && !str_starts_with($firstImg, '/')) {
         $firstImg = '/storage/' . $firstImg;
     }
-    $phone = $product->phone ?? $product->user->phone ?? '+998 95 160 64 46';
+    $isMakler = $product->isMaklerListing();
+    $canViewPhone = $product->canViewPhone(auth()->user());
+    $phone = $canViewPhone ? ($product->effective_phone ?? '+998 95 160 64 46') : null;
 @endphp
 
 <div class="product-row-card">
@@ -75,6 +77,10 @@
                         {{ $product->repair }}
                     </span>
                 @endif
+                <span class="listing-tag" style="{{ $isMakler ? 'color: #b45309; background: #fef3c7;' : 'color: #0369a1; background: #e0f2fe;' }}">
+                    <i class="{{ $isMakler ? 'fas fa-briefcase' : 'fas fa-user-shield' }}"></i>
+                    {{ $isMakler ? 'Makler' : 'Uy egasi' }}
+                </span>
             </div>
         </div>
     </div>
@@ -86,10 +92,17 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}" class="btn-contact-agent" style="justify-content: center; width: 100%;">
-                <i class="fas fa-phone-alt"></i>
-                <span>Qo'ng'iroq qilish</span>
-            </a>
+            @if($canViewPhone)
+                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}" class="btn-contact-agent" style="justify-content: center; width: 100%;">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Qo'ng'iroq qilish</span>
+                </a>
+            @else
+                <a href="{{ route('products.show', $product->id) }}" class="btn-contact-agent" style="justify-content: center; width: 100%; background: #0284c7;" title="Uy egasining raqamini ko'rish uchun kiring">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Uy egasi raqami</span>
+                </a>
+            @endif
             <a href="{{ route('products.show', $product->id) }}" class="btn-action-id-search" style="justify-content: center; width: 100%; height: 36px; font-size: 12.5px;">
                 <span>Batafsil ko'rish</span>
             </a>

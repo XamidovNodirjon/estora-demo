@@ -85,6 +85,7 @@ Route::get('/', function () {
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');
 Route::get('/map', [\App\Http\Controllers\SearchController::class, 'mapPage'])->name('map');
 Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::post('/products/{product}/reveal-phone', [\App\Http\Controllers\ProductPhoneController::class, 'reveal'])->name('products.reveal-phone');
 Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 Route::post('/inquiries', [\App\Http\Controllers\InquiryController::class, 'store'])->name('inquiries.store');
 

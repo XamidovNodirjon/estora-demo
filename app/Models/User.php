@@ -58,6 +58,17 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
+    public function isMakler(): bool
+    {
+        $roleName = $this->role?->name ?? $this->type;
+        return $roleName === 'makler';
+    }
+
+    public function isOwnerOrClient(): bool
+    {
+        return !$this->isMakler();
+    }
+
     protected static function booted(): void
     {
         static::saving(function (User $user) {

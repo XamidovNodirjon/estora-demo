@@ -669,8 +669,11 @@
                             <!-- Action & Specs Block (Right) -->
                             <div class="product-actions-specs">
                                 <div class="phone-action-container">
-                                    @if($product->phone)
-                                        <button class="phone-reveal-btn" onclick="revealPhone(this, '{{ $product->phone }}')">
+                                    @php
+                                        $canView = $product->canViewPhone(auth()->user());
+                                    @endphp
+                                    @if($product->effective_phone)
+                                        <button class="phone-reveal-btn" onclick="revealUserListingPhone(this, {{ $product->id }}, {{ $canView ? 'true' : 'false' }})">
                                             <i class="fas fa-phone-alt"></i> Telefon raqam
                                         </button>
                                     @else
@@ -769,10 +772,55 @@
         }
     }
 
-    function revealPhone(btn, phoneNum) {
-        if (phoneNum) {
-            btn.innerHTML = `<i class="fas fa-phone-alt"></i> ${phoneNum}`;
+    function revealUserListingPhone(btn, productId, canView) {
+        if (btn.dataset.revealedPhone) {
+            window.location.href = 'tel:' + btn.dataset.revealedPhone;
+            return;
         }
+
+        if (!canView) {
+            openOwnerAuthModal();
+            return;
+        }
+
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+        btn.disabled = true;
+
+        fetch(`/products/${productId}/reveal-phone`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(async res => {
+            const data = await res.json();
+            if (res.status === 401 || data.require_auth) {
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+                openOwnerAuthModal();
+                return;
+            }
+
+            if (data.success && data.phone) {
+                btn.dataset.revealedPhone = data.phone.replace(/[^\d+]/g, '');
+                btn.innerHTML = `<i class="fas fa-phone-alt"></i> ${data.phone}`;
+                btn.style.background = '#10b981';
+                btn.disabled = false;
+                btn.title = "Qo'ng'iroq qilish uchun bosing";
+            } else {
+                alert(data.message || 'Xatolik yuz berdi');
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error('Reveal error:', err);
+            btn.innerHTML = origHtml;
+            btn.disabled = false;
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -815,5 +863,6 @@
         });
     });
     </script>
+    @include('partials.auth-required-modal')
 </body>
 </html>

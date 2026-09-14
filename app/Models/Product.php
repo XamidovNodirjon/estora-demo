@@ -17,6 +17,7 @@ class Product extends Model
         'description',
         'images',
         'phone',
+        'phone_views_count',
         'floor',
         'building_floor',
         'square',
@@ -42,6 +43,7 @@ class Product extends Model
         'price' => 'decimal:2',
         'latitude' => 'float',
         'longitude' => 'float',
+        'phone_views_count' => 'integer',
     ];
 
     public function category()
@@ -89,6 +91,11 @@ class Product extends Model
         return $this->hasMany(ProductView::class);
     }
 
+    public function phoneViews()
+    {
+        return $this->hasMany(ProductPhoneView::class);
+    }
+
     public function favoritedByUsers()
     {
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
@@ -104,5 +111,84 @@ class Product extends Model
     public function getViewsCountAttribute()
     {
         return $this->views()->count();
+    }
+
+    /**
+     * Check if the product was posted by a makler / rieltor.
+     */
+    public function isMaklerListing(): bool
+    {
+        return $this->user?->isMakler() ?? false;
+    }
+
+    /**
+     * Check if the product was posted by a property owner (uy egasi / client).
+     */
+    public function isOwnerListing(): bool
+    {
+        return !$this->isMaklerListing();
+    }
+
+    /**
+     * Determine if the given or current user can view the phone number.
+     * Rules:
+     * - If listing is by a Makler: Everyone (including guests) can view phone freely.
+     * - If listing is by an Owner: Requires user registration/login.
+     * - The listing owner and admins can always view phone.
+     */
+    public function canViewPhone(?User $viewer = null): bool
+    {
+        // Makler listings have completely open phone access
+        if ($this->isMaklerListing()) {
+            return true;
+        }
+
+        $viewer = $viewer ?? \Illuminate\Support\Facades\Auth::user();
+
+        // If guest and owner listing: strictly gated
+        if (!$viewer) {
+            return false;
+        }
+
+        // Listing owner themselves
+        if ($viewer->id === $this->user_id) {
+            return true;
+        }
+
+        // Admin / dev / manager
+        $viewerRole = $viewer->role?->name ?? $viewer->type;
+        if (in_array($viewerRole, ['admin', 'dev', 'manager'])) {
+            return true;
+        }
+
+        // Any authenticated registered user can view owner phone
+        return true;
+    }
+
+    /**
+     * Get real phone or fallback to seller user phone.
+     */
+    public function getEffectivePhoneAttribute(): ?string
+    {
+        return $this->phone ?: $this->user?->phone;
+    }
+
+    /**
+     * Get masked representation of phone number (e.g. +998 ** *** ** **).
+     */
+    public function getMaskedPhoneAttribute(): string
+    {
+        $raw = $this->effective_phone;
+        if (!$raw) {
+            return '+998 ** *** ** **';
+        }
+        
+        $clean = preg_replace('/[^\d]/', '', $raw);
+        if (strlen($clean) >= 12 && str_starts_with($clean, '998')) {
+            $prefix = substr($clean, 3, 2);
+            return "+998 {$prefix} *** ** **";
+        }
+        
+        return '+998 ** *** ** **';
     }
 }

@@ -659,12 +659,26 @@
                         </div>
                     </div>
                     
+                    @php
+                        $isMakler = $product->isMaklerListing();
+                        $canViewPhone = $product->canViewPhone(auth()->user());
+                    @endphp
                     <div class="phone-and-price-row">
                         <div class="detail-phone-wrapper">
-                            <span class="phone-label">Telefon raqam</span>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <span class="phone-label">Telefon raqam</span>
+                                <span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; {{ $isMakler ? 'background: #fef3c7; color: #b45309;' : 'background: #e0f2fe; color: #0369a1;' }}">
+                                    <i class="{{ $isMakler ? 'fas fa-briefcase' : 'fas fa-user-shield' }}"></i>
+                                    {{ $isMakler ? 'Makler' : 'Uy egasi' }}
+                                </span>
+                            </div>
                             <div class="phone-reveal-container">
-                                <span class="phone-masked-num" id="showPhoneText">+998 ** *** ** **</span>
-                                <button class="btn-reveal-phone" id="revealPhoneBtn" onclick="revealProductPhone('{{ $product->phone }}')">Ko'rish</button>
+                                <span class="phone-masked-num" id="showPhoneText">{{ $canViewPhone ? $product->masked_phone : '+998 ** *** ** **' }}</span>
+                                <button class="btn-reveal-phone" id="revealPhoneBtn" onclick="handleRevealPhoneClick({{ $product->id }}, {{ $canViewPhone ? 'true' : 'false' }})">Ko'rish</button>
+                            </div>
+                            <div id="phoneViewsCounter" style="font-size: 11px; color: #94a3b8; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-eye" style="font-size: 10px;"></i>
+                                <span>Ko'rishlar: <strong id="phoneViewsCountVal">{{ $product->phone_views_count ?? 0 }}</strong> marta</span>
                             </div>
                         </div>
                         <div class="detail-price-box">
@@ -789,14 +803,69 @@ function switchMainImage(thumbEl, src, idx) {
     document.getElementById('galleryIndexText').innerText = idx + '/' + total;
 }
 
-function revealProductPhone(phone) {
-    const textEl = document.getElementById('showPhoneText');
-    const btnEl = document.getElementById('revealPhoneBtn');
-    if (phone) {
-        textEl.innerText = phone;
-        btnEl.innerText = "Qo'ng'iroq";
-        btnEl.onclick = () => window.location.href = 'tel:' + phone;
+let isPhoneRevealed = false;
+let revealedPhoneNumber = null;
+
+function handleRevealPhoneClick(productId, canViewPhone) {
+    // If already revealed and clicked again, trigger immediate phone call
+    if (isPhoneRevealed && revealedPhoneNumber) {
+        window.location.href = 'tel:' + revealedPhoneNumber;
+        return;
     }
+
+    // If gated (owner listing + guest), directly open the auth required modal
+    if (!canViewPhone) {
+        openOwnerAuthModal();
+        return;
+    }
+
+    const btnEl = document.getElementById('revealPhoneBtn');
+    const textEl = document.getElementById('showPhoneText');
+    const origText = btnEl.innerText;
+    btnEl.innerText = "...";
+    btnEl.disabled = true;
+
+    fetch(`/products/${productId}/reveal-phone`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(async res => {
+        const data = await res.json();
+        if (res.status === 401 || data.require_auth) {
+            btnEl.innerText = origText;
+            btnEl.disabled = false;
+            openOwnerAuthModal();
+            return;
+        }
+
+        if (data.success && data.phone) {
+            isPhoneRevealed = true;
+            revealedPhoneNumber = data.phone.replace(/[^\d+]/g, '');
+            textEl.innerText = data.phone;
+            btnEl.disabled = false;
+            btnEl.innerHTML = '<i class="fas fa-phone-alt"></i> Qo\'ng\'iroq';
+            btnEl.style.background = '#10b981';
+            btnEl.title = "Qo'ng'iroq qilish uchun bosing";
+
+            if (data.phone_views_count !== undefined) {
+                const countVal = document.getElementById('phoneViewsCountVal');
+                if (countVal) countVal.innerText = data.phone_views_count;
+            }
+        } else {
+            alert(data.message || "Xatolik yuz berdi");
+            btnEl.innerText = origText;
+            btnEl.disabled = false;
+        }
+    })
+    .catch(err => {
+        console.error('Phone reveal error:', err);
+        btnEl.innerText = origText;
+        btnEl.disabled = false;
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

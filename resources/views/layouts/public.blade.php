@@ -43,6 +43,9 @@
     <!-- INTERACTIVE MAP MODAL -->
     @include('partials.map-modal')
 
+    <!-- AUTH REQUIRED MODAL FOR OWNER PHONE GATING -->
+    @include('partials.auth-required-modal')
+
     <!-- Universal Favorite Toggle AJAX Script -->
     <script>
     function toggleFavorite(productId, event) {
