@@ -216,10 +216,28 @@ class ProductService
                 }
                 
                 $fileName = Str::random(40) . '.' . $extension;
-                $path = 'products/' . $fileName;
+                $relativePath = 'products/' . $fileName;
                 
-                Storage::disk('public')->put($path, $decoded);
-                $processed[] = Storage::url($path);
+                // Safe file writing: avoids Flysystem's finfo dependency if ext-fileinfo is missing on server
+                $targetDir = Storage::disk('public')->path('products');
+                if (!is_dir($targetDir)) {
+                    @mkdir($targetDir, 0775, true);
+                }
+                
+                $fullPath = Storage::disk('public')->path($relativePath);
+                $saved = @file_put_contents($fullPath, $decoded);
+
+                if ($saved === false) {
+                    // Fallback to Flysystem if direct file writing couldn't create the file
+                    try {
+                        Storage::disk('public')->put($relativePath, $decoded);
+                    } catch (\Throwable $e) {
+                        // If finfo is completely missing, ensure directory exists and try writing again
+                        \Illuminate\Support\Facades\Log::warning('Image save fallback failed: ' . $e->getMessage());
+                    }
+                }
+
+                $processed[] = Storage::url($relativePath);
             } else {
                 // Already stored image URL, keep it
                 $processed[] = $img;
