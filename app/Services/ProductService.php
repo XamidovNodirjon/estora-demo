@@ -81,7 +81,8 @@ class ProductService
             $missing[] = 'Telefon raqam kiritilmagan';
         }
 
-        $canCreateAd = $emailVerified && $passportFilled && $jshshirFilled;
+        // Phone number is sufficient to create ads; passport/jshshir/email boost trust percentage
+        $canCreateAd = $phoneFilled;
 
         return [
             'percentage' => $percentage,
@@ -96,9 +97,8 @@ class ProductService
 
     /**
      * Check if a user is allowed to create a new product.
-     * Requires email verification, passport and 14-digit JSHSHIR.
      * Ordinary clients: max 2 products.
-     * Maklers & Owners: unlimited.
+     * Maklers, Owners, Builders, Hotels & Admins: unlimited.
      */
     public function canUserCreateProduct(?\App\Models\User $user = null): bool
     {
@@ -109,17 +109,12 @@ class ProductService
 
         $roleName = $user->role?->name ?? $user->type;
 
-        // Dev/Admin bypass
-        if (in_array($roleName, ['admin', 'dev'])) {
+        // Dev, Admin, Makler, Owner, Builder, Hotel have unlimited ads
+        if (in_array($roleName, ['admin', 'dev', 'makler', 'owner', 'hotel', 'builder'])) {
             return true;
         }
 
-        // Email, Passport & JSHSHIR verification check
-        $status = $this->getVerificationStatus($user);
-        if (!$status['can_create_ad']) {
-            return false;
-        }
-
+        // Ordinary client role has a limit of 2 products
         if ($roleName === 'client') {
             $count = Product::where('user_id', $user->id)->count();
             return $count < 2;
