@@ -5,8 +5,6 @@ namespace App\Services;
 use App\DTOs\ProductDto;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
-
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductService
@@ -200,44 +198,44 @@ class ProductService
     protected function processBase64Images(array $images): array
     {
         $processed = [];
+        $targetDir = storage_path('app/public/products');
+
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0775, true);
+        }
+
         foreach ($images as $img) {
             if (empty($img)) {
                 continue;
             }
             if (str_starts_with($img, 'data:image/')) {
-                // Decode base64 and save to storage
-                $parts = explode(',', $img);
+                $parts = explode(',', $img, 2);
+                if (count($parts) < 2) {
+                    continue;
+                }
+
                 $decoded = base64_decode($parts[1]);
+                if ($decoded === false) {
+                    continue;
+                }
                 
                 // Detect extension
                 $extension = 'jpg';
                 if (preg_match('/^data:image\/(\w+);base64/', $img, $type)) {
-                    $extension = strtolower($type[1]);
+                    $detectedExt = strtolower($type[1]);
+                    if ($detectedExt === 'jpeg') {
+                        $extension = 'jpg';
+                    } elseif (in_array($detectedExt, ['jpg', 'png', 'webp', 'gif'])) {
+                        $extension = $detectedExt;
+                    }
                 }
                 
                 $fileName = Str::random(40) . '.' . $extension;
-                $relativePath = 'products/' . $fileName;
+                $fullPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
                 
-                // Safe file writing: avoids Flysystem's finfo dependency if ext-fileinfo is missing on server
-                $targetDir = Storage::disk('public')->path('products');
-                if (!is_dir($targetDir)) {
-                    @mkdir($targetDir, 0775, true);
-                }
-                
-                $fullPath = Storage::disk('public')->path($relativePath);
-                $saved = @file_put_contents($fullPath, $decoded);
+                @file_put_contents($fullPath, $decoded);
 
-                if ($saved === false) {
-                    // Fallback to Flysystem if direct file writing couldn't create the file
-                    try {
-                        Storage::disk('public')->put($relativePath, $decoded);
-                    } catch (\Throwable $e) {
-                        // If finfo is completely missing, ensure directory exists and try writing again
-                        \Illuminate\Support\Facades\Log::warning('Image save fallback failed: ' . $e->getMessage());
-                    }
-                }
-
-                $processed[] = Storage::url($relativePath);
+                $processed[] = '/storage/products/' . $fileName;
             } else {
                 // Already stored image URL, keep it
                 $processed[] = $img;
