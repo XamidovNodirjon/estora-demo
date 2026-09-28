@@ -1655,7 +1655,7 @@ function sendPhoneVerificationCode() {
     }
 
     sendBtn.disabled = true;
-    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> SMS yuborilmoqda...';
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Yuborilmoqda...';
 
     fetch('{{ route("auth.send-code") }}', {
         method: 'POST',
@@ -1664,7 +1664,7 @@ function sendPhoneVerificationCode() {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json'
         },
-        body: JSON.stringify({ phone: phoneVal })
+        body: JSON.stringify({ phone: phoneVal, force: true })
     })
     .then(res => res.json())
     .then(data => {
@@ -1672,14 +1672,17 @@ function sendPhoneVerificationCode() {
         if (data.status === 'success' || data.success) {
             statusBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold block mb-3 text-left';
             statusBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ' + (data.message || 'Tasdiqlash kodi SMS orqali yuborildi!');
-            startPhoneResendCountdown();
+            startPhoneResendCountdown(data.retry_after || 60);
             const codeInp = document.getElementById('phone-verify-code-input');
-            if (codeInp) codeInp.focus();
+            if (codeInp) {
+                codeInp.value = '';
+                codeInp.focus();
+            }
         } else {
             statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
             statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> ' + (data.message || 'Xatolik yuz berdi.');
             sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS kodni olish';
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS olish';
         }
     })
     .catch(err => {
@@ -1687,24 +1690,27 @@ function sendPhoneVerificationCode() {
         statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
         statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> Server bilan bog\'lanishda xatolik yuz berdi.';
         sendBtn.disabled = false;
-        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS kodni olish';
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS olish';
     });
 }
 
-function startPhoneResendCountdown() {
+function startPhoneResendCountdown(seconds = 60) {
     const sendBtn = document.getElementById('btn-phone-send-code');
-    phoneResendSeconds = 60;
+    phoneResendSeconds = seconds;
     if (phoneResendTimer) clearInterval(phoneResendTimer);
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Qayta (${phoneResendSeconds}s)`;
 
     phoneResendTimer = setInterval(() => {
         phoneResendSeconds--;
         if (phoneResendSeconds <= 0) {
             clearInterval(phoneResendTimer);
             sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="fa-solid fa-rotate-right mr-1"></i> Kodni qayta yuborish';
+            sendBtn.innerHTML = '<i class="fa-solid fa-rotate-right mr-1"></i> Qayta yuborish';
         } else {
             sendBtn.disabled = true;
-            sendBtn.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Qayta yuborish (${phoneResendSeconds}s)`;
+            sendBtn.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Qayta (${phoneResendSeconds}s)`;
         }
     }, 1000);
 }
@@ -1715,7 +1721,8 @@ function submitPhoneVerificationCode() {
     const statusBox = document.getElementById('phone-verify-alert-box');
     const submitBtn = document.getElementById('btn-phone-verify-submit');
     const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-    const codeVal = codeInput ? codeInput.value.trim() : '';
+    const rawCodeVal = codeInput ? codeInput.value.trim() : '';
+    const codeVal = rawCodeVal.replace(/\D/g, ''); // strip any non-digits
 
     if (!codeVal || codeVal.length < 4) {
         statusBox.classList.remove('hidden');
@@ -1899,18 +1906,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="phone-verify-alert-box" class="hidden"></div>
 
         <!-- Phone Number Input & Send Code -->
-        <div style="margin-bottom: 18px; text-align: left;">
+        <div style="margin-bottom: 20px; text-align: left;">
             <label for="phone-verify-number-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
                 Telefon raqamingiz:
             </label>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;" class="sm:!flex-row sm:items-stretch">
                 <input type="tel" 
                        id="phone-verify-number-input" 
                        value="{{ Auth::user()->phone }}" 
                        placeholder="+998901234567" 
-                       style="flex: 1; padding: 12px 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 14px; font-weight: 700; color: #0f172a; outline: none; background: #f8fafc;">
-                <button type="button" id="btn-phone-send-code" onclick="sendPhoneVerificationCode()" style="padding: 12px 16px; border-radius: 14px; font-weight: 800; font-size: 12.5px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.25); white-space: nowrap;">
-                    <i class="fa-solid fa-paper-plane"></i> SMS olish
+                       style="width: 100%; min-width: 0; flex: 1 1 auto; padding: 12px 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 15px; font-weight: 700; color: #0f172a; outline: none; background: #f8fafc; box-sizing: border-box;">
+                <button type="button" id="btn-phone-send-code" onclick="sendPhoneVerificationCode()" style="flex: 0 0 auto; padding: 12px 20px; border-radius: 14px; font-weight: 800; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.25); white-space: nowrap;">
+                    <i class="fa-solid fa-paper-plane"></i> <span>SMS olish</span>
                 </button>
             </div>
         </div>
@@ -1922,9 +1929,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </label>
             <input type="text" 
                    id="phone-verify-code-input" 
-                   maxlength="6" 
-                   placeholder="------" 
-                   style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 22px; font-weight: 900; letter-spacing: 10px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   maxlength="5" 
+                   placeholder="• • • • •" 
+                   oninput="this.value = this.value.replace(/\D/g, '')"
+                   style="width: 100%; box-sizing: border-box; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 24px; font-weight: 900; letter-spacing: 8px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
             
             <button type="button" id="btn-phone-verify-submit" onclick="submitPhoneVerificationCode()" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #10b981; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); transition: all 0.2s;">
                 <i class="fa-solid fa-check"></i> Kodni tasdiqlash

@@ -162,6 +162,7 @@ class VerificationController extends Controller
         // Store code hash in Cache for 2 minutes (120 soniya)
         $cacheData = [
             'hash'       => Hash::make($code),
+            'plain'      => $code,
             'expires_at' => time() + $ttl,
             'attempts'   => 0,
         ];
@@ -169,6 +170,7 @@ class VerificationController extends Controller
             $cacheData['mock_code'] = $result['mock_code'];
         }
         Cache::put($cacheKey, $cacheData, $ttl);
+        \Illuminate\Support\Facades\Log::info("[OTP SEND] Code generated for {$formattedPhone}: {$code}");
 
         // Set cooldown timer for 2 minutes
         $cooldown = (int) config('usms.resend_cooldown_seconds', 120);
@@ -197,23 +199,31 @@ class VerificationController extends Controller
      */
     public function verifyCode(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        // Sanitize code: remove non-digits, trim spaces
+        $rawCode   = (string) $request->input('code', '');
+        $inputCode = preg_replace('/[^\d]/', '', trim($rawCode));
+
+        $validator = Validator::make([
+            'phone' => $request->input('phone'),
+            'code'  => $inputCode,
+        ], [
             'phone' => 'required|string',
-            'code'  => 'required|string|size:5',
+            'code'  => 'required|string|min:4|max:6',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => "5 xonali tasdiqlash kodini to'liq kiriting.",
+                'message' => "Tasdiqlash kodini to'liq kiriting (raqamlardan iborat).",
             ], 422);
         }
 
         $formattedPhone = self::formatPhone($request->input('phone'));
-        $inputCode      = trim($request->input('code'));
 
         $cacheKey = 'verify_code_' . md5($formattedPhone);
         $data     = Cache::get($cacheKey);
+
+        \Illuminate\Support\Facades\Log::info("[OTP VERIFY] Attempt for {$formattedPhone}: entered={$inputCode}, has_cache=" . ($data ? 'YES' : 'NO'));
 
         if (!$data) {
             return response()->json([
@@ -231,11 +241,16 @@ class VerificationController extends Controller
             ], 429);
         }
 
-        if (!Hash::check($inputCode, $data['hash'])) {
+        $hashMatch  = isset($data['hash']) && Hash::check($inputCode, $data['hash']);
+        $plainMatch = isset($data['plain']) && hash_equals((string)$data['plain'], (string)$inputCode);
+        $mockMatch  = isset($data['mock_code']) && hash_equals((string)$data['mock_code'], (string)$inputCode);
+
+        if (!$hashMatch && !$plainMatch && !$mockMatch) {
             $data['attempts'] = ($data['attempts'] ?? 0) + 1;
             Cache::put($cacheKey, $data, max(1, $data['expires_at'] - time()));
 
             $left = 5 - $data['attempts'];
+            \Illuminate\Support\Facades\Log::warning("[OTP VERIFY] Mismatch for {$formattedPhone}: entered={$inputCode}, expected=" . ($data['plain'] ?? 'N/A'));
             return response()->json([
                 'success' => false,
                 'message' => "Noto'g'ri kod kiritildi. Qolgan urinishlar: {$left}.",
@@ -244,6 +259,7 @@ class VerificationController extends Controller
 
         // Muvaffaqiyatli tasdiqlandi
         Cache::forget($cacheKey);
+        \Illuminate\Support\Facades\Log::info("[OTP VERIFY] Success for {$formattedPhone}");
 
         // Session va Cache ga telefon raqam tasdiqlanganini saqlaymiz (15 daqiqaga)
         $verifiedToken   = bin2hex(random_bytes(16));
