@@ -148,6 +148,42 @@
                 transform: translateY(0) scale(1);
             }
         }
+
+        @keyframes modalScaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .anim-modal-in {
+            animation: modalScaleIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .otp-digit-input {
+            width: 48px;
+            height: 54px;
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            border-radius: 14px;
+            border: 2px solid #E2E8F0;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            transition: all 0.2s ease;
+        }
+
+        .otp-digit-input:focus {
+            background-color: #FFFFFF;
+            border-color: #0077FE;
+            box-shadow: 0 0 0 4px rgba(0, 119, 254, 0.12);
+            outline: none;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased bg-pattern min-h-screen flex flex-col justify-between relative overflow-x-hidden">
@@ -477,48 +513,6 @@
                             <span id="btn_register_submit_text">Ro'yxatdan o'tish</span>
                             <i id="btn_register_submit_icon" class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
-
-                        <!-- Verification Block (Ro'yxatdan o'tish bosilgandan so'ng chiqadi yoki avval yuborilgan bo'lsa) -->
-                        <div id="telegram_verify_container" class="hidden mt-3 p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-3 shadow-sm anim-fade-step">
-                            <div class="flex items-start gap-2.5">
-                                <div class="w-8 h-8 rounded-xl bg-[#0077FE] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                                    <i class="fa-brands fa-telegram text-base"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="text-xs font-black text-slate-900">Telegram orqali tasdiqlash</h4>
-                                    <p id="telegram_verify_message" class="text-[11px] text-slate-600 font-medium mt-0.5 leading-snug">
-                                        Telegram orqali yuborilgan 5 xonali tasdiqlash kodini kiriting.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Kod kiritish maydoni -->
-                            <div class="flex items-center gap-2">
-                                <div class="form-input-box rounded-xl flex items-center px-3.5 bg-white border border-blue-200 flex-1">
-                                    <input type="text" id="verification_code_input" maxlength="5"
-                                           placeholder="5 xonali kod"
-                                           class="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 font-black tracking-widest text-center outline-none">
-                                </div>
-                                <button type="button" id="btn_confirm_code" onclick="submitVerificationCodeAndRegister()"
-                                        class="px-4 h-[44px] bg-[#0077FE] text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all shadow-sm cursor-pointer flex-shrink-0 flex items-center gap-1.5">
-                                    <span>Tasdiqlash</span>
-                                    <i class="fa-solid fa-check text-xs"></i>
-                                </button>
-                            </div>
-
-                            <!-- 2 minut taymer va qayta yuborish -->
-                            <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5 font-medium">
-                                <span id="verify_countdown_box" class="flex items-center gap-1">
-                                    <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
-                                    <span>Kod muddati:</span>
-                                    <strong id="verify_timer_display" class="text-slate-800 font-bold font-mono">02:00</strong>
-                                </span>
-                                <button type="button" id="btn_resend_sms" onclick="resendTelegramCode()"
-                                        class="hidden text-[#0077FE] font-bold hover:underline cursor-pointer">
-                                    Kodni qayta yuborish
-                                </button>
-                            </div>
-                        </div>
                     </form>
 
                     <!-- Divider -->
@@ -572,6 +566,153 @@
             </div>
 
         </div>
+
+        <!-- ======================================================== -->
+        <!-- 3. MOBILE FULL PAGE: SMS VERIFICATION (Faqat Mobile uchun)-->
+        <!-- Mobil qurilmalarda to'liq alohida sahifa sifatida ko'rinadi -->
+        <!-- ======================================================== -->
+        <div id="step-mobile-verify" class="hidden md:hidden anim-fade-step w-full max-w-lg mx-auto py-2">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 flex flex-col min-h-[500px] justify-between">
+                <div>
+                    <!-- Back button to return to form -->
+                    <div class="flex items-center justify-between pb-6">
+                        <button type="button" onclick="closeVerificationView()"
+                                class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-[#0077FE] transition-colors cursor-pointer">
+                            <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                            <span>Orqaga qaytish</span>
+                        </button>
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#0077FE] bg-[#EBF4FF] px-3 py-1 rounded-full">
+                            Qadam 3/3
+                        </span>
+                    </div>
+
+                    <!-- Icon & Header -->
+                    <div class="text-center mb-7">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0077FE] to-[#00A3FF] text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
+                            <i class="fa-solid fa-shield-halved text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-2">
+                            Kodni tasdiqlang
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed max-w-xs mx-auto">
+                            Biz <strong id="mobile_verify_phone_display" class="text-slate-800 font-bold font-mono">+998 ...</strong> raqamiga 5 xonali tasdiqlash kodini SMS orqali yubordik.
+                        </p>
+                    </div>
+
+                    <!-- 5 Digit OTP Input Boxes -->
+                    <div class="flex justify-center gap-2 sm:gap-3 mb-6">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input mobile-otp" data-index="0" autofocus>
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input mobile-otp" data-index="1">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input mobile-otp" data-index="2">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input mobile-otp" data-index="3">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input mobile-otp" data-index="4">
+                    </div>
+
+                    <!-- Timer and Resend -->
+                    <div class="text-center text-xs text-slate-500 font-medium mb-6">
+                        <div id="mobile_verify_countdown_box" class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-full">
+                            <i class="fa-regular fa-clock text-slate-400"></i>
+                            <span>Kod muddati:</span>
+                            <strong id="mobile_verify_timer_display" class="text-slate-900 font-bold font-mono">02:00</strong>
+                        </div>
+                        <button type="button" id="mobile_btn_resend_sms" onclick="resendSmsCode()"
+                                class="hidden inline-flex items-center gap-2 text-[#0077FE] font-black hover:underline cursor-pointer bg-blue-50/70 border border-blue-200 px-4 py-2 rounded-full">
+                            <i class="fa-solid fa-rotate-right text-xs"></i>
+                            <span>Kodni qayta yuborish</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Button -->
+                <div>
+                    <button type="button" id="mobile_btn_confirm_code" onclick="submitVerificationCodeAndRegister()"
+                            class="btn-blue-cta w-full h-[52px] rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                        <span>Tasdiqlash va yakunlash</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                    <p class="text-center text-[11px] text-slate-400 font-medium mt-3">
+                        SMS kelmadimi? Raqamingiz to'g'riligini tekshiring yoki qayta yuboring.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- 4. DESKTOP MODAL: SMS VERIFICATION (Faqat Desktop/Planshet)  -->
+    <!-- md:flex orqali ekranning markazida professional modal ochiladi-->
+    <!-- ============================================================ -->
+    <div id="desktop_verify_modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <!-- Backdrop with Blur -->
+        <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="closeVerificationView()"></div>
+
+        <!-- Modal Center Dialog -->
+        <div class="min-h-full flex items-center justify-center p-4 text-center">
+            <div class="anim-modal-in relative w-full max-w-md bg-white rounded-[32px] p-8 shadow-2xl border border-slate-100 text-left overflow-hidden z-10">
+                
+                <!-- Close Button -->
+                <button type="button" onclick="closeVerificationView()"
+                        class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer" title="Yopish">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+
+                <!-- Icon & Title -->
+                <div class="text-center mb-6 pt-2">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0077FE] to-[#00A3FF] text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
+                        <i class="fa-solid fa-comment-sms text-2xl"></i>
+                    </div>
+                    <span class="inline-block text-[10px] font-extrabold uppercase tracking-widest text-[#0077FE] bg-[#EBF4FF] px-3 py-1 rounded-full mb-2">
+                        Xavfsiz tasdiqlash
+                    </span>
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tight mb-2">
+                        SMS kodini kiriting
+                    </h3>
+                    <p class="text-xs text-slate-500 font-medium leading-relaxed max-w-xs mx-auto">
+                        <strong id="desktop_verify_phone_display" class="text-slate-900 font-bold font-mono">+998 ...</strong> raqamiga yuborilgan 5 xonali kodni kiriting.
+                    </p>
+                </div>
+
+                <!-- 5 Digit OTP Input Boxes -->
+                <div class="flex justify-center gap-2.5 sm:gap-3 mb-6">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input desktop-otp" data-index="0" autofocus>
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input desktop-otp" data-index="1">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input desktop-otp" data-index="2">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input desktop-otp" data-index="3">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-input desktop-otp" data-index="4">
+                </div>
+
+                <!-- Timer / Resend Button -->
+                <div class="text-center text-xs text-slate-500 font-medium mb-6">
+                    <div id="desktop_verify_countdown_box" class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-full">
+                        <i class="fa-regular fa-clock text-slate-400"></i>
+                        <span>Kod muddati:</span>
+                        <strong id="desktop_verify_timer_display" class="text-slate-900 font-bold font-mono">02:00</strong>
+                    </div>
+                    <button type="button" id="desktop_btn_resend_sms" onclick="resendSmsCode()"
+                            class="hidden inline-flex items-center gap-2 text-[#0077FE] font-black hover:underline cursor-pointer bg-blue-50/70 border border-blue-200 px-4 py-2 rounded-full">
+                        <i class="fa-solid fa-rotate-right text-xs"></i>
+                        <span>Kodni qayta yuborish</span>
+                    </button>
+                </div>
+
+                <!-- Confirm Action Button -->
+                <button type="button" id="desktop_btn_confirm_code" onclick="submitVerificationCodeAndRegister()"
+                        class="btn-blue-cta w-full h-[52px] rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                    <span>Tasdiqlash va yakunlash</span>
+                    <i class="fa-solid fa-check text-xs"></i>
+                </button>
+
+                <div class="mt-4 text-center">
+                    <button type="button" onclick="closeVerificationView()"
+                            class="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                        Ma'lumotlarni o'zgartirish
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     </main>
 
@@ -736,7 +877,7 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             if (!isPhoneVerified) {
                 e.preventDefault();
-                showToast("Iltimos, avval telefon raqamingizni Telegram orqali tasdiqlang!");
+                showToast("Iltimos, avval telefon raqamingizni SMS orqali tasdiqlang!");
                 return false;
             }
 
@@ -756,7 +897,7 @@
             }
         });
 
-        // ================= Telegram Gateway Verification & Register Flow =================
+        // ================= SMS Gateway Verification & Register Flow =================
         let isPhoneVerified = false;
         let resendTimerInterval = null;
         let activeCountdownSeconds = 0;
@@ -768,15 +909,143 @@
             return raw ? '+' + raw : '';
         }
 
+        // Helper: Check if screen is mobile (<768px)
+        function isMobileView() {
+            return window.innerWidth < 768;
+        }
+
+        // OTP inputs auto-advance and backspace handling
+        function setupOtpInputs(selector) {
+            const inputs = document.querySelectorAll(selector);
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    e.target.value = val ? val[val.length - 1] : '';
+                    syncOtpValues();
+
+                    if (val && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+
+                    // Auto-submit if all 5 digits are filled
+                    if (getEnteredOtpCode().length === 5) {
+                        submitVerificationCodeAndRegister();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 5);
+                    if (!pasted) return;
+                    inputs.forEach((inp, idx) => {
+                        inp.value = pasted[idx] || '';
+                    });
+                    syncOtpValues();
+                    const nextIdx = Math.min(pasted.length, inputs.length - 1);
+                    inputs[nextIdx].focus();
+                    if (pasted.length === 5) {
+                        submitVerificationCodeAndRegister();
+                    }
+                });
+            });
+        }
+
+        // Keep desktop and mobile OTP boxes in sync
+        function syncOtpValues() {
+            const code = getEnteredOtpCode();
+            document.querySelectorAll('.otp-digit-input').forEach(input => {
+                const idx = parseInt(input.getAttribute('data-index') || '0', 10);
+                input.value = code[idx] || '';
+            });
+        }
+
+        function getEnteredOtpCode() {
+            let code = '';
+            // Try active visible inputs
+            const activeSelector = isMobileView() ? '.mobile-otp' : '.desktop-otp';
+            document.querySelectorAll(activeSelector).forEach(input => {
+                code += (input.value || '').trim();
+            });
+            return code;
+        }
+
+        function setOtpCode(code) {
+            const strCode = String(code || '').slice(0, 5);
+            document.querySelectorAll('.otp-digit-input').forEach(input => {
+                const idx = parseInt(input.getAttribute('data-index') || '0', 10);
+                input.value = strCode[idx] || '';
+            });
+        }
+
+        function clearOtpInputs() {
+            document.querySelectorAll('.otp-digit-input').forEach(input => {
+                input.value = '';
+            });
+        }
+
+        setupOtpInputs('.desktop-otp');
+        setupOtpInputs('.mobile-otp');
+
+        // Open verification view: Desktop Modal vs Mobile Full Page
+        function openVerificationView() {
+            const phone = getCleanPhone();
+            const desktopPhoneDisplay = document.getElementById('desktop_verify_phone_display');
+            const mobilePhoneDisplay = document.getElementById('mobile_verify_phone_display');
+            if (desktopPhoneDisplay) desktopPhoneDisplay.textContent = phone;
+            if (mobilePhoneDisplay) mobilePhoneDisplay.textContent = phone;
+
+            if (isMobileView()) {
+                // Mobile: hide step 2 form and show mobile verification full screen
+                const stepForm = document.getElementById('step-register-form');
+                const mobileVerify = document.getElementById('step-mobile-verify');
+                stepForm.classList.add('hidden');
+                mobileVerify.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.mobile-otp[data-index="0"]');
+                    if (firstInput) firstInput.focus();
+                }, 150);
+            } else {
+                // Desktop: show centered modal with backdrop blur
+                const modal = document.getElementById('desktop_verify_modal');
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.desktop-otp[data-index="0"]');
+                    if (firstInput) firstInput.focus();
+                }, 150);
+            }
+        }
+
+        // Close verification view and return to form
+        function closeVerificationView() {
+            const modal = document.getElementById('desktop_verify_modal');
+            const mobileVerify = document.getElementById('step-mobile-verify');
+            const stepForm = document.getElementById('step-register-form');
+
+            if (modal) modal.classList.add('hidden');
+            if (mobileVerify) mobileVerify.classList.add('hidden');
+            if (stepForm) stepForm.classList.remove('hidden');
+
+            document.body.style.overflow = '';
+        }
+
         // 1. Foydalanuvchi "Ro'yxatdan o'tish" tugmasini bosganda ishlaydi
         async function handleRegisterInitialClick() {
             if (isPhoneVerified) {
-                // Agar allaqachon kod tasdiqlangan bo'lsa, formani jo'natamiz
                 document.getElementById('registerForm').submit();
                 return;
             }
 
-            // Maydonlarni dastlabki tekshirish
+            // Maydonlarni tekshirish
             const fullNameVal = (document.getElementById('full_name_input')?.value || '').trim();
             const phoneVal = getCleanPhone();
             const passVal = document.getElementById('password_input')?.value || '';
@@ -799,35 +1068,22 @@
                 return;
             }
 
-            // Agar verification konteyneri allaqachon ochiq bo'lsa, foydalanuvchiga kod kiritishni eslatamiz
-            const verifyContainer = document.getElementById('telegram_verify_container');
-            if (!verifyContainer.classList.contains('hidden')) {
-                const codeInput = document.getElementById('verification_code_input');
-                if (!codeInput.value || codeInput.value.length !== 5) {
-                    showToast("Telegram orqali yuborilgan 5 xonali kodni kiriting!");
-                    codeInput.focus();
-                    return;
-                }
-                submitVerificationCodeAndRegister();
-                return;
-            }
-
-            // Yangi kod yuborish yoki mavjud aktiv kod sessiyasini tekshirish
-            await requestTelegramCode(false);
+            // SMS kod so'rash va mos view (Desktop modal yoki Mobile page) ni ochish
+            await requestSmsCode(false);
         }
 
-        // 2. Telegram Gateway orqali kod yuborish / mavjud sessiyani davom ettirish
-        async function requestTelegramCode(force = false) {
+        // 2. USMS.uz orqali SMS kod yuborish / mavjud sessiyani davom ettirish
+        async function requestSmsCode(force = false) {
             const phone = getCleanPhone();
             const submitBtn = document.getElementById('btn_register_submit');
             const submitBtnText = document.getElementById('btn_register_submit_text');
             const submitBtnIcon = document.getElementById('btn_register_submit_icon');
-            const verifyContainer = document.getElementById('telegram_verify_container');
-            const verifyMsg = document.getElementById('telegram_verify_message');
 
-            submitBtn.disabled = true;
-            submitBtnText.textContent = force ? "Kodni qayta yuborilmoqda..." : "Kod yuborilmoqda...";
-            if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-spinner fa-spin text-xs";
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitBtnText) submitBtnText.textContent = force ? "Kodni qayta yuborilmoqda..." : "Kod yuborilmoqda...";
+                if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-spinner fa-spin text-xs";
+            }
 
             try {
                 const response = await fetch("{{ route('auth.send-code') }}", {
@@ -842,46 +1098,44 @@
 
                 const data = await response.json();
 
-                submitBtn.disabled = false;
-                submitBtnText.textContent = "Ro'yxatdan o'tish";
-                if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    if (submitBtnText) submitBtnText.textContent = "Ro'yxatdan o'tish";
+                    if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+                }
 
                 if (!response.ok || !data.success) {
                     showToast(data.message || "Xatolik yuz berdi. Qayta urinib ko'ring.");
                     return;
                 }
 
-                // UI ni ochamiz
-                verifyContainer.classList.remove('hidden');
+                // Modal yoki Mobile sahifani ochamiz
+                openVerificationView();
 
                 if (data.already_sent) {
-                    verifyMsg.innerHTML = `<strong>Eslatma:</strong> Ushbu raqamga kod Telegram orqali yuborilgan (2 daqiqa amal qiladi). Telegramingizni tekshiring va kodni kiriting.`;
-                    showToast("Telegramingizga yuborilgan kodni kiriting (2 daqiqa amal qiladi).");
+                    showToast("Telefoningizga yuborilgan SMS kodni kiriting (2 daqiqa amal qiladi).");
                 } else {
-                    verifyMsg.innerHTML = `<strong>Diqqat!</strong> Tasdiqlovchi SMS kod Telegram xizmati orqali yuborildi. Telegramingizni tekshiring.`;
-                    showToast("Tasdiqlovchi SMS kod Telegram orqali yuborildi!");
+                    showToast("Tasdiqlash SMS kodi telefoningizga yuborildi!");
                 }
 
                 // Test rejimida bo'lsa
                 if (data.mock_code) {
-                    showToast(`Telegram kodi (Test): ${data.mock_code}`);
-                    const codeInput = document.getElementById('verification_code_input');
-                    if (codeInput) codeInput.value = data.mock_code;
+                    showToast(`SMS kodi (Test): ${data.mock_code}`);
+                    setOtpCode(data.mock_code);
                 }
 
                 // Taymerni ishga tushirish (qolgan soniya bo'yicha)
                 const remaining = data.remaining_seconds || 120;
                 startVerificationTimer(remaining);
 
-                const codeInput = document.getElementById('verification_code_input');
-                if (codeInput) codeInput.focus();
-
             } catch (err) {
                 console.error(err);
                 showToast("Server bilan aloqa uzildi.");
-                submitBtn.disabled = false;
-                submitBtnText.textContent = "Ro'yxatdan o'tish";
-                if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    if (submitBtnText) submitBtnText.textContent = "Ro'yxatdan o'tish";
+                    if (submitBtnIcon) submitBtnIcon.className = "fa-solid fa-arrow-right text-xs";
+                }
             }
         }
 
@@ -890,53 +1144,73 @@
             clearInterval(resendTimerInterval);
             activeCountdownSeconds = seconds;
 
-            const timerBox = document.getElementById('verify_countdown_box');
-            const timerDisplay = document.getElementById('verify_timer_display');
-            const resendBtn = document.getElementById('btn_resend_sms');
+            const desktopTimerBox = document.getElementById('desktop_verify_countdown_box');
+            const desktopTimerDisplay = document.getElementById('desktop_verify_timer_display');
+            const desktopResendBtn = document.getElementById('desktop_btn_resend_sms');
 
-            timerBox.classList.remove('hidden');
-            resendBtn.classList.add('hidden');
+            const mobileTimerBox = document.getElementById('mobile_verify_countdown_box');
+            const mobileTimerDisplay = document.getElementById('mobile_verify_timer_display');
+            const mobileResendBtn = document.getElementById('mobile_btn_resend_sms');
 
-            function updateDisplay(sec) {
+            function updateDisplays(sec) {
                 const mins = Math.floor(sec / 60);
                 const remainingSec = sec % 60;
-                timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(remainingSec).padStart(2, '0')}`;
+                const formatted = `${String(mins).padStart(2, '0')}:${String(remainingSec).padStart(2, '0')}`;
+                if (desktopTimerDisplay) desktopTimerDisplay.textContent = formatted;
+                if (mobileTimerDisplay) mobileTimerDisplay.textContent = formatted;
             }
 
-            updateDisplay(activeCountdownSeconds);
+            if (desktopTimerBox) desktopTimerBox.classList.remove('hidden');
+            if (desktopResendBtn) desktopResendBtn.classList.add('hidden');
+            if (mobileTimerBox) mobileTimerBox.classList.remove('hidden');
+            if (mobileResendBtn) mobileResendBtn.classList.add('hidden');
+
+            updateDisplays(activeCountdownSeconds);
 
             resendTimerInterval = setInterval(() => {
                 activeCountdownSeconds--;
                 if (activeCountdownSeconds <= 0) {
                     clearInterval(resendTimerInterval);
-                    timerBox.classList.add('hidden');
-                    resendBtn.classList.remove('hidden');
+                    if (desktopTimerBox) desktopTimerBox.classList.add('hidden');
+                    if (desktopResendBtn) desktopResendBtn.classList.remove('hidden');
+                    if (mobileTimerBox) mobileTimerBox.classList.add('hidden');
+                    if (mobileResendBtn) mobileResendBtn.classList.remove('hidden');
                 } else {
-                    updateDisplay(activeCountdownSeconds);
+                    updateDisplays(activeCountdownSeconds);
                 }
             }, 1000);
         }
 
         // 4. Kodni qayta yuborish (2 minut o'tgandan keyin)
-        function resendTelegramCode() {
-            requestTelegramCode(true);
+        function resendSmsCode() {
+            clearOtpInputs();
+            requestSmsCode(true);
         }
 
         // 5. Kodni tekshirish va ro'yxatdan o'tkazish
         async function submitVerificationCodeAndRegister() {
             const phone = getCleanPhone();
-            const codeInput = document.getElementById('verification_code_input');
-            const code = (codeInput ? codeInput.value : '').trim();
+            const code = getEnteredOtpCode();
 
             if (!code || code.length !== 5) {
-                showToast("Telegram orqali yuborilgan 5 xonali tasdiqlash kodini to'liq kiriting!");
-                if (codeInput) codeInput.focus();
+                showToast("SMS orqali yuborilgan 5 xonali tasdiqlash kodini to'liq kiriting!");
+                const activeSelector = isMobileView() ? '.mobile-otp' : '.desktop-otp';
+                const firstEmpty = Array.from(document.querySelectorAll(activeSelector)).find(i => !i.value);
+                if (firstEmpty) firstEmpty.focus();
                 return;
             }
 
-            const confirmBtn = document.getElementById('btn_confirm_code');
-            confirmBtn.disabled = true;
-            confirmBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Tekshirilmoqda...</span>`;
+            const desktopBtn = document.getElementById('desktop_btn_confirm_code');
+            const mobileBtn = document.getElementById('mobile_btn_confirm_code');
+
+            if (desktopBtn) {
+                desktopBtn.disabled = true;
+                desktopBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Tekshirilmoqda...</span>`;
+            }
+            if (mobileBtn) {
+                mobileBtn.disabled = true;
+                mobileBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Tekshirilmoqda...</span>`;
+            }
 
             try {
                 const response = await fetch("{{ route('auth.verify-code') }}", {
@@ -953,19 +1227,33 @@
 
                 if (!response.ok || !data.success) {
                     showToast(data.message || "Noto'g'ri kod kiritildi.");
-                    confirmBtn.disabled = false;
-                    confirmBtn.innerHTML = `<span>Tasdiqlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+                    if (desktopBtn) {
+                        desktopBtn.disabled = false;
+                        desktopBtn.innerHTML = `<span>Tasdiqlash va yakunlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+                    }
+                    if (mobileBtn) {
+                        mobileBtn.disabled = false;
+                        mobileBtn.innerHTML = `<span>Tasdiqlash va yakunlash</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+                    }
                     return;
                 }
 
-                // Muvaffaqiyatli!
+                // Muvaffaqiyatli tasdiqlandi!
                 isPhoneVerified = true;
                 clearInterval(resendTimerInterval);
 
                 document.getElementById('verified_token_input').value = data.verified_token || '';
 
-                confirmBtn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Tasdiqlandi!</span>`;
-                confirmBtn.classList.replace('bg-[#0077FE]', 'bg-emerald-600');
+                if (desktopBtn) {
+                    desktopBtn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Tasdiqlandi!</span>`;
+                    desktopBtn.classList.replace('btn-blue-cta', 'bg-emerald-600');
+                    desktopBtn.classList.add('text-white');
+                }
+                if (mobileBtn) {
+                    mobileBtn.innerHTML = `<i class="fa-solid fa-check text-xs"></i> <span>Tasdiqlandi!</span>`;
+                    mobileBtn.classList.replace('btn-blue-cta', 'bg-emerald-600');
+                    mobileBtn.classList.add('text-white');
+                }
 
                 showToast("Telefon raqamingiz muvaffaqiyatli tasdiqlandi! Ro'yxatdan o'tish yakunlanmoqda...");
 
@@ -977,8 +1265,14 @@
             } catch (err) {
                 console.error(err);
                 showToast("Tasdiqlashda xatolik yuz berdi.");
-                confirmBtn.disabled = false;
-                confirmBtn.innerHTML = `<span>Tasdiqlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+                if (desktopBtn) {
+                    desktopBtn.disabled = false;
+                    desktopBtn.innerHTML = `<span>Tasdiqlash va yakunlash</span> <i class="fa-solid fa-check text-xs"></i>`;
+                }
+                if (mobileBtn) {
+                    mobileBtn.disabled = false;
+                    mobileBtn.innerHTML = `<span>Tasdiqlash va yakunlash</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+                }
             }
         }
 
@@ -1000,10 +1294,7 @@
 
                 const data = await response.json();
                 if (data.success && data.has_active_code && data.remaining_seconds > 0) {
-                    const verifyContainer = document.getElementById('telegram_verify_container');
-                    const verifyMsg = document.getElementById('telegram_verify_message');
-                    verifyContainer.classList.remove('hidden');
-                    verifyMsg.innerHTML = `<strong>Eslatma:</strong> Sizning raqamingizga kod yuborilgan (2 daqiqa amal qiladi). Telegram orqali yuborilgan tasdiqlash kodini kiriting.`;
+                    openVerificationView();
                     startVerificationTimer(data.remaining_seconds);
                 }
             } catch (e) {
@@ -1017,20 +1308,26 @@
         }
         document.addEventListener('DOMContentLoaded', checkExistingVerificationStatus);
 
-        // Auto-sync before submit
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            splitFullName();
+        // Ekran o'lchami o'zgarganda (masalan inspect element ochilganda yoki orientatsiya o'zgarganda) moslashtirish
+        window.addEventListener('resize', () => {
+            const modal = document.getElementById('desktop_verify_modal');
+            const mobileVerify = document.getElementById('step-mobile-verify');
+            const isModalOpen = modal && !modal.classList.contains('hidden');
+            const isMobileOpen = mobileVerify && !mobileVerify.classList.contains('hidden');
 
-            const password = document.getElementById('password_input').value;
-            document.getElementById('password_confirmation_input').value = password;
-
-            if (phoneElem) {
-                const digits = phoneElem.value.replace(/\D/g, '');
-                if (digits.length === 9) {
-                    phoneElem.value = '+998' + digits;
-                } else if (digits.length === 12 && digits.startsWith('998')) {
-                    phoneElem.value = '+' + digits;
+            if (isModalOpen || isMobileOpen) {
+                if (isMobileView()) {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                    document.getElementById('step-register-form').classList.add('hidden');
+                    mobileVerify.classList.remove('hidden');
+                } else {
+                    mobileVerify.classList.add('hidden');
+                    document.getElementById('step-register-form').classList.remove('hidden');
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
                 }
+                syncOtpValues();
             }
         });
 

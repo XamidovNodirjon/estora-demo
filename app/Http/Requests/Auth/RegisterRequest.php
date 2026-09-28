@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
                     $cacheToken = \Illuminate\Support\Facades\Cache::get('verified_phone_' . md5($value));
 
                     if (!$sessionPhone || $sessionPhone !== $value || !$token || $token !== $cacheToken) {
-                        $fail('Telefon raqamingiz Telegram orqali tasdiqlanmagan. Iltimos, kodni tasdiqlang.');
+                        $fail('Telefon raqamingiz SMS orqali tasdiqlanmagan. Iltimos, kodni tasdiqlang.');
                     }
                 },
             ],

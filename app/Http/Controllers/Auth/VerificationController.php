@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\TelegramGatewayService;
+use App\Services\UsmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class VerificationController extends Controller
 {
-    protected TelegramGatewayService $telegramService;
+    protected UsmsService $smsService;
 
-    public function __construct(TelegramGatewayService $telegramService)
+    public function __construct(UsmsService $smsService)
     {
-        $this->telegramService = $telegramService;
+        $this->smsService = $smsService;
     }
 
     /**
@@ -51,33 +51,33 @@ class VerificationController extends Controller
         }
 
         $formattedPhone = self::formatPhone($request->input('phone'));
-        $cacheKey = 'verify_code_' . md5($formattedPhone);
-        $throttleKey = 'verify_throttle_' . md5($formattedPhone);
+        $cacheKey       = 'verify_code_' . md5($formattedPhone);
+        $throttleKey    = 'verify_throttle_' . md5($formattedPhone);
 
-        $data = Cache::get($cacheKey);
+        $data            = Cache::get($cacheKey);
         $throttleExpires = Cache::get($throttleKey);
 
         if ($data && isset($data['expires_at']) && $data['expires_at'] > time()) {
-            $remaining = $data['expires_at'] - time();
+            $remaining  = $data['expires_at'] - time();
             $retryAfter = $throttleExpires ? max(0, $throttleExpires - time()) : 0;
 
             return response()->json([
-                'success' => true,
-                'has_active_code' => true,
+                'success'           => true,
+                'has_active_code'   => true,
                 'remaining_seconds' => $remaining,
-                'retry_after' => $retryAfter,
-                'phone' => $formattedPhone,
+                'retry_after'       => $retryAfter,
+                'phone'             => $formattedPhone,
             ]);
         }
 
         return response()->json([
-            'success' => true,
+            'success'         => true,
             'has_active_code' => false,
         ]);
     }
 
     /**
-     * Send verification code via Telegram Gateway.
+     * Send verification code via USMS.uz SMS Gateway.
      * Agar 2 minut ichida kod yuborilgan bo'lsa, qayta yuborilmaydi (mavjud vaqt davom etadi).
      */
     public function sendCode(Request $request): JsonResponse
@@ -90,8 +90,8 @@ class VerificationController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Telefon raqam noto\'g\'ri kiritildi.',
-                'errors' => $validator->errors(),
+                'message' => "Telefon raqam noto'g'ri kiritildi.",
+                'errors'  => $validator->errors(),
             ], 422);
         }
 
@@ -101,28 +101,28 @@ class VerificationController extends Controller
         if (User::where('phone', $formattedPhone)->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu telefon raqam allaqachon ro\'yxatdan o\'tgan.',
+                'message' => "Bu telefon raqam allaqachon ro'yxatdan o'tgan.",
             ], 422);
         }
 
-        $cacheKey = 'verify_code_' . md5($formattedPhone);
+        $cacheKey    = 'verify_code_' . md5($formattedPhone);
         $throttleKey = 'verify_throttle_' . md5($formattedPhone);
-        $force = (bool) $request->input('force', false);
+        $force       = (bool) $request->input('force', false);
 
         // Agar avval kod yuborilgan bo'lsa va hali 2 minut o'tmagan bo'lsa:
         $existing = Cache::get($cacheKey);
         if (!$force && $existing && isset($existing['expires_at']) && $existing['expires_at'] > time()) {
-            $remaining = $existing['expires_at'] - time();
+            $remaining    = $existing['expires_at'] - time();
             $throttleTime = Cache::get($throttleKey);
-            $retryAfter = $throttleTime ? max(0, $throttleTime - time()) : 0;
+            $retryAfter   = $throttleTime ? max(0, $throttleTime - time()) : 0;
 
             $resp = [
-                'success' => true,
-                'already_sent' => true,
-                'message' => 'Ushbu raqamga Telegram orqali tasdiqlash kodi allaqachon yuborilgan.',
-                'phone' => $formattedPhone,
+                'success'           => true,
+                'already_sent'      => true,
+                'message'           => 'Ushbu raqamga SMS orqali tasdiqlash kodi allaqachon yuborilgan.',
+                'phone'             => $formattedPhone,
                 'remaining_seconds' => $remaining,
-                'retry_after' => $retryAfter,
+                'retry_after'       => $retryAfter,
             ];
 
             if (isset($existing['mock_code'])) {
@@ -137,8 +137,8 @@ class VerificationController extends Controller
             $remaining = Cache::get($throttleKey) - time();
             if ($remaining > 0) {
                 return response()->json([
-                    'success' => false,
-                    'message' => "Iltimos, qayta kod yuborish uchun {$remaining} soniya kuting.",
+                    'success'     => false,
+                    'message'     => "Iltimos, qayta kod yuborish uchun {$remaining} soniya kuting.",
                     'retry_after' => $remaining,
                 ], 429);
             }
@@ -146,23 +146,23 @@ class VerificationController extends Controller
 
         // Generate 5-digit code
         $code = (string) random_int(10000, 99999);
-        $ttl = (int) config('telegram.code_ttl_seconds', 120);
+        $ttl  = (int) config('usms.code_ttl_seconds', 120);
 
-        // Send via Telegram Gateway
-        $result = $this->telegramService->sendVerificationCode($formattedPhone, $code);
+        // Send via USMS.uz
+        $result = $this->smsService->sendVerificationCode($formattedPhone, $code);
 
         if (!$result['success']) {
             return response()->json([
                 'success' => false,
-                'message' => $result['message'] ?? 'Telegram orqali kod yuborishda xatolik yuz berdi.',
+                'message' => $result['message'] ?? 'SMS orqali kod yuborishda xatolik yuz berdi.',
             ], 500);
         }
 
         // Store code hash in Cache for 2 minutes (120 soniya)
         $cacheData = [
-            'hash' => Hash::make($code),
+            'hash'       => Hash::make($code),
             'expires_at' => time() + $ttl,
-            'attempts' => 0,
+            'attempts'   => 0,
         ];
         if (isset($result['mock_code'])) {
             $cacheData['mock_code'] = $result['mock_code'];
@@ -170,22 +170,22 @@ class VerificationController extends Controller
         Cache::put($cacheKey, $cacheData, $ttl);
 
         // Set cooldown timer for 2 minutes
-        $cooldown = (int) config('telegram.resend_cooldown_seconds', 120);
+        $cooldown = (int) config('usms.resend_cooldown_seconds', 120);
         Cache::put($throttleKey, time() + $cooldown, $cooldown);
 
         $response = [
-            'success' => true,
-            'already_sent' => false,
-            'message' => 'Tasdiqlovchi SMS kod Telegram orqali yuborildi.',
-            'phone' => $formattedPhone,
+            'success'           => true,
+            'already_sent'      => false,
+            'message'           => 'Tasdiqlash SMS kodi yuborildi.',
+            'phone'             => $formattedPhone,
             'remaining_seconds' => $ttl,
-            'retry_after' => $cooldown,
+            'retry_after'       => $cooldown,
         ];
 
         // Agar test (mock) rejimida bo'lsa, ishlab chiquvchiga qulaylik uchun kodni ko'rsatish
         if (isset($result['mock_code'])) {
             $response['mock_code'] = $result['mock_code'];
-            $response['message'] .= ' (Test kodi: ' . $result['mock_code'] . ')';
+            $response['message']  .= ' (Test kodi: ' . $result['mock_code'] . ')';
         }
 
         return response()->json($response);
@@ -198,26 +198,26 @@ class VerificationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'phone' => 'required|string',
-            'code' => 'required|string|size:5',
+            'code'  => 'required|string|size:5',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => '5 xonali tasdiqlash kodini to\'liq kiriting.',
+                'message' => "5 xonali tasdiqlash kodini to'liq kiriting.",
             ], 422);
         }
 
         $formattedPhone = self::formatPhone($request->input('phone'));
-        $inputCode = trim($request->input('code'));
+        $inputCode      = trim($request->input('code'));
 
         $cacheKey = 'verify_code_' . md5($formattedPhone);
-        $data = Cache::get($cacheKey);
+        $data     = Cache::get($cacheKey);
 
         if (!$data) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tasdiqlash kodining muddati (2 daqiqa) tugagan yoki yangi kod so\'ralmagan.',
+                'message' => "Tasdiqlash kodining muddati (2 daqiqa) tugagan yoki yangi kod so'ralmagan.",
             ], 400);
         }
 
@@ -226,7 +226,7 @@ class VerificationController extends Controller
             Cache::forget($cacheKey);
             return response()->json([
                 'success' => false,
-                'message' => 'Urinishlar soni oshib ketdi. Iltimos, qaytadan yangi kod so\'rang.',
+                'message' => "Urinishlar soni oshib ketdi. Iltimos, qaytadan yangi kod so'rang.",
             ], 429);
         }
 
@@ -245,17 +245,17 @@ class VerificationController extends Controller
         Cache::forget($cacheKey);
 
         // Session va Cache ga telefon raqam tasdiqlanganini saqlaymiz (15 daqiqaga)
-        $verifiedToken = bin2hex(random_bytes(16));
+        $verifiedToken   = bin2hex(random_bytes(16));
         $verifySessionKey = 'verified_phone_' . md5($formattedPhone);
         Cache::put($verifySessionKey, $verifiedToken, 900);
         session()->put('verified_phone', $formattedPhone);
         session()->put('verified_token', $verifiedToken);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Telefon raqam muvaffaqiyatli tasdiqlandi!',
+            'success'        => true,
+            'message'        => 'Telefon raqam muvaffaqiyatli tasdiqlandi!',
             'verified_token' => $verifiedToken,
-            'phone' => $formattedPhone,
+            'phone'          => $formattedPhone,
         ]);
     }
 }
