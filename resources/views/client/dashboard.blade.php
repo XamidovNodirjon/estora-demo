@@ -516,16 +516,16 @@
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <h3 class="font-extrabold text-base text-white">Hisob tasdiqlanganlik darajasi</h3>
+                                        <h3 class="font-extrabold text-base text-white">Hisob ishonchliligi (Tasdiqlash)</h3>
                                         <span class="text-xs font-black px-2.5 py-0.5 rounded-full {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30' }}">
                                             {{ $verificationStatus['percentage'] }}%
                                         </span>
                                     </div>
                                     <p class="text-xs text-slate-300 font-medium mt-0.5">
                                         @if($verificationStatus['can_create_ad'])
-                                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> E'lon joylash huquqi faol.</span> Barcha shartlar bajarilgan.
+                                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Telefon tasdiqlangan.</span> E'lon berish imkoniyati faol. (Ishonchlilik: {{ $verificationStatus['percentage'] }}%)
                                         @else
-                                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon joylash uchun:</span> Email tasdiqlash (+35%), Pasport (+25%) va JShShIR (+25%) talab etiladi.
+                                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon berish uchun:</span> Telefon raqamingizni SMS orqali tasdiqlashingiz shart!
                                         @endif
                                     </p>
                                 </div>
@@ -539,17 +539,27 @@
 
                         <!-- Action Badges -->
                         <div class="flex items-center gap-2 flex-wrap">
+                            @if($verificationStatus['phone_verified'])
+                                <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                    <i class="fa-solid fa-check"></i> Telefon tasdiqlangan
+                                </span>
+                            @else
+                                <button type="button" onclick="openPhoneVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
+                                    <i class="fa-solid fa-phone"></i> Telefonni tasdiqlash (Majburiy)
+                                </button>
+                            @endif
+
                             @if($verificationStatus['email_verified'])
                                 <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
-                                    <i class="fa-solid fa-check"></i> Email tasdiqlangan
+                                    <i class="fa-solid fa-check"></i> Email (+20%)
                                 </span>
                             @elseif(empty(Auth::user()->email))
-                                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#email" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
-                                    <i class="fa-solid fa-plus-circle"></i> Email kiritish
+                                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#email" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
+                                    <i class="fa-solid fa-plus"></i> Email (+20%)
                                 </a>
                             @else
-                                <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
-                                    <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash
+                                <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer">
+                                    <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash (+20%)
                                 </button>
                             @endif
                         </div>
@@ -950,16 +960,16 @@
                             </div>
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <h3 class="font-black text-base sm:text-lg text-white">Hisobni tasdiqlash holati</h3>
+                                    <h3 class="font-black text-base sm:text-lg text-white">Hisob ishonchliligi</h3>
                                     <span class="text-xs font-black px-2.5 py-0.5 rounded-full {{ $verificationStatus['percentage'] == 100 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30' }}">
-                                        {{ $verificationStatus['percentage'] }}% Tasdiqlangan
+                                        {{ $verificationStatus['percentage'] }}% Ishonchli
                                     </span>
                                 </div>
                                 <p class="text-xs text-slate-300 font-medium mt-0.5">
                                     @if($verificationStatus['can_create_ad'])
-                                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> E'lon joylash huquqi faol.</span> Barcha tasdiqlar bajarilgan.
+                                        <span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Telefon tasdiqlangan.</span> E'lon berish imkoniyati faol. (Ishonchlilik: {{ $verificationStatus['percentage'] }}%)
                                     @else
-                                        <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon joylash uchun:</span> Elektron pochtani tasdiqlang hamda pasport va 14 xonali JShShIR ni kiriting.
+                                        <span class="text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> E'lon berish uchun:</span> Telefon raqamingizni SMS orqali tasdiqlang!
                                     @endif
                                 </p>
                             </div>
@@ -973,33 +983,47 @@
 
                     <!-- Action Badges -->
                     <div class="flex items-center gap-2 flex-wrap">
-                        @if($verificationStatus['email_verified'])
+                        @if($verificationStatus['phone_verified'])
                             <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
-                                <i class="fa-solid fa-check"></i> Email (35%)
+                                <i class="fa-solid fa-check"></i> Telefon (40%)
                             </span>
                         @else
-                            <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
-                                <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash (+35%)
+                            <button type="button" onclick="openPhoneVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
+                                <i class="fa-solid fa-phone"></i> Telefonni tasdiqlash (Majburiy)
+                            </button>
+                        @endif
+
+                        @if($verificationStatus['email_verified'])
+                            <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
+                                <i class="fa-solid fa-check"></i> Email (20%)
+                            </span>
+                        @elseif(empty(Auth::user()->email))
+                            <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#email" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
+                                <i class="fa-solid fa-plus"></i> Email (+20%)
+                            </a>
+                        @else
+                            <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer">
+                                <i class="fa-solid fa-envelope"></i> Email (+20%)
                             </button>
                         @endif
 
                         @if($verificationStatus['passport_filled'])
                             <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
-                                <i class="fa-solid fa-check"></i> Pasport (25%)
+                                <i class="fa-solid fa-check"></i> Pasport (20%)
                             </span>
                         @else
                             <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#passport-field" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
-                                <i class="fa-regular fa-id-card"></i> Pasport (+25%)
+                                <i class="fa-regular fa-id-card"></i> Pasport (+20%)
                             </a>
                         @endif
 
                         @if($verificationStatus['jshshir_filled'])
                             <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
-                                <i class="fa-solid fa-check"></i> JShShIR (25%)
+                                <i class="fa-solid fa-check"></i> JShShIR (20%)
                             </span>
                         @else
                             <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#jshshir-field" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-xl transition-all">
-                                <i class="fa-solid fa-fingerprint"></i> JShShIR (+25%)
+                                <i class="fa-solid fa-fingerprint"></i> JShShIR (+20%)
                             </a>
                         @endif
                     </div>
@@ -1393,24 +1417,24 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-1.5 pt-1 text-[11px]">
+                    <div class="flex items-center gap-1 {{ $verificationStatus['phone_verified'] ? 'text-emerald-600' : 'text-slate-400' }}">
+                        <i class="fa-solid {{ $verificationStatus['phone_verified'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Telefon (40%)
+                    </div>
                     <div class="flex items-center gap-1 {{ $verificationStatus['email_verified'] ? 'text-emerald-600' : 'text-slate-400' }}">
-                        <i class="fa-solid {{ $verificationStatus['email_verified'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Email (35%)
+                        <i class="fa-solid {{ $verificationStatus['email_verified'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Email (20%)
                     </div>
                     <div class="flex items-center gap-1 {{ $verificationStatus['passport_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
-                        <i class="fa-solid {{ $verificationStatus['passport_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Pasport (25%)
+                        <i class="fa-solid {{ $verificationStatus['passport_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Pasport (20%)
                     </div>
                     <div class="flex items-center gap-1 {{ $verificationStatus['jshshir_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
-                        <i class="fa-solid {{ $verificationStatus['jshshir_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> JShShIR (25%)
-                    </div>
-                    <div class="flex items-center gap-1 {{ $verificationStatus['phone_filled'] ? 'text-emerald-600' : 'text-slate-400' }}">
-                        <i class="fa-solid {{ $verificationStatus['phone_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> Telefon (15%)
+                        <i class="fa-solid {{ $verificationStatus['jshshir_filled'] ? 'fa-check' : 'fa-xmark' }} text-[10px]"></i> JShShIR (20%)
                     </div>
                 </div>
             </div>
 
             @if(!$verificationStatus['can_create_ad'])
-                <button type="button" onclick="openEmailVerificationModal()" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs cursor-pointer">
-                    <i class="fa-solid fa-shield-halved mr-1"></i> Hisobni tasdiqlash
+                <button type="button" onclick="openPhoneVerificationModal()" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-extrabold text-xs py-2.5 rounded-xl transition-all block text-center shadow-xs cursor-pointer">
+                    <i class="fa-solid fa-phone mr-1"></i> Telefonni tasdiqlash
                 </button>
             @endif
 
@@ -1577,17 +1601,164 @@ function closeEmailVerificationModal() {
 }
 
 function handleBlockedAdCreation() {
-    @if(empty(Auth::user()->email))
-        window.location.href = "{{ route('client.dashboard', ['section' => 'my_page']) }}#email";
-        setTimeout(() => {
-            const el = document.getElementById('email');
-            if (el) { el.scrollIntoView({ behavior: 'smooth' }); el.focus(); }
-        }, 300);
+    @if(!$verificationStatus['phone_verified'])
+        openPhoneVerificationModal();
     @elseif(!$verificationStatus['email_verified'])
         openEmailVerificationModal();
     @else
         window.location.href = "{{ route('client.dashboard', ['section' => 'my_page']) }}#passport-field";
     @endif
+}
+
+// PHONE VERIFICATION MODAL LOGIC
+let phoneResendTimer = null;
+let phoneResendSeconds = 60;
+
+function openPhoneVerificationModal() {
+    const modal = document.getElementById('phoneVerificationModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        resetPhoneVerificationModalState();
+    }
+}
+
+function closePhoneVerificationModal() {
+    const modal = document.getElementById('phoneVerificationModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
+
+function resetPhoneVerificationModalState() {
+    const codeInput = document.getElementById('phone-verify-code-input');
+    if (codeInput) codeInput.value = '';
+    const alertBox = document.getElementById('phone-verify-alert-box');
+    if (alertBox) {
+        alertBox.classList.add('hidden');
+        alertBox.innerHTML = '';
+    }
+}
+
+function sendPhoneVerificationCode() {
+    const phoneInput = document.getElementById('phone-verify-number-input');
+    const sendBtn = document.getElementById('btn-phone-send-code');
+    const statusBox = document.getElementById('phone-verify-alert-box');
+    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+
+    if (!phoneVal) {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold block mb-3 text-left';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Iltimos, telefon raqamingizni kiriting.';
+        return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> SMS yuborilmoqda...';
+
+    fetch('{{ route("auth.send-code") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ phone: phoneVal })
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusBox.classList.remove('hidden');
+        if (data.status === 'success' || data.success) {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold block mb-3 text-left';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ' + (data.message || 'Tasdiqlash kodi SMS orqali yuborildi!');
+            startPhoneResendCountdown();
+            const codeInp = document.getElementById('phone-verify-code-input');
+            if (codeInp) codeInp.focus();
+        } else {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> ' + (data.message || 'Xatolik yuz berdi.');
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS kodni olish';
+        }
+    })
+    .catch(err => {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> Server bilan bog\'lanishda xatolik yuz berdi.';
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> SMS kodni olish';
+    });
+}
+
+function startPhoneResendCountdown() {
+    const sendBtn = document.getElementById('btn-phone-send-code');
+    phoneResendSeconds = 60;
+    if (phoneResendTimer) clearInterval(phoneResendTimer);
+
+    phoneResendTimer = setInterval(() => {
+        phoneResendSeconds--;
+        if (phoneResendSeconds <= 0) {
+            clearInterval(phoneResendTimer);
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-rotate-right mr-1"></i> Kodni qayta yuborish';
+        } else {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Qayta yuborish (${phoneResendSeconds}s)`;
+        }
+    }, 1000);
+}
+
+function submitPhoneVerificationCode() {
+    const phoneInput = document.getElementById('phone-verify-number-input');
+    const codeInput = document.getElementById('phone-verify-code-input');
+    const statusBox = document.getElementById('phone-verify-alert-box');
+    const submitBtn = document.getElementById('btn-phone-verify-submit');
+    const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+    const codeVal = codeInput ? codeInput.value.trim() : '';
+
+    if (!codeVal || codeVal.length < 4) {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold block mb-3 text-left';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Iltimos, SMS orqali kelgan tasdiqlash kodini to\'liq kiriting.';
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Tekshirilmoqda...';
+
+    fetch('{{ route("auth.verify-code") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ phone: phoneVal, code: codeVal })
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusBox.classList.remove('hidden');
+        if (data.status === 'success' || data.success) {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold block mb-3 text-left';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> ' + (data.message || 'Telefon muvaffaqiyatli tasdiqlandi!');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1200);
+        } else {
+            statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
+            statusBox.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1 text-red-600"></i> ' + (data.message || 'Kod noto\'g\'ri kiritildi.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Kodni tasdiqlash';
+        }
+    })
+    .catch(err => {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 font-bold block mb-3 text-left';
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1 text-red-600"></i> Tekshirishda server xatoligi yuz berdi.';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Kodni tasdiqlash';
+    });
 }
 
 function resetVerificationModalState() {
@@ -1709,6 +1880,58 @@ document.addEventListener('DOMContentLoaded', () => {
     @endif
 });
 </script>
+
+<!-- PHONE VERIFICATION MODAL -->
+<div id="phoneVerificationModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 28px; max-width: 460px; width: 100%; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); position: relative; text-align: center;">
+        <button type="button" onclick="closePhoneVerificationModal()" style="position: absolute; top: 18px; right: 18px; background: #f1f5f9; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
+
+        <div style="width: 72px; height: 72px; background: #ecfdf5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; border: 4px solid #d1fae5;">
+            <i class="fa-solid fa-mobile-screen-button" style="font-size: 28px; color: #10b981;"></i>
+        </div>
+
+        <h3 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 6px;">Telefon raqamni tasdiqlash</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px;">
+            E'lon berish imkoniyatidan foydalanish uchun telefon raqamingizni SMS kod orqali tasdiqlang.
+        </p>
+
+        <!-- Dynamic Status Alert Box -->
+        <div id="phone-verify-alert-box" class="hidden"></div>
+
+        <!-- Phone Number Input & Send Code -->
+        <div style="margin-bottom: 18px; text-align: left;">
+            <label for="phone-verify-number-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+                Telefon raqamingiz:
+            </label>
+            <div style="display: flex; gap: 8px;">
+                <input type="tel" 
+                       id="phone-verify-number-input" 
+                       value="{{ Auth::user()->phone }}" 
+                       placeholder="+998901234567" 
+                       style="flex: 1; padding: 12px 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 14px; font-weight: 700; color: #0f172a; outline: none; background: #f8fafc;">
+                <button type="button" id="btn-phone-send-code" onclick="sendPhoneVerificationCode()" style="padding: 12px 16px; border-radius: 14px; font-weight: 800; font-size: 12.5px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.25); white-space: nowrap;">
+                    <i class="fa-solid fa-paper-plane"></i> SMS olish
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Step 2: Enter SMS OTP Code -->
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: left;">
+            <label for="phone-verify-code-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+                SMS orqali kelgan tasdiqlash kodi:
+            </label>
+            <input type="text" 
+                   id="phone-verify-code-input" 
+                   maxlength="6" 
+                   placeholder="------" 
+                   style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 22px; font-weight: 900; letter-spacing: 10px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
+            
+            <button type="button" id="btn-phone-verify-submit" onclick="submitPhoneVerificationCode()" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #10b981; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); transition: all 0.2s;">
+                <i class="fa-solid fa-check"></i> Kodni tasdiqlash
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- EMAIL VERIFICATION MODAL -->
 <div id="emailVerificationModal" class="hidden" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">

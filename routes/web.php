@@ -106,15 +106,15 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
-    // Verification routes (Telegram Gateway)
-    Route::post('/auth/send-code', [\App\Http\Controllers\Auth\VerificationController::class, 'sendCode'])->name('auth.send-code');
-    Route::post('/auth/verify-code', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyCode'])->name('auth.verify-code');
-    Route::post('/auth/check-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'checkStatus'])->name('auth.check-verification');
-
     // Google OAuth Routes
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
+
+// Verification routes (SMS Gateway) - both guest and authenticated users can access
+Route::post('/auth/send-code', [\App\Http\Controllers\Auth\VerificationController::class, 'sendCode'])->name('auth.send-code');
+Route::post('/auth/verify-code', [\App\Http\Controllers\Auth\VerificationController::class, 'verifyCode'])->name('auth.verify-code');
+Route::post('/auth/check-verification', [\App\Http\Controllers\Auth\VerificationController::class, 'checkStatus'])->name('auth.check-verification');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

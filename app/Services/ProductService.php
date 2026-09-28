@@ -42,8 +42,9 @@ class ProductService
                 'passport_filled' => false,
                 'jshshir_filled' => false,
                 'phone_filled' => false,
+                'phone_verified' => false,
                 'can_create_ad' => false,
-                'missing_fields' => ['email', 'passport', 'jshshir', 'phone']
+                'missing_fields' => ['phone', 'email', 'passport', 'jshshir']
             ];
         }
 
@@ -51,43 +52,52 @@ class ProductService
         $passportFilled = !empty($user->passport) && strlen(trim($user->passport)) >= 7;
         $jshshirFilled = !empty($user->jshshir) && strlen(trim($user->jshshir)) === 14;
         $phoneFilled = !empty($user->phone);
+        $phoneVerified = !empty($user->phone_verified_at) && $phoneFilled;
 
         $percentage = 0;
         $missing = [];
 
-        if ($emailVerified) {
-            $percentage += 35;
-        } else {
-            $missing[] = 'Elektron pochta tasdiqlanmagan';
-        }
-
-        if ($passportFilled) {
-            $percentage += 25;
-        } else {
-            $missing[] = 'Pasport seriya va raqami kiritilmagan';
-        }
-
-        if ($jshshirFilled) {
-            $percentage += 25;
-        } else {
-            $missing[] = '14 xonali JShShIR kiritilmagan';
-        }
-
-        if ($phoneFilled) {
+        // Telefon raqam tasdiqlanishi (Eng muhim - 40%)
+        if ($phoneVerified) {
+            $percentage += 40;
+        } elseif ($phoneFilled) {
             $percentage += 15;
+            $missing[] = 'Telefon raqam SMS orqali tasdiqlanmagan';
         } else {
             $missing[] = 'Telefon raqam kiritilmagan';
         }
 
-        // Phone number is sufficient to create ads; passport/jshshir/email boost trust percentage
-        $canCreateAd = $phoneFilled;
+        // Elektron pochta (20%) - Tasdiqlanmasa ham e'lon bera oladi, faqat ishonchlilik % oshadi
+        if ($emailVerified) {
+            $percentage += 20;
+        } else {
+            $missing[] = 'Elektron pochta tasdiqlanmagan';
+        }
+
+        // Pasport ma'lumoti (20%)
+        if ($passportFilled) {
+            $percentage += 20;
+        } else {
+            $missing[] = 'Pasport seriya va raqami kiritilmagan';
+        }
+
+        // 14 xonali JShShIR (20%)
+        if ($jshshirFilled) {
+            $percentage += 20;
+        } else {
+            $missing[] = '14 xonali JShShIR kiritilmagan';
+        }
+
+        // E'lon joylash uchun faqat telefon raqam SMS orqali tasdiqlangan bo'lishi shart!
+        $canCreateAd = $phoneVerified;
 
         return [
-            'percentage' => $percentage,
+            'percentage' => min(100, $percentage),
             'email_verified' => $emailVerified,
             'passport_filled' => $passportFilled,
             'jshshir_filled' => $jshshirFilled,
             'phone_filled' => $phoneFilled,
+            'phone_verified' => $phoneVerified,
             'can_create_ad' => $canCreateAd,
             'missing_fields' => $missing
         ];
@@ -95,6 +105,7 @@ class ProductService
 
     /**
      * Check if a user is allowed to create a new product.
+     * User MUST have a verified phone number.
      * Ordinary clients: max 2 products.
      * Maklers, Owners, Builders, Hotels & Admins: unlimited.
      */
@@ -102,6 +113,11 @@ class ProductService
     {
         $user = $user ?? auth()->user();
         if (!$user) {
+            return false;
+        }
+
+        // Telefon raqam tasdiqlanmagan bo'lsa e'lon qo'sha olmaydi
+        if (empty($user->phone_verified_at)) {
             return false;
         }
 

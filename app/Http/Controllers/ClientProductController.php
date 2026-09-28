@@ -35,6 +35,11 @@ class ClientProductController extends Controller
     {
         $user = Auth::user();
 
+        if (empty($user->phone_verified_at)) {
+            return redirect()->route('client.dashboard', ['section' => 'my_page'])
+                ->withErrors(['phone' => 'E\'lon joylashtirish uchun avval telefon raqamingizni SMS orqali tasdiqlashingiz shart!']);
+        }
+
         if (!$this->service->canUserCreateProduct($user)) {
             return redirect()->route('client.dashboard')
                 ->withErrors(['limit' => 'Oddiy foydalanuvchilar (Mijozlar) maksimal 2 ta e\'lon qo\'sha oladi. Cheksiz e\'lon joylashtirish uchun Makler yoki Uy egasi hisobi bilan ro\'yxatdan o\'ting!']);

@@ -54,62 +54,73 @@
     }
 </style>
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-2 sm:px-0">
     <!-- Header Card -->
-    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('client.dashboard') }}" class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-all">
+    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div class="flex items-center gap-3 sm:gap-4">
+            <a href="{{ route('client.dashboard') }}" class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-all flex-shrink-0">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <div>
-                <h2 class="font-display font-bold text-lg text-[#061c3f]">Yangi E'lon Joylashtirish</h2>
+                <h2 class="font-display font-bold text-base sm:text-lg text-[#061c3f]">Yangi E'lon Joylashtirish</h2>
                 <p class="text-xs text-gray-400">Ko'chmas mulkingiz haqida ma'lumotlarni to'ldiring</p>
             </div>
         </div>
 
-        <span class="px-3 py-1 rounded-full text-xs font-bold {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-blue-100 text-blue-800 border border-blue-200' }}">
-            {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'Makler (Cheksiz)' : 'Mijoz (Max 2 ta)' }}
-        </span>
+        <div class="flex items-center justify-between sm:justify-end gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-blue-100 text-blue-800 border border-blue-200' }}">
+                {{ (Auth::user()->role?->name ?? Auth::user()->type) === 'makler' ? 'Makler (Cheksiz)' : 'Mijoz (Max 2 ta)' }}
+            </span>
+        </div>
     </div>
 
     <!-- Stepper Navigation -->
-    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-        <div class="relative flex items-center justify-between w-full max-w-3xl mx-auto">
+    <div class="bg-white p-3.5 sm:p-6 rounded-2xl border border-gray-200 shadow-sm">
+        <!-- Mobile Step Progress Text (shown on < 640px) -->
+        <div class="sm:hidden mb-2.5 flex items-center justify-between">
+            <span class="text-xs font-black text-[#061c3f] flex items-center gap-1.5">
+                <span id="mobile-step-badge" class="w-5 h-5 rounded-full bg-[#0084ff] text-white inline-flex items-center justify-center text-[10px]">1</span>
+                <span id="mobile-step-title">Asosiy ma'lumotlar</span>
+            </span>
+            <span id="mobile-step-counter" class="text-[11px] font-bold text-gray-400">1 / 4 bosqich</span>
+        </div>
+
+        <div class="relative flex items-center justify-between w-full max-w-3xl mx-auto px-2 sm:px-0">
             <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-100 rounded-full z-0"></div>
             <div id="step-progress-line" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#0084ff] rounded-full z-0 transition-all duration-500" style="width: 0%;"></div>
 
             <div class="step-indicator-item relative z-10 flex flex-col items-center group cursor-pointer" onclick="goToStep(1)">
-                <div id="step-circle-1" class="w-10 h-10 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-sm border-4 border-white shadow-lg transition-all duration-300">
+                <div id="step-circle-1" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-lg transition-all duration-300">
                     1
                 </div>
-                <span id="step-label-1" class="text-xs font-bold text-[#061c3f] mt-2 transition-all duration-300">Asosiy ma'lumotlar</span>
+                <span id="step-label-1" class="hidden sm:block text-xs font-bold text-[#061c3f] mt-2 transition-all duration-300 text-center">Asosiy ma'lumotlar</span>
             </div>
 
             <div class="step-indicator-item relative z-10 flex flex-col items-center group cursor-pointer" onclick="goToStep(2)">
-                <div id="step-circle-2" class="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-sm border-4 border-white shadow-md transition-all duration-300">
+                <div id="step-circle-2" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-md transition-all duration-300">
                     2
                 </div>
-                <span id="step-label-2" class="text-xs font-semibold text-gray-400 mt-2 transition-all duration-300">E'lon Rasmlari</span>
+                <span id="step-label-2" class="hidden sm:block text-xs font-semibold text-gray-400 mt-2 transition-all duration-300 text-center">E'lon Rasmlari</span>
             </div>
 
             <div class="step-indicator-item relative z-10 flex flex-col items-center group cursor-pointer" onclick="goToStep(3)">
-                <div id="step-circle-3" class="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-sm border-4 border-white shadow-md transition-all duration-300">
+                <div id="step-circle-3" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-md transition-all duration-300">
                     3
                 </div>
-                <span id="step-label-3" class="text-xs font-semibold text-gray-400 mt-2 transition-all duration-300">Manzil va Tavsif</span>
+                <span id="step-label-3" class="hidden sm:block text-xs font-semibold text-gray-400 mt-2 transition-all duration-300 text-center">Manzil va Tavsif</span>
             </div>
 
             <div class="step-indicator-item relative z-10 flex flex-col items-center group cursor-pointer" onclick="goToStep(4)">
-                <div id="step-circle-4" class="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-sm border-4 border-white shadow-md transition-all duration-300">
+                <div id="step-circle-4" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-md transition-all duration-300">
                     4
                 </div>
-                <span id="step-label-4" class="text-xs font-semibold text-gray-400 mt-2 transition-all duration-300">Parametrlar & Qulayliklar</span>
+                <span id="step-label-4" class="hidden sm:block text-xs font-semibold text-gray-400 mt-2 transition-all duration-300 text-center">Parametrlar & Qulayliklar</span>
             </div>
         </div>
     </div>
 
     <!-- Form Card -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm relative overflow-hidden">
+    <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 md:p-8 shadow-sm relative overflow-hidden">
         @if ($errors->any())
             <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800">
                 <ul class="list-disc list-inside text-xs space-y-1">
@@ -127,7 +138,7 @@
             <div id="hidden-images-container"></div>
 
             <!-- STEP 1: ASOSIY MA'LUMOTLAR -->
-            <div id="step-content-1" class="step-content-pane space-y-6 transition-all duration-350 transform opacity-100 scale-100">
+            <div id="step-content-1" class="step-content-pane space-y-5 transition-all duration-350 transform opacity-100 scale-100">
                 <div class="border-b border-gray-100 pb-4 mb-4">
                     <h3 class="font-display font-bold text-base text-[#061c3f]">1-bosqich: Sarlavha, Narx va Kategoriya</h3>
                     <p class="text-xs text-gray-400">E'loningizning sarlavhasi va narxini kiriting</p>
@@ -369,21 +380,21 @@
             </div>
 
             <!-- Footer Action Buttons -->
-            <div class="flex items-center justify-between border-t border-gray-100 pt-6">
-                <div>
-                    <button type="button" id="btn-prev" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm rounded-xl transition-all hidden" onclick="navigateStep(-1)">
+            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between border-t border-gray-100 pt-5 sm:pt-6 gap-3 sm:gap-0">
+                <div class="flex items-center gap-2">
+                    <button type="button" id="btn-prev" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm rounded-xl transition-all hidden text-center justify-center items-center" onclick="navigateStep(-1)">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Orqaga
                     </button>
-                    <a href="{{ route('client.dashboard') }}" id="btn-cancel" class="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-600 font-semibold text-sm rounded-xl transition-all">
+                    <a href="{{ route('client.dashboard') }}" id="btn-cancel" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold text-sm rounded-xl transition-all text-center block">
                         Bekor qilish
                     </a>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <button type="button" id="btn-next" class="px-6 py-2.5 bg-[#0084ff] hover:bg-[#0076e5] text-white font-semibold text-sm rounded-xl shadow-lg transition-all" onclick="navigateStep(1)">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button type="button" id="btn-next" class="w-full sm:w-auto px-6 py-3 sm:py-2.5 bg-[#0084ff] hover:bg-[#0076e5] text-white font-extrabold text-sm rounded-xl shadow-lg transition-all text-center flex items-center justify-center" onclick="navigateStep(1)">
                         Keyingisi <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
-                    <button type="submit" id="btn-submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-lg transition-all hidden">
+                    <button type="submit" id="btn-submit" class="w-full sm:w-auto px-6 py-3.5 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg transition-all hidden text-center flex items-center justify-center">
                         <i class="fa-solid fa-cloud-arrow-up mr-2"></i> E'lonni Joylash
                     </button>
                 </div>
@@ -466,27 +477,42 @@
         }
     }
 
+    const stepTitles = [
+        "Asosiy ma'lumotlar",
+        "E'lon Rasmlari",
+        "Manzil va Tavsif",
+        "Parametrlar & Qulayliklar"
+    ];
+
     function updateStepIndicator() {
         const progressLine = document.getElementById('step-progress-line');
         const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
         progressLine.style.width = `${percent}%`;
+
+        // Update mobile step indicator
+        const mobileBadge = document.getElementById('mobile-step-badge');
+        const mobileTitle = document.getElementById('mobile-step-title');
+        const mobileCounter = document.getElementById('mobile-step-counter');
+        if (mobileBadge) mobileBadge.innerText = currentStep;
+        if (mobileTitle) mobileTitle.innerText = stepTitles[currentStep - 1] || '';
+        if (mobileCounter) mobileCounter.innerText = `${currentStep} / ${totalSteps} bosqich`;
 
         for (let i = 1; i <= totalSteps; i++) {
             const circle = document.getElementById(`step-circle-${i}`);
             const label = document.getElementById(`step-label-${i}`);
 
             if (i < currentStep) {
-                circle.className = "w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm border-4 border-white shadow-md";
+                circle.className = "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-md";
                 circle.innerHTML = '<i class="fa-solid fa-check text-xs"></i>';
-                label.className = "text-xs font-semibold text-emerald-600 mt-2";
+                if (label) label.className = "hidden sm:block text-xs font-semibold text-emerald-600 mt-2 text-center";
             } else if (i === currentStep) {
-                circle.className = "w-10 h-10 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-sm border-4 border-white shadow-lg scale-110";
+                circle.className = "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0084ff] text-white flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-lg scale-110";
                 circle.innerHTML = i;
-                label.className = "text-xs font-bold text-[#061c3f] mt-2";
+                if (label) label.className = "hidden sm:block text-xs font-bold text-[#061c3f] mt-2 text-center";
             } else {
-                circle.className = "w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-sm border-4 border-white shadow-sm";
+                circle.className = "w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xs sm:text-sm border-2 sm:border-4 border-white shadow-sm";
                 circle.innerHTML = i;
-                label.className = "text-xs font-semibold text-gray-400 mt-2";
+                if (label) label.className = "hidden sm:block text-xs font-semibold text-gray-400 mt-2 text-center";
             }
         }
 

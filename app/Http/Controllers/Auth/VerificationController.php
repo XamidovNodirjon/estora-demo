@@ -97,11 +97,12 @@ class VerificationController extends Controller
 
         $formattedPhone = self::formatPhone($request->input('phone'));
 
-        // Check if phone already registered
-        if (User::where('phone', $formattedPhone)->exists()) {
+        // Check if phone already registered (agar foydalanuvchi tizimga kirgan bo'lsa, o'zining raqami bundan mustasno)
+        $existingUser = User::where('phone', $formattedPhone)->first();
+        if ($existingUser && (!auth()->check() || $existingUser->id !== auth()->id())) {
             return response()->json([
                 'success' => false,
-                'message' => "Bu telefon raqam allaqachon ro'yxatdan o'tgan.",
+                'message' => "Bu telefon raqam allaqachon boshqa foydalanuvchi tomonidan ro'yxatdan o'tkazilgan.",
             ], 422);
         }
 
@@ -251,11 +252,22 @@ class VerificationController extends Controller
         session()->put('verified_phone', $formattedPhone);
         session()->put('verified_token', $verifiedToken);
 
+        // Agar foydalanuvchi tizimga kirgan bo'lsa (masalan Google orqali kirgan va telefonini tasdiqlayotgan bo'lsa):
+        if (auth()->check()) {
+            $user = auth()->user();
+            $user->phone = $formattedPhone;
+            $user->phone_verified_at = now();
+            $user->save();
+        }
+
+        $verificationStatus = auth()->check() ? app(\App\Services\ProductService::class)->getVerificationStatus(auth()->user()) : null;
+
         return response()->json([
             'success'        => true,
             'message'        => 'Telefon raqam muvaffaqiyatli tasdiqlandi!',
             'verified_token' => $verifiedToken,
             'phone'          => $formattedPhone,
+            'verification'   => $verificationStatus,
         ]);
     }
 }

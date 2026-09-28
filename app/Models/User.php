@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'position_id',
         'phone',
+        'phone_verified_at',
         'passport',
         'jshshir',
         'email',
@@ -92,6 +93,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

@@ -41,6 +41,7 @@ class AuthService
         $data['role_id'] = $userRole ? $userRole->id : null;
         $data['type'] = $roleName;
         $data['status'] = 1; // Active by default
+        $data['phone_verified_at'] = now(); // Phone was verified before registration
 
         return $this->userRepository->create($data);
     }
