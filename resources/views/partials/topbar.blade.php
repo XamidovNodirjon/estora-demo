@@ -19,9 +19,6 @@
 
         <div class="top-bar-right">
             <div class="top-bar-right-item">
-                <i class="far fa-comment-dots" style="font-size: 16px;"></i>
-            </div>
-            <div class="top-bar-right-item">
                 <i class="fas fa-language" style="font-size: 16px;"></i>
                 <select aria-label="Tilni tanlang">
                     <option value="uz">O'zbekcha</option>

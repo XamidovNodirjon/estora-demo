@@ -150,12 +150,12 @@
                 <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100 space-y-3">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-full bg-[#061c3f] text-white flex items-center justify-center font-bold text-lg font-display">
-                            {{ strtoupper(substr($product->user->name ?? 'S', 0, 1)) }}
+                            {{ strtoupper(substr($product->user?->name ?? 'S', 0, 1)) }}
                         </div>
                         <div>
-                            <h4 class="font-bold text-[#061c3f] text-base">{{ $product->user->name ?? 'Sotuvchi' }}</h4>
+                            <h4 class="font-bold text-[#061c3f] text-base">{{ $product->user?->name ?? 'Sotuvchi' }}</h4>
                             <span class="text-xs text-gray-400">
-                                {{ ($product->user->role?->name ?? $product->user->type) === 'makler' ? 'Makler (Rieltor)' : 'Uy egasi' }}
+                                {{ ($product->user?->role?->name ?? $product->user?->type) === 'makler' ? 'Makler (Rieltor)' : 'Uy egasi' }}
                             </span>
                         </div>
                     </div>

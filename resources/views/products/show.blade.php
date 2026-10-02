@@ -237,10 +237,166 @@
 }
 
 #showMap {
-    height: 280px;
+    height: 340px;
     width: 100%;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid var(--border-color);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+    z-index: 10;
+}
+
+/* Custom Pin Marker */
+.custom-map-property-pin {
+    background: transparent;
+    border: none;
+}
+.map-pin-pulse-wrapper {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.map-pin-pulse {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 132, 255, 0.25);
+    animation: mapPinPulse 2s infinite ease-in-out;
+}
+@keyframes mapPinPulse {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    50% { transform: scale(1.4); opacity: 0.3; }
+    100% { transform: scale(0.8); opacity: 0.9; }
+}
+.map-pin-icon-box {
+    position: relative;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border-radius: 50% 50% 50% 0;
+    background: linear-gradient(135deg, #0084ff 0%, #061c3f 100%);
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 132, 255, 0.4);
+    border: 2px solid #ffffff;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.map-pin-pulse-wrapper:hover .map-pin-icon-box {
+    transform: rotate(-45deg) scale(1.12);
+}
+.map-pin-icon-box i {
+    transform: rotate(45deg);
+    color: #ffffff;
+    font-size: 15px;
+}
+
+/* Mini Popup Card on Click */
+.leaflet-popup-content-wrapper {
+    padding: 0 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+.leaflet-popup-content {
+    margin: 0 !important;
+    line-height: normal !important;
+    width: 250px !important;
+}
+.leaflet-popup-close-button {
+    top: 8px !important;
+    right: 8px !important;
+    width: 22px !important;
+    height: 22px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    z-index: 10 !important;
+    transition: background 0.2s;
+}
+.leaflet-popup-close-button:hover {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #ffffff !important;
+}
+.detail-map-mini-card {
+    background: #ffffff;
+    font-family: inherit;
+    border-radius: 14px;
+    overflow: hidden;
+}
+.detail-map-card-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 110px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+.detail-map-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.detail-map-card-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(6, 28, 63, 0.85);
+    backdrop-filter: blur(4px);
+    color: #38bdf8;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+.detail-map-card-body {
+    padding: 10px 12px 12px 12px;
+}
+.detail-map-card-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0084ff;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+.detail-map-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.detail-map-card-specs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 6px;
+}
+.detail-map-card-specs span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* Right Column Owner / Pricing Card */
@@ -645,11 +801,11 @@
             <div class="detail-right-column">
                 <div class="owner-pricing-card">
                     <div class="owner-header-row">
-                        <a href="{{ route('users.show', $product->user_id) }}" class="owner-avatar-info">
+                        <a href="{{ $product->user_id ? route('users.show', $product->user_id) : '#' }}" class="owner-avatar-info">
                             <div class="owner-avatar"><i class="fas fa-user-circle"></i></div>
                             <div>
-                                <h4 class="owner-name">{{ $product->user->name ?? 'Muallif' }}</h4>
-                                <span class="owner-type">{{ ($product->user->role?->name ?? $product->user->type) === 'makler' ? 'Rieltor / Makler' : 'Uy egasi' }}</span>
+                                <h4 class="owner-name">{{ $product->user?->name ?? 'Muallif' }}</h4>
+                                <span class="owner-type">{{ ($product->user?->role?->name ?? $product->user?->type) === 'makler' ? 'Rieltor / Makler' : 'Uy egasi' }}</span>
                             </div>
                         </a>
                         <div>
@@ -874,14 +1030,73 @@ document.addEventListener('DOMContentLoaded', () => {
     const lng = {{ $product->longitude ?: 69.2401 }};
 
     if (document.getElementById('showMap')) {
-        const map = L.map('showMap').setView([lat, lng], 14);
+        const map = L.map('showMap', {
+            zoomControl: true,
+            scrollWheelZoom: false
+        }).setView([lat, lng], 15);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        L.marker([lat, lng]).addTo(map)
-            .bindPopup('<b>{{ addslashes($product->name ?? "Estora mulki") }}</b><br>{{ number_format($product->price) }} USD')
-            .openPopup();
+        // Custom stylish pulsing pin marker
+        const pinIcon = L.divIcon({
+            className: 'custom-map-property-pin',
+            html: `
+                <div class="map-pin-pulse-wrapper" title="Mulka xaritada">
+                    <div class="map-pin-pulse"></div>
+                    <div class="map-pin-icon-box">
+                        <i class="fas fa-home"></i>
+                    </div>
+                </div>
+            `,
+            iconSize: [44, 44],
+            iconAnchor: [22, 38],
+            popupAnchor: [0, -36]
+        });
+
+        const marker = L.marker([lat, lng], { icon: pinIcon }).addTo(map);
+
+        @php
+            $popupImg = $firstMain ?? '/images/hero.png';
+            $propertyName = addslashes($product->name ?? ($product->subCategory->name . ' - ' . $product->square . ' m²'));
+            $propertyPrice = number_format($product->price) . ' USD';
+            $propertyCategory = addslashes($product->category->name ?? 'Sotuv');
+            $propertyRooms = $product->rooms ? $product->rooms . ' xona' : null;
+            $propertySquare = $product->square ? $product->square . ' m²' : null;
+            $propertyFloor = $product->floor ? $product->floor . '-qavat' : null;
+        @endphp
+
+        const miniPopupHtml = `
+            <div class="detail-map-mini-card">
+                <div class="detail-map-card-img-wrap">
+                    <img src="{{ $popupImg }}" class="detail-map-card-img" alt="Property image" onerror="this.src='/images/hero.png'">
+                    <span class="detail-map-card-badge">{{ $propertyCategory }}</span>
+                </div>
+                <div class="detail-map-card-body">
+                    <div class="detail-map-card-price">{{ $propertyPrice }}</div>
+                    <div class="detail-map-card-title">{{ $propertyName }}</div>
+                    <div class="detail-map-card-specs">
+                        @if($propertyRooms)
+                            <span><i class="fas fa-door-open" style="color: #0084ff;"></i> {{ $propertyRooms }}</span>
+                        @endif
+                        @if($propertySquare)
+                            <span><i class="fas fa-ruler-combined" style="color: #10b981;"></i> {{ $propertySquare }}</span>
+                        @endif
+                        @if($propertyFloor)
+                            <span><i class="fas fa-building" style="color: #f59e0b;"></i> {{ $propertyFloor }}</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Bind rich popup on click (default openPopup olib tashlandi - faqat bosilganda ochiladi)
+        marker.bindPopup(miniPopupHtml, {
+            maxWidth: 260,
+            minWidth: 240,
+            className: 'custom-estora-leaflet-popup'
+        });
     }
 });
 </script>

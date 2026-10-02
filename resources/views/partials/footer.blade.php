@@ -52,10 +52,10 @@
                     <span class="footer-toll-free-text">O'zbekiston bo'ylab barcha qo'ng'iroqlar bepul</span>
                     
                     <div class="footer-hotline-exact">
-                        <div style="width: 38px; height: 38px; border: 2px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;">
-                            24
+                        <div style="width: 48px; height: 48px; border: 2px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;">
+                            7/24
                         </div>
-                        <a href="tel:+998951606446" class="footer-phone-big">+998 (95) 160 64-46</a>
+                        <a href="tel:+998903066446" class="footer-phone-big">+998 (90) 306 64-46</a>
                     </div>
 
                     <div class="footer-social-row-exact">

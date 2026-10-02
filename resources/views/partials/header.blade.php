@@ -71,7 +71,7 @@
                 </span>
                 <span class="nav-contact-item">
                     <i class="fas fa-phone-alt"></i>
-                    <a href="tel:+998951606446">+998 (95) 160 64 46</a>
+                    <a href="tel:+998903066446">+998 (90) 306 64 46</a>
                 </span>
             </div>
         </div>

@@ -211,6 +211,9 @@ class SearchController extends Controller
                 'region' => $product->region->name ?? 'Toshkent shahar',
                 'city_id' => $product->city_id,
                 'city' => $product->city->name ?? 'Yashnobod tumani',
+                'rooms' => $product->rooms,
+                'square' => $product->square,
+                'floor' => $product->floor,
                 'image' => $firstImg,
                 'url' => route('products.show', $product->id),
             ];

@@ -82,87 +82,178 @@
     z-index: 1;
 }
 
-/* Custom Price Badge Marker */
-.custom-map-price-badge {
-    background: var(--primary-navy, #091a3e);
-    color: #ffffff;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    border: 2px solid #ffffff;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+/* Custom Animated Pin Marker */
+.custom-map-property-pin {
+    background: transparent !important;
+    border: none !important;
 }
-
-.custom-map-price-badge:hover {
-    transform: scale(1.1);
-    background: #0084ff;
+.map-pin-pulse-wrapper {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.map-pin-pulse {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 132, 255, 0.25);
+    animation: mapPinPulse 2s infinite ease-in-out;
+}
+@keyframes mapPinPulse {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    50% { transform: scale(1.4); opacity: 0.3; }
+    100% { transform: scale(0.8); opacity: 0.9; }
+}
+.map-pin-icon-box {
+    position: relative;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border-radius: 50% 50% 50% 0;
+    background: linear-gradient(135deg, #0084ff 0%, #061c3f 100%);
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 132, 255, 0.4);
+    border: 2px solid #ffffff;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.map-pin-pulse-wrapper:hover .map-pin-icon-box {
+    transform: rotate(-45deg) scale(1.15);
+}
+.map-pin-icon-box i {
+    transform: rotate(45deg);
+    color: #ffffff;
+    font-size: 15px;
 }
 
 /* Custom Popup Design */
 .leaflet-popup-content-wrapper {
-    border-radius: 12px;
-    padding: 4px;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    padding: 0 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+.leaflet-popup-content {
+    margin: 0 !important;
+    line-height: normal !important;
+    width: 250px !important;
+}
+.leaflet-popup-close-button {
+    top: 8px !important;
+    right: 8px !important;
+    width: 22px !important;
+    height: 22px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    z-index: 10 !important;
+    transition: background 0.2s;
+}
+.leaflet-popup-close-button:hover {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #ffffff !important;
 }
 
 .map-popup-card {
-    width: 240px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #ffffff;
+    font-family: inherit;
+    border-radius: 14px;
+    overflow: hidden;
 }
-
+.map-popup-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
 .map-popup-img {
     width: 100%;
-    height: 130px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 8px;
+    display: block;
 }
-
+.map-popup-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(6, 28, 63, 0.85);
+    backdrop-filter: blur(4px);
+    color: #38bdf8;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+.map-popup-body {
+    padding: 10px 12px 12px 12px;
+}
 .map-popup-price {
-    font-size: 15px;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 800;
     color: #0084ff;
     margin-bottom: 2px;
 }
-
 .map-popup-title {
     font-size: 13px;
     font-weight: 700;
-    color: #1e293b;
+    color: #0f172a;
     line-height: 1.35;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
-.map-popup-meta {
-    font-size: 11.5px;
+.map-popup-specs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
     color: #64748b;
+    font-weight: 600;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 6px;
     margin-bottom: 10px;
+}
+.map-popup-specs span {
     display: flex;
     align-items: center;
     gap: 4px;
 }
-
+.map-popup-meta {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 .map-popup-btn {
     display: block;
     text-align: center;
     background: var(--primary-navy, #091a3e);
     color: #ffffff !important;
     padding: 7px 0;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 12.5px;
-    font-weight: 800;
+    font-weight: 700;
     text-decoration: none;
     transition: background-color 0.2s;
 }
-
 .map-popup-btn:hover {
     background: #0084ff;
 }
@@ -269,28 +360,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 bounds.push([item.lat, item.lng]);
 
                 const customIcon = L.divIcon({
-                    className: 'custom-map-div-icon',
-                    html: `<div class="custom-map-price-badge">${item.price}</div>`,
-                    iconSize: [80, 32],
-                    iconAnchor: [40, 16]
+                    className: 'custom-map-property-pin',
+                    html: `
+                        <div class="map-pin-pulse-wrapper" title="${item.name || ''}">
+                            <div class="map-pin-pulse"></div>
+                            <div class="map-pin-icon-box">
+                                <i class="fas fa-home"></i>
+                            </div>
+                        </div>
+                    `,
+                    iconSize: [44, 44],
+                    iconAnchor: [22, 38],
+                    popupAnchor: [0, -36]
                 });
 
                 const marker = L.marker([item.lat, item.lng], { icon: customIcon });
 
+                let specsHtml = '';
+                if (item.rooms || item.square || item.floor) {
+                    specsHtml = `
+                        <div class="map-popup-specs">
+                            ${item.rooms ? `<span><i class="fas fa-door-open" style="color: #0084ff;"></i> ${item.rooms} xona</span>` : ''}
+                            ${item.square ? `<span><i class="fas fa-ruler-combined" style="color: #10b981;"></i> ${item.square} m²</span>` : ''}
+                            ${item.floor ? `<span><i class="fas fa-building" style="color: #f59e0b;"></i> ${item.floor}-qavat</span>` : ''}
+                        </div>
+                    `;
+                }
+
                 const popupHtml = `
                     <div class="map-popup-card">
-                        <img src="${item.image}" class="map-popup-img" onerror="this.src='/images/hero.png'">
-                        <div class="map-popup-price">${item.price}</div>
-                        <div class="map-popup-title">${item.name}</div>
-                        <div class="map-popup-meta">
-                            <i class="fas fa-location-dot" style="color: #ef4444;"></i>
-                            <span>${item.region || ''}, ${item.city || ''}</span>
+                        <div class="map-popup-img-wrap">
+                            <img src="${item.image}" class="map-popup-img" alt="${item.name || 'Property'}" onerror="this.src='/images/hero.png'">
+                            <span class="map-popup-badge">${item.category || 'Sotuv'}</span>
                         </div>
-                        <a href="${item.url}" class="map-popup-btn" target="_blank">E'lonni ochish</a>
+                        <div class="map-popup-body">
+                            <div class="map-popup-price">${item.price}</div>
+                            <div class="map-popup-title">${item.name}</div>
+                            ${specsHtml}
+                            <div class="map-popup-meta">
+                                <i class="fas fa-location-dot" style="color: #ef4444;"></i>
+                                <span>${item.region || ''}${item.city ? ', ' + item.city : ''}</span>
+                            </div>
+                            <a href="${item.url}" class="map-popup-btn" target="_blank">E'lonni ko'rish</a>
+                        </div>
                     </div>
                 `;
 
-                marker.bindPopup(popupHtml);
+                marker.bindPopup(popupHtml, {
+                    maxWidth: 260,
+                    minWidth: 240,
+                    className: 'custom-estora-leaflet-popup'
+                });
                 markersLayer.addLayer(marker);
             }
         });
