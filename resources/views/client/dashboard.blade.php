@@ -508,6 +508,10 @@
                                 <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl">
                                     <i class="fa-solid fa-check"></i> Email tasdiqlangan
                                 </span>
+                            @elseif(empty(Auth::user()->email))
+                                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}#email" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
+                                    <i class="fa-solid fa-plus-circle"></i> Email kiritish
+                                </a>
                             @else
                                 <button type="button" onclick="openEmailVerificationModal()" class="inline-flex items-center gap-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-extrabold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-xs animate-pulse">
                                     <i class="fa-solid fa-envelope"></i> Emailni tasdiqlash
@@ -549,7 +553,7 @@
                                 <p class="text-xs text-slate-300 font-medium flex items-center gap-2">
                                     <span>&#64;{{ Auth::user()->username ?? 'foydalanuvchi' }}</span>
                                     <span>&bull;</span>
-                                    <span>{{ Auth::user()->email }}</span>
+                                    <span>{{ Auth::user()->email ?: 'Email kiritilmagan' }}</span>
                                 </p>
 
                                 <div class="text-[11px] text-slate-400 pt-0.5">
@@ -618,30 +622,55 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- ROW 1: Ism-Familiya va Username -->
+                        <!-- ROW 1: Ism va Familiya -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Name -->
+                            <!-- First Name -->
                             <div class="space-y-1.5">
-                                <label for="name" class="block text-xs font-extrabold text-slate-700">
-                                    Ism va Familiya <span class="text-red-500">*</span>
+                                <label for="first_name" class="block text-xs font-extrabold text-slate-700">
+                                    Ism <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                         <i class="fa-regular fa-user text-sm"></i>
                                     </div>
                                     <input type="text" 
-                                           id="name" 
-                                           name="name" 
-                                           value="{{ old('name', Auth::user()->name) }}" 
+                                           id="first_name" 
+                                           name="first_name" 
+                                           value="{{ old('first_name', Auth::user()->first_name) }}" 
                                            required 
-                                           placeholder="Masalan: Akmaljon Toshmatov" 
-                                           class="w-full bg-slate-50 border @error('name') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                           placeholder="Masalan: Nodirjon" 
+                                           class="w-full bg-slate-50 border @error('first_name') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
                                 </div>
-                                @error('name')
+                                @error('first_name')
                                     <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
+                            <!-- Last Name -->
+                            <div class="space-y-1.5">
+                                <label for="last_name" class="block text-xs font-extrabold text-slate-700">
+                                    Familiya <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-regular fa-user text-sm"></i>
+                                    </div>
+                                    <input type="text" 
+                                           id="last_name" 
+                                           name="last_name" 
+                                           value="{{ old('last_name', Auth::user()->last_name) }}" 
+                                           required 
+                                           placeholder="Masalan: Xamidov" 
+                                           class="w-full bg-slate-50 border @error('last_name') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
+                                </div>
+                                @error('last_name')
+                                    <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: Username va Email -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Username -->
                             <div class="space-y-1.5">
                                 <label for="username" class="block text-xs font-extrabold text-slate-700">
@@ -656,31 +685,32 @@
                                            name="username" 
                                            value="{{ old('username', Auth::user()->username) }}" 
                                            required 
-                                           placeholder="Masalan: akmal_makler" 
+                                           placeholder="Masalan: nodirjon_xamidov" 
                                            class="w-full bg-slate-50 border @error('username') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
                                 </div>
                                 @error('username')
                                     <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
 
-                        <!-- ROW 2: Email va Telefon -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Email -->
                             <div class="space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <label for="email" class="block text-xs font-extrabold text-slate-700">
                                         Elektron pochta (Email) <span class="text-red-500">*</span>
                                     </label>
-                                    @if(Auth::user()->email_verified_at)
+                                    @if(Auth::user()->email && Auth::user()->email_verified_at)
                                         <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                             <i class="fa-solid fa-circle-check"></i> Tasdiqlangan
                                         </span>
-                                    @else
+                                    @elseif(Auth::user()->email)
                                         <button type="button" onclick="openEmailVerificationModal()" class="text-[10px] font-black text-amber-700 bg-amber-50 border border-amber-300 hover:bg-amber-100 px-2 py-0.5 rounded-full inline-flex items-center gap-1 cursor-pointer">
                                             <i class="fa-solid fa-triangle-exclamation"></i> Tasdiqlanmagan (Kod olish)
                                         </button>
+                                    @else
+                                        <span class="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-exclamation"></i> Kiritilmagan
+                                        </span>
                                     @endif
                                 </div>
                                 <div class="relative">
@@ -691,15 +721,20 @@
                                            id="email" 
                                            name="email" 
                                            value="{{ old('email', Auth::user()->email) }}" 
-                                           required 
-                                           placeholder="Masalan: akmal@example.uz" 
+                                           placeholder="Masalan: nodirjon@example.uz" 
                                            class="w-full bg-slate-50 border @error('email') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
                                 </div>
+                                <p class="text-[11px] text-blue-600 font-semibold mt-1">
+                                    <i class="fa-solid fa-circle-info mr-1"></i> E'lon/uy joylashtirish uchun emailingizni kiriting, saqlang va tasdiqlang.
+                                </p>
                                 @error('email')
                                     <p class="text-xs text-red-600 font-bold mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+                        </div>
 
+                        <!-- ROW 3: Telefon -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Phone -->
                             <div class="space-y-1.5">
                                 <label for="phone" class="block text-xs font-extrabold text-slate-700">
@@ -965,7 +1000,7 @@
                             <p class="text-xs text-slate-400 font-medium flex items-center gap-2">
                                 <span>&#64;{{ Auth::user()->username ?? 'user' }}</span>
                                 <span>&bull;</span>
-                                <span>{{ Auth::user()->email }}</span>
+                                <span>{{ Auth::user()->email ?: 'Email kiritilmagan' }}</span>
                             </p>
 
                             <div class="text-[11px] text-slate-400">
@@ -1504,7 +1539,13 @@ function closeEmailVerificationModal() {
 }
 
 function handleBlockedAdCreation() {
-    @if(!$verificationStatus['email_verified'])
+    @if(empty(Auth::user()->email))
+        window.location.href = "{{ route('client.dashboard', ['section' => 'my_page']) }}#email";
+        setTimeout(() => {
+            const el = document.getElementById('email');
+            if (el) { el.scrollIntoView({ behavior: 'smooth' }); el.focus(); }
+        }, 300);
+    @elseif(!$verificationStatus['email_verified'])
         openEmailVerificationModal();
     @else
         window.location.href = "{{ route('client.dashboard', ['section' => 'my_page']) }}#passport-field";
@@ -1641,36 +1682,53 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <h3 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 6px;">Elektron pochtani tasdiqlash</h3>
-        <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px;">
-            Tasdiqlash kodi <strong>notifications@estora.uz</strong> orqali quyidagi pochtaga yuboriladi:<br>
-            <span style="font-weight: 800; color: #0066FF; font-family: monospace;">{{ Auth::user()->email }}</span>
-        </p>
+        
+        @if(empty(Auth::user()->email))
+            <p style="font-size: 13px; color: #dc2626; font-weight: 700; line-height: 1.5; margin-bottom: 16px;">
+                Siz hali profilingizda elektron pochta manzilingizni kiritmagansiz.
+            </p>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 16px; padding: 14px; margin-bottom: 20px; text-align: left;">
+                <p style="font-size: 12px; color: #991b1b; font-weight: 600; line-height: 1.5;">
+                    <i class="fa-solid fa-circle-info" style="margin-right: 6px;"></i> E'lon qo'shish uchun avval profilingizda emailingizni kiriting va "Saqlash" tugmasini bosing.
+                </p>
+            </div>
+            <div>
+                <button type="button" onclick="closeEmailVerificationModal(); const el = document.getElementById('email'); if(el) { el.scrollIntoView({behavior: 'smooth'}); el.focus(); }" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);">
+                    <i class="fa-solid fa-pen"></i> Emailni kiritishga o'tish
+                </button>
+            </div>
+        @else
+            <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px;">
+                Tasdiqlash kodi <strong>notifications@estora.uz</strong> orqali quyidagi pochtaga yuboriladi:<br>
+                <span style="font-weight: 800; color: #0066FF; font-family: monospace;">{{ Auth::user()->email }}</span>
+            </p>
 
-        <!-- Dynamic Status Alert Box -->
-        <div id="verify-alert-box" class="hidden"></div>
+            <!-- Dynamic Status Alert Box -->
+            <div id="verify-alert-box" class="hidden"></div>
 
-        <!-- Action Step 1: Send Code Button -->
-        <div style="margin-bottom: 20px;">
-            <button type="button" id="btn-send-code" onclick="sendVerificationEmailCode()" style="width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3); transition: all 0.2s;">
-                <i class="fa-solid fa-paper-plane"></i> Kodni yuborish
-            </button>
-        </div>
+            <!-- Action Step 1: Send Code Button -->
+            <div style="margin-bottom: 20px;">
+                <button type="button" id="btn-send-code" onclick="sendVerificationEmailCode()" style="width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 13px; background: #0066FF; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3); transition: all 0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i> Kodni yuborish
+                </button>
+            </div>
 
-        <!-- Action Step 2: Enter 6-digit Code -->
-        <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: left;">
-            <label for="verify-code-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
-                6 xonali tasdiqlash kodi:
-            </label>
-            <input type="text" 
-                   id="verify-code-input" 
-                   maxlength="6" 
-                   placeholder="------" 
-                   style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 22px; font-weight: 900; letter-spacing: 12px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
-            
-            <button type="button" id="btn-verify-submit" onclick="submitEmailVerificationCode()" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #10b981; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); transition: all 0.2s;">
-                <i class="fa-solid fa-check"></i> Kodni tasdiqlash
-            </button>
-        </div>
+            <!-- Action Step 2: Enter 6-digit Code -->
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: left;">
+                <label for="verify-code-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+                    6 xonali tasdiqlash kodi:
+                </label>
+                <input type="text" 
+                       id="verify-code-input" 
+                       maxlength="6" 
+                       placeholder="------" 
+                       style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 22px; font-weight: 900; letter-spacing: 12px; text-align: center; color: #0f172a; font-family: monospace; outline: none; margin-bottom: 16px; background: #f8fafc;">
+                
+                <button type="button" id="btn-verify-submit" onclick="submitEmailVerificationCode()" style="width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 13.5px; background: #10b981; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); transition: all 0.2s;">
+                    <i class="fa-solid fa-check"></i> Kodni tasdiqlash
+                </button>
+            </div>
+        @endif
     </div>
 </div>
 

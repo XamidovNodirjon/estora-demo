@@ -25,14 +25,41 @@ class UpdateProfileRequest extends FormRequest
         $userId = Auth::id();
 
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
+            'first_name' => 'nullable|string|max:100',
+            'last_name' => 'nullable|string|max:100',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $userId,
             'username' => 'required|string|max:255|alpha_dash|unique:users,username,' . $userId,
             'phone' => 'nullable|string|max:30|unique:users,phone,' . $userId,
             'passport' => 'nullable|string|min:7|max:20|unique:users,passport,' . $userId,
             'jshshir' => 'nullable|string|size:14|regex:/^[0-9]{14}$/|unique:users,jshshir,' . $userId,
             'password' => 'nullable|string|min:6|confirmed',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $firstName = trim($this->first_name ?? '');
+        $lastName = trim($this->last_name ?? '');
+        $name = trim($this->name ?? '');
+
+        if (empty($name) && ($firstName || $lastName)) {
+            $name = trim("{$firstName} {$lastName}");
+        }
+
+        $merge = [];
+        if ($name) {
+            $merge['name'] = $name;
+        }
+        if ($this->has('passport') && $this->passport) {
+            $merge['passport'] = strtoupper(trim($this->passport));
+        }
+        if ($this->has('jshshir') && $this->jshshir) {
+            $merge['jshshir'] = trim($this->jshshir);
+        }
+        if (!empty($merge)) {
+            $this->merge($merge);
+        }
     }
 
     /**

@@ -27,6 +27,13 @@ class EmailVerificationController extends Controller
             ], 401);
         }
 
+        if (empty($user->email)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Elektron pochtangiz kiritilmagan. Iltimos, profilingizda pochtangizni saqlang.'
+            ], 422);
+        }
+
         if ($user->email_verified_at) {
             return response()->json([
                 'success' => true,
