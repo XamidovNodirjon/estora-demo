@@ -21,7 +21,7 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:6|confirmed',
             'passport' => 'nullable|string|max:20',
             'jshshir' => 'nullable|string|max:20',
-            'role' => 'nullable|string|in:client,makler',
+            'role' => 'nullable|string|in:client,owner,makler,hotel,builder',
         ];
     }
 
@@ -38,6 +38,7 @@ class RegisterRequest extends FormRequest
             'password.required' => 'Parol kiritilishi shart',
             'password.min' => 'Parol kamida 6 ta belgidan iborat bo\'lishi shart',
             'password.confirmed' => 'Parollar mos kelmadi',
+            'role.in' => 'Noto\'g\'ri foydalanuvchi toifasi tanlandi',
         ];
     }
 }

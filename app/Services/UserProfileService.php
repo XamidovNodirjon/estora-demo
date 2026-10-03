@@ -30,6 +30,11 @@ class UserProfileService
             unset($data['password']);
         }
 
+        // If email was changed, reset email verification timestamp
+        if (isset($data['email']) && strtolower(trim($data['email'])) !== strtolower(trim($user->email))) {
+            $data['email_verified_at'] = null;
+        }
+
         $this->userRepository->update($user, $data);
 
         return $user->fresh();

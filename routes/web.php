@@ -225,8 +225,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
     });
 
-    // Client & Makler Dashboard
-    Route::middleware('role:client,makler')->group(function () {
+    // Email Verification Routes (Auth required)
+    Route::post('/email/send-code', [\App\Http\Controllers\EmailVerificationController::class, 'sendCode'])->name('email.send-code');
+    Route::post('/email/verify-code', [\App\Http\Controllers\EmailVerificationController::class, 'verifyCode'])->name('email.verify-code');
+
+    // Client, Owner, Makler, Hotel, Builder Dashboard
+    Route::middleware('role:client,makler,owner,hotel,builder')->group(function () {
         Route::get('/client/dashboard', [DashboardController::class, 'client'])->name('client.dashboard');
         Route::put('/client/profile', [\App\Http\Controllers\ClientProfileController::class, 'update'])->name('client.profile.update');
         
