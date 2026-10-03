@@ -77,8 +77,193 @@
     </div>
 </footer>
 
-<!-- Floating Support Widget (Image 3) -->
-<a href="tel:+998951606446" class="support-widget-exact" title="Mijozlarni qo'llab-quvvatlash">
+<!-- Floating Support Widget Button -->
+<button type="button" onclick="openSupportModal()" class="support-widget-exact" title="Mijozlarni qo'llab-quvvatlash" aria-label="Murojaat qoldirish">
     <i class="fas fa-comment-dots" style="font-size: 16px;"></i>
     <span>Savollaringiz bormi? Biz aloqadamiz.</span>
-</a>
+</button>
+
+<!-- Animated Support / Inquiry Modal -->
+<div id="supportModalOverlay" class="support-modal-overlay" onclick="handleSupportBackdropClick(event)">
+    <div class="support-modal-card" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="support-modal-header">
+            <div class="support-modal-title-group">
+                <div class="support-modal-icon-badge">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div>
+                    <h3 class="support-modal-title">Savollaringiz bormi?</h3>
+                    <p class="support-modal-subtitle">Ma'lumotlaringizni qoldiring, mutaxassislarimiz tez orada siz bilan bog'lanishadi.</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeSupportModal()" class="btn-support-modal-close" title="Yopish" aria-label="Yopish">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Success Alert (Hidden by default) -->
+        <div id="supportSuccessAlert" class="support-modal-success" style="display: none;">
+            <div class="support-success-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h4>Rahmat! Murojaatingiz qabul qilindi.</h4>
+            <p>Mutaxassislarimiz tez orada siz qoldirgan telefon raqam orqali bog'lanishadi.</p>
+            <button type="button" onclick="closeSupportModal()" class="btn-support-success-close">Tushunarli</button>
+        </div>
+
+        <!-- Form Body -->
+        <form id="supportInquiryForm" onsubmit="submitSupportInquiry(event)" class="support-modal-form">
+            @csrf
+            <!-- Name Field -->
+            <div class="support-form-field">
+                <label for="inquiry_name">Ismingiz</label>
+                <div class="support-input-wrap">
+                    <i class="fa-regular fa-user support-input-icon"></i>
+                    <input type="text" id="inquiry_name" name="name" placeholder="Masalan: Nodirbek" class="support-input" autocomplete="name">
+                </div>
+            </div>
+
+            <!-- Phone Field -->
+            <div class="support-form-field">
+                <label for="inquiry_phone">Telefon raqamingiz <span class="required-star">*</span></label>
+                <div class="support-input-wrap">
+                    <i class="fa-solid fa-phone support-input-icon"></i>
+                    <input type="tel" id="inquiry_phone" name="phone" required placeholder="+998 90 123 45 67" class="support-input" autocomplete="tel">
+                </div>
+            </div>
+
+            <!-- Description Field -->
+            <div class="support-form-field">
+                <label for="inquiry_description">Savol yoki murojaatingiz matni</label>
+                <div class="support-input-wrap">
+                    <i class="fa-regular fa-comment-dots support-input-icon support-textarea-icon"></i>
+                    <textarea id="inquiry_description" name="description" rows="3" placeholder="Sizni qanday mulk yoki xizmat qiziqtiryapti? Yozib qoldiring..." class="support-input support-textarea"></textarea>
+                </div>
+            </div>
+
+            <!-- Error message container -->
+            <div id="supportFormError" class="support-form-error" style="display: none;"></div>
+
+            <!-- Action Buttons -->
+            <div class="support-modal-actions">
+                <button type="submit" id="supportSubmitBtn" class="btn-support-submit">
+                    <span class="btn-text">Murojaatni yuborish</span>
+                    <i class="fa-solid fa-paper-plane btn-icon"></i>
+                </button>
+            </div>
+
+            <!-- Quick Direct Call -->
+            <div class="support-direct-call">
+                <span>yoki to'g'ridan-to'g'ri qo'ng'iroq qiling:</span>
+                <a href="tel:+998951606446"><i class="fa-solid fa-phone"></i> +998 (95) 160 64-46</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openSupportModal() {
+        const overlay = document.getElementById('supportModalOverlay');
+        const form = document.getElementById('supportInquiryForm');
+        const successAlert = document.getElementById('supportSuccessAlert');
+        const errorDiv = document.getElementById('supportFormError');
+
+        if (errorDiv) errorDiv.style.display = 'none';
+        if (form) form.style.display = 'flex';
+        if (successAlert) successAlert.style.display = 'none';
+
+        if (overlay) {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                const phoneInput = document.getElementById('inquiry_phone');
+                if (phoneInput) phoneInput.focus();
+            }, 200);
+        }
+    }
+
+    function closeSupportModal() {
+        const overlay = document.getElementById('supportModalOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function handleSupportBackdropClick(e) {
+        if (e.target.id === 'supportModalOverlay') {
+            closeSupportModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSupportModal();
+        }
+    });
+
+    async function submitSupportInquiry(e) {
+        e.preventDefault();
+
+        const form = document.getElementById('supportInquiryForm');
+        const submitBtn = document.getElementById('supportSubmitBtn');
+        const errorDiv = document.getElementById('supportFormError');
+        const successAlert = document.getElementById('supportSuccessAlert');
+        const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+
+        if (!form) return;
+
+        const phoneVal = form.phone ? form.phone.value.trim() : '';
+        if (!phoneVal) {
+            if (errorDiv) {
+                errorDiv.textContent = 'Iltimos, telefon raqamingizni kiriting.';
+                errorDiv.style.display = 'block';
+            }
+            return;
+        }
+
+        // Loading state
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            if (btnText) btnText.textContent = 'Yuborilmoqda...';
+        }
+        if (errorDiv) errorDiv.style.display = 'none';
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch("{{ route('inquiries.store') }}", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                form.reset();
+                form.style.display = 'none';
+                if (successAlert) {
+                    successAlert.style.display = 'flex';
+                }
+            } else {
+                if (errorDiv) {
+                    errorDiv.textContent = data.message || 'Xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        } catch (err) {
+            // Fallback for non-ajax or standard post
+            form.submit();
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                if (btnText) btnText.textContent = 'Murojaatni yuborish';
+            }
+        }
+    }
+</script>

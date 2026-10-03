@@ -12,7 +12,7 @@ class AdminInquiryController extends Controller
      */
     public function index()
     {
-        $inquiries = Inquiry::latest()->paginate(10);
+        $inquiries = Inquiry::orderBy('created_at', 'desc')->paginate(15);
         return view('admin.inquiries.index', compact('inquiries'));
     }
 
