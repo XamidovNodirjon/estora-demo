@@ -97,6 +97,11 @@
                 <span>Murojaatlar</span>
             </a>
 
+            <a href="{{ route('admin.sms-notifications.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('admin.sms-notifications*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
+                <i class="fa-solid fa-comment-sms text-lg"></i>
+                <span>SMS Habarnomalar</span>
+            </a>
+
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
                 <i class="fa-solid fa-file-signature text-lg"></i>
                 <span>Shartnomalar</span>

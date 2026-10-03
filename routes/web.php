@@ -179,6 +179,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/developer/product-items', [\App\Http\Controllers\DeveloperProductItemController::class, 'store'])->name('developer.product-items.store');
         Route::put('/developer/product-items/{productItem}', [\App\Http\Controllers\DeveloperProductItemController::class, 'update'])->name('developer.product-items.update');
         Route::delete('/developer/product-items/{productItem}', [\App\Http\Controllers\DeveloperProductItemController::class, 'destroy'])->name('developer.product-items.delete');
+
+        // SMS Notifications & USMS Balance
+        Route::get('/developer/sms-notifications', [\App\Http\Controllers\SmsNotificationController::class, 'developerIndex'])->name('developer.sms-notifications.index');
+        Route::post('/developer/sms-notifications/balance', [\App\Http\Controllers\SmsNotificationController::class, 'refreshBalance'])->name('developer.sms-notifications.balance');
     });
 
     // Admin & Staff Dashboard
@@ -230,10 +234,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'update'])->name('admin.product-items.update');
         Route::delete('/admin/product-items/{productItem}', [\App\Http\Controllers\AdminProductItemController::class, 'destroy'])->name('admin.product-items.delete');
 
-        // Inquiries management
         Route::get('/admin/inquiries', [\App\Http\Controllers\AdminInquiryController::class, 'index'])->name('admin.inquiries.index');
         Route::get('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'show'])->name('admin.inquiries.show');
         Route::put('/admin/inquiries/{inquiry}', [\App\Http\Controllers\AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
+
+        // SMS Notifications & USMS Balance
+        Route::get('/admin/sms-notifications', [\App\Http\Controllers\SmsNotificationController::class, 'adminIndex'])->name('admin.sms-notifications.index');
+        Route::post('/admin/sms-notifications/balance', [\App\Http\Controllers\SmsNotificationController::class, 'refreshBalance'])->name('admin.sms-notifications.balance');
     });
 
     // Email Verification Routes (Auth required)

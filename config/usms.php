@@ -15,7 +15,8 @@ return [
     'secret'      => env('USMS_SECRET', 'SMSTest2026'),
     'template_id' => (int) env('USMS_TEMPLATE_ID', 101),
     'from'        => env('USMS_FROM', '4546'),
-    'base_url'    => 'https://usms.uz/api/v1/send',
+    'base_url'    => env('USMS_BASE_URL', 'https://usms.uz/api/v1/send'),
+    'balance_url' => env('USMS_BALANCE_URL', 'https://usms.uz/api/v1/balance'),
 
     /**
      * Mock mode: agar true bo'lsa haqiqiy SMS yuborilmaydi,
