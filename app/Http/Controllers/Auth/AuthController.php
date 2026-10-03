@@ -20,9 +20,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    /**
-     * Show the login form.
-     */
     public function showLogin()
     {
         if (Auth::check()) {
@@ -31,27 +28,18 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Handle login request.
-     */
     public function login(LoginRequest $request)
     {
         $credentials = $request->validated();
 
         if ($this->authService->login($credentials)) {
             session()->forget('url.intended');
-            return redirect()->route('dashboard')
-                ->with('success', 'Tizimga muvaffaqiyatli kirdingiz!');
+            return redirect()->route('dashboard')->with('success', 'Tizimga muvaffaqiyatli kirdingiz!');
         }
 
-        return back()->withErrors([
-            'login' => 'Kiritilgan ma\'lumotlar noto\'g\'ri.',
-        ])->withInput($request->only('login'));
+        return back()->withErrors(['login' => 'Kiritilgan ma\'lumotlar noto\'g\'ri.'])->withInput($request->only('login'));
     }
 
-    /**
-     * Show the registration form.
-     */
     public function showRegister()
     {
         if (Auth::check()) {
@@ -60,15 +48,11 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Handle registration request.
-     */
     public function register(RegisterRequest $request)
     {
         $dto = RegisterDto::fromArray($request->validated());
         $user = $this->authService->register($dto);
 
-        // Auto-login after registration
         Auth::login($user);
         session()->forget(['url.intended', 'verified_phone', 'verified_token']);
 
@@ -76,9 +60,6 @@ class AuthController extends Controller
             ->with('success', 'Ro\'yxatdan muvaffaqiyatli o\'tdingiz!');
     }
 
-    /**
-     * Handle logout request.
-     */
     public function logout()
     {
         $this->authService->logout();

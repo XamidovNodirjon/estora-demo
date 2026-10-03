@@ -18,18 +18,12 @@ class AdminCategoryController extends Controller
         protected AdminCategoryService $adminCategoryService
     ) {}
 
-    /**
-     * Display a listing of categories and subcategories.
-     */
     public function index()
     {
         $categories = $this->adminCategoryService->getCategories();
         return view('admin.categories.index', compact('categories'));
     }
 
-    /**
-     * Store a newly created category.
-     */
     public function storeCategory(StoreAdminCategoryRequest $request)
     {
         $dto = CategoryDto::fromArray($request->validated());
@@ -39,17 +33,11 @@ class AdminCategoryController extends Controller
             ->with('success', 'Kategoriya muvaffaqiyatli yaratildi!');
     }
 
-    /**
-     * Show the form for editing the category.
-     */
     public function editCategory(Category $category)
     {
         return view('admin.categories.edit', compact('category'));
     }
 
-    /**
-     * Update the category.
-     */
     public function updateCategory(UpdateAdminCategoryRequest $request, Category $category)
     {
         $dto = CategoryDto::fromArray($request->validated());
@@ -59,9 +47,6 @@ class AdminCategoryController extends Controller
             ->with('success', 'Kategoriya muvaffaqiyatli yangilandi!');
     }
 
-    /**
-     * Delete the category.
-     */
     public function deleteCategory(Category $category)
     {
         $this->adminCategoryService->deleteCategory($category);
@@ -70,9 +55,6 @@ class AdminCategoryController extends Controller
             ->with('success', 'Kategoriya va uning barcha sub-kategoriyalari o\'chirildi!');
     }
 
-    /**
-     * Store a newly created subcategory.
-     */
     public function storeSubCategory(StoreAdminSubCategoryRequest $request)
     {
         $dto = SubCategoryDto::fromArray($request->validated());
@@ -82,18 +64,12 @@ class AdminCategoryController extends Controller
             ->with('success', 'Sub-kategoriya muvaffaqiyatli yaratildi!');
     }
 
-    /**
-     * Show the form for editing the subcategory.
-     */
     public function editSubCategory(SubCategory $subCategory)
     {
         $categories = $this->adminCategoryService->getAllCategoriesOnly();
         return view('admin.subcategories.edit', compact('subCategory', 'categories'));
     }
 
-    /**
-     * Update the subcategory.
-     */
     public function updateSubCategory(UpdateAdminSubCategoryRequest $request, SubCategory $subCategory)
     {
         $dto = SubCategoryDto::fromArray($request->validated());
@@ -103,9 +79,6 @@ class AdminCategoryController extends Controller
             ->with('success', 'Sub-kategoriya muvaffaqiyatli yangilandi!');
     }
 
-    /**
-     * Delete the subcategory.
-     */
     public function deleteSubCategory(SubCategory $subCategory)
     {
         $this->adminCategoryService->deleteSubCategory($subCategory);
