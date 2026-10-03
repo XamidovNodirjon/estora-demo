@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Route;
 // Welcome page
 Route::get('/', function () {
     $regions = \App\Models\Region::with('cities')->get();
+    $metros = \App\Models\Metro::orderBy('name')->get();
+    $universities = \App\Models\University::orderBy('name')->get();
+    $categories = \App\Models\Category::whereNotIn('name', ['admin'])->get();
+    $propertyTypes = \App\Models\SubCategory::whereNotIn('name', ['nimadir', 'sadjasd', 'test 1 sub', '322'])
+        ->select('name')
+        ->distinct()
+        ->pluck('name');
+
     $mapProducts = \App\Models\Product::with(['category', 'subCategory', 'region', 'city'])
         ->where('status', 'active')
         ->get()
@@ -33,7 +41,7 @@ Route::get('/', function () {
             ];
         });
 
-    $topProducts = \App\Models\Product::with(['category', 'subCategory', 'region', 'city', 'metros'])
+    $topProducts = \App\Models\Product::with(['category', 'subCategory', 'region', 'city', 'metros', 'universities', 'items'])
         ->where('status', 'active')
         ->where('is_top', true)
         ->latest()
@@ -69,7 +77,9 @@ Route::get('/', function () {
         ];
     });
 
-    return view('welcome', compact('regions', 'mapProducts', 'topProducts', 'regionAnalytics'));
+    $totalActiveProductsCount = $allActiveProducts->count();
+
+    return view('welcome', compact('regions', 'metros', 'universities', 'categories', 'propertyTypes', 'mapProducts', 'topProducts', 'regionAnalytics', 'totalActiveProductsCount'));
 });
 
 Route::get('/maniDashboard', [\App\Http\Controllers\SearchController::class, 'maniDashboard'])->name('maniDashboard');

@@ -49,6 +49,25 @@
             border-color: #0084ff;
             box-shadow: 0 0 15px rgba(0, 132, 255, 0.25);
         }
+
+        .form-label-uniform {
+            display: block;
+            height: 18px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 18px;
+        }
+
+        .form-input-uniform {
+            height: 44px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 py-12">
@@ -57,7 +76,7 @@
         <!-- Logo and Brand -->
         <div class="text-center mb-8">
             <a href="/" class="inline-flex items-center gap-2 mb-2 hover:opacity-90 transition-opacity" title="Bosh sahifa">
-                <img src="/images/logo-white.svg" alt="ESTORA Real Estate" class="h-12 w-auto object-contain mx-auto">
+                <img src="/images/logo-exact.png" alt="ESTORA Real Estate" class="h-12 w-auto object-contain mx-auto">
             </a>
             <p class="text-gray-400 text-sm">Ko'chmas mulkning yagona raqamli ekotizimi</p>
         </div>
@@ -116,105 +135,105 @@
                 <!-- Hidden input for role -->
                 <input type="hidden" name="role" id="role_input" value="{{ $currentRole }}">
 
-                <!-- Name & Username (Two columns) -->
+                <!-- Row 1: Name & Username -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="name" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Ism sharifingiz</label>
+                        <label for="name" class="form-label-uniform">Ism sharifingiz</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-regular fa-user"></i>
                             </span>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="Ali Valiyev">
                         </div>
                     </div>
                     <div>
-                        <label for="username" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Foydalanuvchi nomi (Username)</label>
+                        <label for="username" class="form-label-uniform">Foydalanuvchi nomi</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-solid fa-at"></i>
                             </span>
                             <input type="text" name="username" id="username" value="{{ old('username') }}" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="ali_valiyev">
                         </div>
                     </div>
                 </div>
 
-                <!-- Email & Phone (Two columns) -->
+                <!-- Row 2: Email & Phone -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="email" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Elektron pochta</label>
+                        <label for="email" class="form-label-uniform">Elektron pochta</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-regular fa-envelope"></i>
                             </span>
                             <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="example@mail.com">
                         </div>
                     </div>
                     <div>
-                        <label for="phone" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Telefon raqam</label>
+                        <label for="phone" class="form-label-uniform">Telefon raqam</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-solid fa-phone"></i>
                             </span>
                             <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="+998901234567">
                         </div>
                     </div>
                 </div>
 
-                <!-- Passport & JSHSHIR (Two columns, optional) -->
+                <!-- Row 3: Passport & JSHSHIR -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="passport" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Pasport seriyasi va raqami (Ixtiyoriy)</label>
+                        <label for="passport" class="form-label-uniform">Pasport seriyasi (Ixtiyoriy)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-regular fa-id-card"></i>
                             </span>
                             <input type="text" name="passport" id="passport" value="{{ old('passport') }}"
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="AA1234567">
                         </div>
                     </div>
                     <div>
-                        <label for="jshshir" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">JShShIR (Ixtiyoriy)</label>
+                        <label for="jshshir" class="form-label-uniform">JShShIR (Ixtiyoriy)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-solid fa-fingerprint"></i>
                             </span>
                             <input type="text" name="jshshir" id="jshshir" value="{{ old('jshshir') }}"
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="14 xonali raqam">
                         </div>
                     </div>
                 </div>
 
-                <!-- Password & Confirmation (Two columns) -->
+                <!-- Row 4: Password & Confirmation -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="password" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Mahfiy kalit (Parol)</label>
+                        <label for="password" class="form-label-uniform">Mahfiy kalit (Parol)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-solid fa-lock"></i>
                             </span>
                             <input type="password" name="password" id="password" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="Kamida 6 belgi">
                         </div>
                     </div>
                     <div>
-                        <label for="password_confirmation" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Tasdiqlash</label>
+                        <label for="password_confirmation" class="form-label-uniform">Parolni tasdiqlash</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                                 <i class="fa-solid fa-lock-open"></i>
                             </span>
                             <input type="password" name="password_confirmation" id="password_confirmation" required
-                                class="block w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
+                                class="form-input-uniform block w-full pl-10 pr-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#0084ff] focus:border-transparent transition-all text-sm"
                                 placeholder="Parolni takrorlang">
                         </div>
                     </div>
@@ -222,7 +241,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit"
-                    class="w-full py-3 px-4 mt-2 rounded-xl bg-[#0084ff] hover:bg-[#0076e5] text-white font-semibold text-sm transition-all shadow-lg hover:shadow-cyan-500/20 transform hover:-translate-y-0.5 active:translate-y-0">
+                    class="w-full py-3 px-4 mt-4 rounded-xl bg-[#0084ff] hover:bg-[#0076e5] text-white font-bold text-sm transition-all shadow-lg hover:shadow-cyan-500/25 transform hover:-translate-y-0.5 active:translate-y-0">
                     Ro'yxatdan o'tish
                 </button>
             </form>
