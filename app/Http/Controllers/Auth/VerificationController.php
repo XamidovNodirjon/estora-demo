@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendSmsJob;
+use App\Models\SmsNotification;
 use App\Models\User;
 use App\Services\UsmsService;
 use Illuminate\Http\JsonResponse;
@@ -148,16 +150,20 @@ class VerificationController extends Controller
         // Generate 5-digit code
         $code = (string) random_int(10000, 99999);
         $ttl  = (int) config('usms.code_ttl_seconds', 120);
+        $isMock = (bool) config('usms.mock_mode', false)
+            || empty(config('usms.login'))
+            || empty(config('usms.secret'));
 
-        // Send via USMS.uz
-        $result = $this->smsService->sendVerificationCode($formattedPhone, $code);
+        // SMS yozuvini yaratish (kutilmoqda holatida)
+        $smsRecord = SmsNotification::create([
+            'phone'   => $formattedPhone,
+            'code'    => $code,
+            'message' => "Tasdiqlash kodi: {$code}",
+            'status'  => 'pending',
+        ]);
 
-        if (!$result['success']) {
-            return response()->json([
-                'success' => false,
-                'message' => $result['message'] ?? 'SMS orqali kod yuborishda xatolik yuz berdi.',
-            ], 500);
-        }
+        // Send via Queue Job (tizim qotib qolmasligi uchun navbat bilan yuboriladi)
+        SendSmsJob::dispatch($formattedPhone, $code, $smsRecord->id);
 
         // Store code hash in Cache for 2 minutes (120 soniya)
         $cacheData = [
@@ -166,11 +172,11 @@ class VerificationController extends Controller
             'expires_at' => time() + $ttl,
             'attempts'   => 0,
         ];
-        if (isset($result['mock_code'])) {
-            $cacheData['mock_code'] = $result['mock_code'];
+        if ($isMock) {
+            $cacheData['mock_code'] = $code;
         }
         Cache::put($cacheKey, $cacheData, $ttl);
-        \Illuminate\Support\Facades\Log::info("[OTP SEND] Code generated for {$formattedPhone}: {$code}");
+        \Illuminate\Support\Facades\Log::info("[OTP SEND] Code queued for {$formattedPhone}: {$code}");
 
         // Set cooldown timer for 2 minutes
         $cooldown = (int) config('usms.resend_cooldown_seconds', 120);
@@ -179,16 +185,16 @@ class VerificationController extends Controller
         $response = [
             'success'           => true,
             'already_sent'      => false,
-            'message'           => 'Tasdiqlash SMS kodi yuborildi.',
+            'message'           => 'Tasdiqlash SMS kodi navbatga qo\'yildi va yuborilmoqda.',
             'phone'             => $formattedPhone,
             'remaining_seconds' => $ttl,
             'retry_after'       => $cooldown,
         ];
 
-        // Agar test (mock) rejimida bo'lsa, ishlab chiquvchiga qulaylik uchun kodni ko'rsatish
-        if (isset($result['mock_code'])) {
-            $response['mock_code'] = $result['mock_code'];
-            $response['message']  .= ' (Test kodi: ' . $result['mock_code'] . ')';
+        // Test (mock) rejimida bo'lsa, ishlab chiquvchiga qulaylik uchun kodni ko'rsatish
+        if ($isMock) {
+            $response['mock_code'] = $code;
+            $response['message']  .= ' (Test kodi: ' . $code . ')';
         }
 
         return response()->json($response);

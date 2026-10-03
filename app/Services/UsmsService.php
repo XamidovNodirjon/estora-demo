@@ -11,6 +11,7 @@ class UsmsService
     protected int    $templateId;
     protected string $from;
     protected string $baseUrl;
+    protected string $balanceUrl;
     protected bool   $isMock;
 
     public function __construct()
@@ -20,6 +21,7 @@ class UsmsService
         $this->templateId = (int)    config('usms.template_id', 0);
         $this->from       = (string) config('usms.from', '4546');
         $this->baseUrl    = (string) config('usms.base_url', 'https://usms.uz/api/v1/send');
+        $this->balanceUrl = (string) config('usms.balance_url', 'https://usms.uz/api/v1/balance');
         $this->isMock     = (bool)   config('usms.mock_mode', false)
                             || empty($this->login)
                             || empty($this->secret);
@@ -106,6 +108,109 @@ class UsmsService
         return [
             'success' => true,
             'message' => 'SMS kod muvaffaqiyatli yuborildi.',
+            'response' => $data ?? $response,
+        ];
+    }
+
+    /**
+     * Get account balance from USMS.uz API.
+     * URL: https://usms.uz/api/v1/balance
+     * Header: Authorization: Bearer login:secret
+     *
+     * @return array{success: bool, balance: float|int|null, formatted_balance: string, raw?: mixed, message?: string}
+     */
+    public function getBalance(): array
+    {
+        if ($this->isMock) {
+            return [
+                'success'           => true,
+                'balance'           => 50000,
+                'currency'          => 'UZS',
+                'formatted_balance' => "50 000 so'm (Test rejimi)",
+                'message'           => 'Balans muvaffaqiyatli olindi (Mock rejim).',
+                'is_mock'           => true,
+            ];
+        }
+
+        $headers = [
+            'Authorization: Bearer ' . $this->login . ':' . $this->secret,
+            'Accept: application/json',
+        ];
+
+        $ch = curl_init($this->balanceUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPGET        => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+
+        $response  = curl_exec($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            Log::error("[USMS Balance] Transport error: {$curlError}");
+            return [
+                'success'           => false,
+                'balance'           => null,
+                'formatted_balance' => "Noma'lum",
+                'message'           => "USMS serveriga ulanishda transport xatoligi yuz berdi: {$curlError}",
+            ];
+        }
+
+        $data = null;
+        try {
+            $data = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            // raw string
+        }
+
+        if ($httpCode !== 200) {
+            $errMsg = is_array($data) && isset($data['error']) 
+                ? (is_string($data['error']) ? $data['error'] : json_encode($data['error']))
+                : (is_array($data) && isset($data['message']) ? $data['message'] : "HTTP {$httpCode} xatoligi");
+
+            Log::warning("[USMS Balance] Error HTTP {$httpCode}: {$response}");
+            return [
+                'success'           => false,
+                'balance'           => null,
+                'formatted_balance' => "Noma'lum",
+                'message'           => "USMS balansini olishda xatolik ({$errMsg}). Login yoki Secret tekshiring.",
+                'raw'               => $data ?? $response,
+            ];
+        }
+
+        // USMS may return {"balance": 125000} or {"data": {"balance": 125000}} or {"amount": ...}
+        $balance = null;
+        if (is_array($data)) {
+            if (isset($data['balance'])) {
+                $balance = $data['balance'];
+            } elseif (isset($data['data']['balance'])) {
+                $balance = $data['data']['balance'];
+            } elseif (isset($data['amount'])) {
+                $balance = $data['amount'];
+            } elseif (isset($data['data']['amount'])) {
+                $balance = $data['data']['amount'];
+            }
+        } elseif (is_numeric(trim($response))) {
+            $balance = (float) trim($response);
+        }
+
+        $formatted = $balance !== null 
+            ? number_format((float)$balance, 0, '.', ' ') . " so'm"
+            : "Aniqlanmadi";
+
+        return [
+            'success'           => true,
+            'balance'           => $balance,
+            'currency'          => 'UZS',
+            'formatted_balance' => $formatted,
+            'message'           => "Balans muvaffaqiyatli yangilandi.",
+            'raw'               => $data,
         ];
     }
 
