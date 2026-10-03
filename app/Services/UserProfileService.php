@@ -31,7 +31,7 @@ class UserProfileService
         }
 
         // If email was changed, reset email verification timestamp
-        if (isset($data['email']) && strtolower(trim($data['email'])) !== strtolower(trim($user->email))) {
+        if (isset($data['email']) && strtolower(trim((string) $data['email'])) !== strtolower(trim((string) $user->email))) {
             $data['email_verified_at'] = null;
         }
 

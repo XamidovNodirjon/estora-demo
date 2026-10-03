@@ -6,8 +6,8 @@ class ProfileUpdateDto
 {
     public function __construct(
         public string $name,
-        public string $email,
-        public string $username,
+        public ?string $email = null,
+        public string $username = '',
         public ?string $phone = null,
         public ?string $passport = null,
         public ?string $jshshir = null,
@@ -18,7 +18,7 @@ class ProfileUpdateDto
     {
         return new self(
             name: $data['name'],
-            email: $data['email'],
+            email: $data['email'] ?? null,
             username: $data['username'],
             phone: $data['phone'] ?? null,
             passport: $data['passport'] ?? null,

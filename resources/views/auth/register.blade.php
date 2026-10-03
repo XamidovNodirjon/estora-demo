@@ -608,57 +608,43 @@
                     <!-- Dynamic Hidden Role Input -->
                     <input type="hidden" name="role" id="form_role_input" value="{{ old('role', 'client') }}">
 
-                    <!-- Row 1: Name & Username -->
+                    <!-- Row 1: Familiya & Ism -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label for="name" class="form-label-styled">Ism sharifingiz</label>
+                            <label for="last_name" class="form-label-styled">Familiyangiz</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
                                     <i class="fa-regular fa-user"></i>
                                 </span>
-                                <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}" required
                                     class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="Ali Valiyev">
+                                    placeholder="Xamidov">
                             </div>
                         </div>
 
                         <div>
-                            <label for="username" class="form-label-styled">Foydalanuvchi nomi</label>
+                            <label for="first_name" class="form-label-styled">Ismingiz</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-solid fa-at"></i>
+                                    <i class="fa-regular fa-user"></i>
                                 </span>
-                                <input type="text" name="username" id="username" value="{{ old('username') }}" required
+                                <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}" required
                                     class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="ali_valiyev">
+                                    placeholder="Nodirjon">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: Email & Phone -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label for="email" class="form-label-styled">Elektron pochta</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-regular fa-envelope"></i>
-                                </span>
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="example@mail.com">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="phone" class="form-label-styled">Telefon raqam</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
-                                    <i class="fa-solid fa-phone"></i>
-                                </span>
-                                <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
-                                    class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
-                                    placeholder="+998901234567">
-                            </div>
+                    <!-- Row 2: Phone -->
+                    <div>
+                        <label for="phone" class="form-label-styled">Telefon raqam</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
+                                class="form-input-styled block w-full pl-10 pr-3.5 rounded-xl text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none"
+                                placeholder="+998901234567">
                         </div>
                     </div>
                     <!-- Row 4: Password & Confirmation -->

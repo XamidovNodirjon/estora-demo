@@ -671,7 +671,7 @@
                             <div class="space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <label for="email" class="block text-xs font-extrabold text-slate-700">
-                                        Elektron pochta (Email) <span class="text-red-500">*</span>
+                                        Elektron pochta (Email)
                                     </label>
                                     @if(Auth::user()->email_verified_at)
                                         <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
@@ -691,7 +691,6 @@
                                            id="email" 
                                            name="email" 
                                            value="{{ old('email', Auth::user()->email) }}" 
-                                           required 
                                            placeholder="Masalan: akmal@example.uz" 
                                            class="w-full bg-slate-50 border @error('email') border-red-500 bg-red-50/30 @else border-slate-200 @enderror rounded-xl py-2.5 pl-10 pr-3 text-xs sm:text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
                                 </div>
@@ -1518,8 +1517,18 @@ function resetVerificationModalState() {
 }
 
 function sendVerificationEmailCode() {
+    const emailInput = document.getElementById('verify-email-input');
+    const email = emailInput ? emailInput.value.trim() : '';
     const sendBtn = document.getElementById('btn-send-code');
     const statusBox = document.getElementById('verify-alert-box');
+
+    if (!email) {
+        statusBox.classList.remove('hidden');
+        statusBox.className = 'text-xs p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold block mb-3';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Iltimos, elektron pochta manzilingizni kiriting.';
+        if (emailInput) emailInput.focus();
+        return;
+    }
     
     sendBtn.disabled = true;
     sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Kod yuborilmoqda...';
@@ -1530,7 +1539,8 @@ function sendVerificationEmailCode() {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({ email: email })
     })
     .then(res => res.json())
     .then(data => {
@@ -1641,13 +1651,26 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <h3 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 6px;">Elektron pochtani tasdiqlash</h3>
-        <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 20px;">
-            Tasdiqlash kodi <strong>notifications@estora.uz</strong> orqali quyidagi pochtaga yuboriladi:<br>
-            <span style="font-weight: 800; color: #0066FF; font-family: monospace;">{{ Auth::user()->email }}</span>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 16px;">
+            Profilingizni tasdiqlash uchun elektron pochta manzilingizni kiriting. Tasdiqlash kodi <strong>notifications@estora.uz</strong> orqali ushbu manzilga yuboriladi.
         </p>
 
         <!-- Dynamic Status Alert Box -->
         <div id="verify-alert-box" class="hidden"></div>
+
+        <!-- Email Input Field -->
+        <div style="margin-bottom: 16px; text-align: left;">
+            <label for="verify-email-input" style="display: block; font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px;">
+                Elektron pochta (Email):
+            </label>
+            <div style="position: relative;">
+                <input type="email" 
+                       id="verify-email-input" 
+                       value="{{ Auth::user()->email ?? '' }}" 
+                       placeholder="example@mail.com" 
+                       style="width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid #e2e8f0; font-size: 13.5px; font-weight: 700; color: #0f172a; outline: none; background: #f8fafc; transition: all 0.2s;">
+            </div>
+        </div>
 
         <!-- Action Step 1: Send Code Button -->
         <div style="margin-bottom: 20px;">

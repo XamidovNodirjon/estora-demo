@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EmailVerificationController extends Controller
 {
@@ -27,7 +29,37 @@ class EmailVerificationController extends Controller
             ], 401);
         }
 
-        if ($user->email_verified_at) {
+        $targetEmail = $request->input('email') ? trim($request->input('email')) : $user->email;
+
+        if (empty($targetEmail)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Elektron pochta manzilingizni kiriting.'
+            ], 422);
+        }
+
+        // Validate target email
+        $validator = Validator::make(['email' => $targetEmail], [
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+        ], [
+            'email.required' => 'Elektron pochta manzilingizni kiriting.',
+            'email.email' => 'Elektron pochta manzili noto\'g\'ri formatda.',
+            'email.unique' => 'Ushbu elektron pochta allaqachon boshqa foydalanuvchi tomonidan band qilingan.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first('email')
+            ], 422);
+        }
+
+        // Update email if different
+        if ($user->email !== $targetEmail) {
+            $user->email = $targetEmail;
+            $user->email_verified_at = null;
+            $user->save();
+        } elseif ($user->email_verified_at) {
             return response()->json([
                 'success' => true,
                 'already_verified' => true,

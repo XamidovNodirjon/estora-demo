@@ -14,9 +14,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'username' => 'required|string|max:255|unique:users|alpha_dash',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'passport' => 'nullable|string|max:20',
@@ -27,26 +26,29 @@ class RegisterRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $merges = [];
+        if ($this->has('first_name')) {
+            $merges['first_name'] = trim($this->first_name);
+        }
+        if ($this->has('last_name')) {
+            $merges['last_name'] = trim($this->last_name);
+        }
         if ($this->has('passport') && $this->passport) {
-            $this->merge([
-                'passport' => strtoupper(trim($this->passport)),
-            ]);
+            $merges['passport'] = strtoupper(trim($this->passport));
         }
         if ($this->has('jshshir') && $this->jshshir) {
-            $this->merge([
-                'jshshir' => trim($this->jshshir),
-            ]);
+            $merges['jshshir'] = trim($this->jshshir);
+        }
+        if (!empty($merges)) {
+            $this->merge($merges);
         }
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Ism kiritilishi shart',
-            'email.required' => 'Email kiritilishi shart',
-            'email.unique' => 'Bu email allaqachon ro\'yxatdan o\'tgan',
-            'username.required' => 'Username kiritilishi shart',
-            'username.unique' => 'Bu username allaqachon band qilingan',
+            'first_name.required' => 'Ism kiritilishi shart',
+            'last_name.required' => 'Familiya kiritilishi shart',
             'phone.required' => 'Telefon raqam kiritilishi shart',
             'phone.unique' => 'Bu telefon raqam allaqachon ro\'yxatdan o\'tgan',
             'password.required' => 'Parol kiritilishi shart',

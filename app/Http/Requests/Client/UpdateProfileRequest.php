@@ -26,7 +26,7 @@ class UpdateProfileRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $userId,
             'username' => 'required|string|max:255|alpha_dash|unique:users,username,' . $userId,
             'phone' => 'nullable|string|max:30|unique:users,phone,' . $userId,
             'passport' => 'nullable|string|min:7|max:20|unique:users,passport,' . $userId,
