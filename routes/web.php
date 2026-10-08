@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminUniversityController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\ClientProductController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperCategoryController;
@@ -119,6 +120,8 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::post('/products/{product}/reveal-phone', [ProductPhoneController::class, 'reveal'])->name('products.reveal-phone');
 Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 Route::get('/add-ad', function () {
     if (Auth::check()) {

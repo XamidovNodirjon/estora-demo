@@ -62,6 +62,11 @@
                         <span>Xaritadan ko'rish</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('contact') }}" class="nav-item {{ request()->routeIs('contact') ? 'active' : '' }}">
+                        <span>Aloqa</span>
+                    </a>
+                </li>
             </ul>
 
             <div class="nav-contacts">

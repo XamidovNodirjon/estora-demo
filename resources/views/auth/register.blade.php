@@ -418,12 +418,6 @@
                             <i class="fa-solid fa-chevron-left text-[11px]"></i>
                             <span>Hisob turini tanlash</span>
                         </button>
-
-                        <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-slate-700">
-                            <i class="fa-solid fa-globe text-[#0077FE]"></i>
-                            <span>O'zbekcha</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
-                        </div>
                     </div>
 
                     <!-- Title & Tagline -->

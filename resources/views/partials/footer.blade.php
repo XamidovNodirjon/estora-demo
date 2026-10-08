@@ -10,7 +10,7 @@
                 <li><a href="#guide">Qo'llanma</a></li>
                 <li><a href="#terms">Ommaviy oferta</a></li>
                 <li><a href="#partners">Hamkorlar</a></li>
-                <li><a href="#contact">Aloqa</a></li>
+                <li><a href="{{ route('contact') }}">Aloqa</a></li>
             </ul>
         </div>
     </div>
@@ -59,11 +59,11 @@
                     </div>
 
                     <div class="footer-social-row-exact">
-                        <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="https://facebook.com" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://youtube.com" target="_blank" rel="noopener" class="footer-social-btn-exact" title="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="https://t.me" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="https://x.com" target="_blank" rel="noopener" class="footer-social-btn-exact" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://instagram.com/estora_uz" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://facebook.com/estora_uz" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://youtube.com/@estora_uz" target="_blank" rel="noopener" class="footer-social-btn-exact" title="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://t.me/estora_uz" target="_blank" rel="noopener" class="footer-social-btn-exact" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="https://x.com/estora_uz" target="_blank" rel="noopener" class="footer-social-btn-exact" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
                     </div>
                 </div>
             </div>

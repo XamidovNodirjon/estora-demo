@@ -3,11 +3,11 @@
     <div class="container">
         <div class="top-bar-left">
             <div class="social-links">
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="social-icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://facebook.com" target="_blank" rel="noopener" class="social-icon-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://youtube.com" target="_blank" rel="noopener" class="social-icon-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://t.me" target="_blank" rel="noopener" class="social-icon-btn" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
-                <a href="https://x.com" target="_blank" rel="noopener" class="social-icon-btn" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://instagram.com/estora_uz" target="_blank" rel="noopener" class="social-icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/estora_uz" target="_blank" rel="noopener" class="social-icon-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://youtube.com/@estora_uz" target="_blank" rel="noopener" class="social-icon-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://t.me/estora_uz" target="_blank" rel="noopener" class="social-icon-btn" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                <a href="https://x.com/estora_uz" target="_blank" rel="noopener" class="social-icon-btn" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
             </div>
         </div>
         
