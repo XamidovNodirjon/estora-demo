@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Assignable;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use Assignable;
+
     protected $fillable = [
         'category_id',
         'subcategory_id',

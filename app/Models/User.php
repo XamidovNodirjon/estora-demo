@@ -59,6 +59,32 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
+    /**
+     * Leads assigned to this manager (polymorphic manager_assignments pivot).
+     */
+    public function assignedLeads()
+    {
+        return $this->morphedByMany(Lead::class, 'assignable', 'manager_assignments', 'manager_id')
+            ->withPivot('assigned_by')
+            ->withTimestamps();
+    }
+
+    /**
+     * Products (houses) assigned to this manager (polymorphic manager_assignments pivot).
+     */
+    public function assignedProducts()
+    {
+        return $this->morphedByMany(Product::class, 'assignable', 'manager_assignments', 'manager_id')
+            ->withPivot('assigned_by')
+            ->withTimestamps();
+    }
+
+    public function isManager(): bool
+    {
+        $roleName = $this->role?->name ?? $this->type;
+        return $roleName === 'manager';
+    }
+
     public function isMakler(): bool
     {
         $roleName = $this->role?->name ?? $this->type;

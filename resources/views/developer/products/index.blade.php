@@ -141,6 +141,18 @@
                                         <span>{{ $product->is_top ? 'TOPdan olish' : 'TOPga chiqarish' }}</span>
                                     </button>
 
+                                    <!-- Assign to Managers -->
+                                    <button type="button"
+                                            onclick="openAssignManagersModal(this)"
+                                            data-action="{{ route('developer.products.managers', $product->id) }}"
+                                            data-managers="{{ json_encode($product->managers->pluck('id')) }}"
+                                            data-name="{{ $product->name }}"
+                                            class="relative inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white rounded-lg text-xs font-bold transition-all shadow-2xs"
+                                            title="{{ $product->managers->isNotEmpty() ? $product->managers->pluck('name')->join(', ') : 'Menejerga biriktirish' }}">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                        <span>Menejer{{ $product->managers->isNotEmpty() ? ' (' . $product->managers->count() . ')' : '' }}</span>
+                                    </button>
+
                                     <!-- View Button -->
                                     <a href="{{ route('products.show', $product->id) }}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg text-xs font-bold transition-all shadow-2xs">
                                         <i class="fa-solid fa-eye"></i>
@@ -233,5 +245,7 @@
         }
     }
 </script>
+
+@include('partials.assign-managers-modal')
 @endsection
 

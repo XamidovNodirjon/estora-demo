@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends($layout ?? 'layouts.admin')
 
 @section('title', 'Yangi E\'lon Yaratish')
 @section('header_title', 'Yangi E\'lon Yaratish')
@@ -59,7 +59,7 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Header Card -->
     <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center gap-4">
-        <a href="{{ route('admin.products') }}" class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-all">
+        <a href="{{ route($routePrefix ?? 'admin.products') }}" class="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-all">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <div>
@@ -122,7 +122,7 @@
             </div>
         @endif
 
-        <form id="product-wizard-form" action="{{ route('admin.products.store') }}" method="POST" class="space-y-6">
+        <form id="product-wizard-form" action="{{ route(($routePrefix ?? 'admin.products') . '.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <!-- Hidden Inputs to Store Base64 Image Order -->
@@ -411,7 +411,7 @@
                     <button type="button" id="btn-prev" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm rounded-xl transition-all hidden" onclick="navigateStep(-1)">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Orqaga
                     </button>
-                    <a href="{{ route('admin.products') }}" id="btn-cancel" class="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-600 font-semibold text-sm rounded-xl transition-all">
+                    <a href="{{ route($routePrefix ?? 'admin.products') }}" id="btn-cancel" class="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-600 font-semibold text-sm rounded-xl transition-all">
                         Bekor qilish
                     </a>
                 </div>

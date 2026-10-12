@@ -8,12 +8,14 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductItem;
 use App\Models\Region;
+use App\Services\ManagerAssignmentService;
 use App\Services\ProductService;
 
 class AdminProductController extends Controller
 {
     public function __construct(
-        protected ProductService $service
+        protected ProductService $service,
+        protected ManagerAssignmentService $assignmentService
     ) {}
 
     /**
@@ -22,7 +24,8 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = $this->service->getProducts(10);
-        return view('admin.products.index', compact('products'));
+        $managers = $this->assignmentService->getManagers();
+        return view('admin.products.index', compact('products', 'managers'));
     }
 
     /**

@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 class ProductService
 {
     public function __construct(
-        protected ProductRepository $repository
+        protected ProductRepository $repository,
+        protected ManagerAssignmentService $assignmentService
     ) {}
 
     /**
@@ -19,6 +20,33 @@ class ProductService
     public function getProducts($limit = 10)
     {
         return $this->repository->getPaginated($limit);
+    }
+
+    /**
+     * Products visible in the manager cabinet: own + assigned by admin.
+     * $source: null (all) | 'own' | 'assigned'
+     */
+    public function getManagerProducts(\App\Models\User $manager, $limit = 10, ?string $source = null)
+    {
+        return $this->repository->getForManager($manager, $limit, $source);
+    }
+
+    public function countOwnProducts(\App\Models\User $user): int
+    {
+        return $this->repository->countOwnedBy($user);
+    }
+
+    public function countAssignedProducts(\App\Models\User $manager): int
+    {
+        return $this->repository->countAssignedTo($manager);
+    }
+
+    /**
+     * Assign product (house) to managers via polymorphic relation.
+     */
+    public function assignManagers(Product $product, array $managerIds): void
+    {
+        $this->assignmentService->syncManagers($product, $managerIds);
     }
 
     /**
@@ -114,6 +142,11 @@ class ProductService
         $user = $user ?? auth()->user();
         if (!$user) {
             return false;
+        }
+
+        // Menejer (hodim) hisobini admin yaratadi - cheksiz uy qo'sha oladi
+        if ($user->isManager()) {
+            return true;
         }
 
         // Telefon raqam tasdiqlanmagan bo'lsa e'lon qo'sha olmaydi

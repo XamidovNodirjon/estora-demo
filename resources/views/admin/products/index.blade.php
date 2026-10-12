@@ -89,6 +89,20 @@
                                         <span>{{ $product->is_top ? 'TOPdan olish' : 'TOPga chiqarish' }}</span>
                                     </button>
 
+                                    <!-- Assign to Managers -->
+                                    <button type="button"
+                                            onclick="openAssignManagersModal(this)"
+                                            data-action="{{ route('admin.products.managers', $product->id) }}"
+                                            data-managers="{{ json_encode($product->managers->pluck('id')) }}"
+                                            data-name="{{ $product->name }}"
+                                            class="relative p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                                            title="Menejerga biriktirish{{ $product->managers->isNotEmpty() ? ': ' . $product->managers->pluck('name')->join(', ') : '' }}">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                        @if($product->managers->isNotEmpty())
+                                            <span class="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center">{{ $product->managers->count() }}</span>
+                                        @endif
+                                    </button>
+
                                     <!-- View Link -->
                                     <a href="{{ route('products.show', $product->id) }}" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Batafsil ko'rish">
                                         <i class="fa-solid fa-eye"></i>
@@ -270,4 +284,6 @@
         }
     }
 </script>
+
+@include('partials.assign-managers-modal')
 @endsection

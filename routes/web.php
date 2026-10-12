@@ -23,8 +23,13 @@ use App\Http\Controllers\DeveloperUniversityController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\LeadController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\ManagerLeadController;
+use App\Http\Controllers\ManagerProductController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductAssignmentController;
 use App\Http\Controllers\ProductPhoneController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SmsNotificationController;
@@ -203,9 +208,17 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/developer/sms-notifications', [SmsNotificationController::class, 'developerIndex'])->name('developer.sms-notifications.index');
         Route::post('/developer/sms-notifications/balance', [SmsNotificationController::class, 'refreshBalance'])->name('developer.sms-notifications.balance');
+
+        Route::get('/developer/leads', [LeadController::class, 'developerIndex'])->name('developer.leads');
+        Route::post('/developer/leads', [LeadController::class, 'store'])->name('developer.leads.store');
+        Route::post('/developer/leads/bulk-assign', [LeadController::class, 'bulkAssign'])->name('developer.leads.bulk-assign');
+        Route::put('/developer/leads/{lead}', [LeadController::class, 'update'])->name('developer.leads.update');
+        Route::delete('/developer/leads/{lead}', [LeadController::class, 'destroy'])->name('developer.leads.delete');
+
+        Route::put('/developer/products/{product}/managers', [ProductAssignmentController::class, 'update'])->name('developer.products.managers');
     });
 
-    Route::middleware('role:admin,manager')->group(function () {
+    Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
         Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
         Route::get('/admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
@@ -253,6 +266,29 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/admin/sms-notifications', [SmsNotificationController::class, 'adminIndex'])->name('admin.sms-notifications.index');
         Route::post('/admin/sms-notifications/balance', [SmsNotificationController::class, 'refreshBalance'])->name('admin.sms-notifications.balance');
+
+        Route::get('/admin/leads', [LeadController::class, 'adminIndex'])->name('admin.leads');
+        Route::post('/admin/leads', [LeadController::class, 'store'])->name('admin.leads.store');
+        Route::post('/admin/leads/bulk-assign', [LeadController::class, 'bulkAssign'])->name('admin.leads.bulk-assign');
+        Route::put('/admin/leads/{lead}', [LeadController::class, 'update'])->name('admin.leads.update');
+        Route::delete('/admin/leads/{lead}', [LeadController::class, 'destroy'])->name('admin.leads.delete');
+
+        Route::put('/admin/products/{product}/managers', [ProductAssignmentController::class, 'update'])->name('admin.products.managers');
+    });
+
+    Route::middleware('role:manager')->group(function () {
+        Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
+        Route::get('/manager/profile', [ManagerController::class, 'profile'])->name('manager.profile');
+        Route::put('/manager/profile', [ManagerController::class, 'updateProfile'])->name('manager.profile.update');
+        Route::get('/manager/leads', [ManagerLeadController::class, 'index'])->name('manager.leads');
+        Route::put('/manager/leads/{lead}/status', [ManagerLeadController::class, 'updateStatus'])->name('manager.leads.status');
+
+        Route::get('/manager/products', [ManagerProductController::class, 'index'])->name('manager.products');
+        Route::get('/manager/products/create', [ManagerProductController::class, 'create'])->name('manager.products.create');
+        Route::post('/manager/products', [ManagerProductController::class, 'store'])->name('manager.products.store');
+        Route::get('/manager/products/{product}/edit', [ManagerProductController::class, 'edit'])->name('manager.products.edit');
+        Route::put('/manager/products/{product}', [ManagerProductController::class, 'update'])->name('manager.products.update');
+        Route::delete('/manager/products/{product}', [ManagerProductController::class, 'destroy'])->name('manager.products.delete');
     });
 
     Route::post('/email/send-code', [EmailVerificationController::class, 'sendCode'])->name('email.send-code');

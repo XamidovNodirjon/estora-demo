@@ -21,8 +21,9 @@ class DashboardController extends Controller
             case 'dev':
                 return redirect()->route('developer.dashboard');
             case 'admin':
-            case 'manager':
                 return redirect()->route('admin.dashboard');
+            case 'manager':
+                return redirect()->route('manager.dashboard');
             case 'makler':
             case 'client':
             default:

@@ -14,11 +14,12 @@ class DeveloperController extends Controller
      */
     public function products()
     {
-        $products = \App\Models\Product::with(['user', 'category', 'subCategory', 'region', 'city'])
+        $products = \App\Models\Product::with(['user', 'category', 'subCategory', 'region', 'city', 'managers'])
             ->latest()
             ->paginate(15);
+        $managers = app(\App\Services\ManagerAssignmentService::class)->getManagers();
 
-        return view('developer.products.index', compact('products'));
+        return view('developer.products.index', compact('products', 'managers'));
     }
 
     /**
