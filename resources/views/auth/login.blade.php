@@ -110,11 +110,13 @@
             <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-11 w-auto object-contain">
         </a>
 
+        {{-- Til tanlash vaqtincha yashirilgan
         <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs text-xs font-bold text-slate-700">
             <i class="fa-solid fa-globe text-blue-600"></i>
             <span>O'zbekcha</span>
             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
         </div>
+        --}}
     </header>
 
     <main class="w-full max-w-md mx-auto flex-1 flex flex-col justify-center animate-fade-in-up">
