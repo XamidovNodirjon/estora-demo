@@ -26,6 +26,19 @@ class UserRepository
         return User::where('google_id', $googleId)->first();
     }
 
+    /**
+     * Find user by phone regardless of stored format
+     * (+998901234567, 998901234567, "+998 90 123 45 67", ...).
+     */
+    public function findByPhone(string $formattedPhone): ?User
+    {
+        $digits = preg_replace('/[^\d]/', '', $formattedPhone);
+
+        return User::whereIn('phone', array_unique([$formattedPhone, $digits, substr($digits, -9)]))
+            ->orWhereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '+', ''), '(', ''), ')', '') = ?", [$digits])
+            ->first();
+    }
+
     public function findByUsername(string $username): ?User
     {
         return User::where('username', $username)->first();
