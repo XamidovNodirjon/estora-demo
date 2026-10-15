@@ -21,6 +21,7 @@
 
     <!-- Estora Master Core Stylesheet (DRY / SOLID) -->
     <link rel="stylesheet" href="{{ asset('css/estora-core.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/estora-footer.css') }}?v={{ time() }}">
 
     @yield('styles')
 </head>
@@ -46,45 +47,7 @@
     <!-- AUTH REQUIRED MODAL FOR OWNER PHONE GATING -->
     @include('partials.auth-required-modal')
 
-    <!-- Universal Favorite Toggle AJAX Script -->
-    <script>
-    function toggleFavorite(productId, event) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
-        fetch(`/favorites/toggle/${productId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => {
-            if (response.status === 401) {
-                window.location.href = "{{ route('login') }}";
-                return null;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data && data.status) {
-                const favButtons = document.querySelectorAll(`.fav-btn-${productId}`);
-                favButtons.forEach(btn => {
-                    if (data.status === 'added') {
-                        btn.classList.add('active');
-                        btn.innerHTML = '<i class="fas fa-heart" style="color: #ef4444;"></i>';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.innerHTML = '<i class="far fa-heart"></i>';
-                    }
-                });
-            }
-        })
-        .catch(err => console.error('Favorite error:', err));
-    }
-    </script>
+    @include('partials.favorite-toggle-script')
 
     @yield('scripts')
 </body>

@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>@yield('title', 'Makler Admin Paneli') - Estora Real Estate</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Kabinet') - Estora Real Estate</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Vite Assets (Tailwind v4 via @tailwindcss/vite plugin) -->
     @if(file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,11 +19,14 @@
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
 
+    <!-- Sayt footeri (partials/footer) stillari -->
+    <link rel="stylesheet" href="{{ asset('css/estora-footer.css') }}?v={{ filemtime(public_path('css/estora-footer.css')) }}">
+
     <style>
         :root {
-            --primary-blue: #0066FF;
+            --primary-blue: #0077FE;
             --primary-dark: #08172E;
-            --bg-canvas: #F4F6F8;
+            --bg-canvas: #FFFFFF;
             --font-main: 'Plus Jakarta Sans', 'Inter', sans-serif;
         }
 
@@ -71,85 +75,202 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* ===== Kabinet paneli (kartalar) ===== */
+        .cabinet-panel {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-radius: 16px;
+        }
+
+        /* ===== Kabinet menyusi ===== */
+        .cabinet-nav-home {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #0F172A;
+            transition: all .2s;
+        }
+        .cabinet-nav-home i { font-size: 18px; color: var(--primary-blue); }
+        .cabinet-nav-home:hover { background: #F1F6FF; }
+        .cabinet-nav-home.is-active {
+            background: var(--primary-blue);
+            color: #FFFFFF;
+            box-shadow: 0 6px 16px -6px rgba(0, 119, 254, .6);
+        }
+        .cabinet-nav-home.is-active i { color: #FFFFFF; }
+
+        .cabinet-nav-group + .cabinet-nav-group {
+            margin-top: 34px;
+        }
+
+        .cabinet-nav-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 6px;
+            border-bottom: 1px solid #CBD5E1;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #1E293B;
+            text-align: left;
+            cursor: pointer;
+            transition: color .2s, background .2s;
+        }
+        .cabinet-nav-item:hover { color: var(--primary-blue); }
+        .cabinet-nav-item.is-active { color: var(--primary-blue); }
+        .cabinet-nav-item.is-active .cabinet-nav-icon { color: var(--primary-blue); }
+        .cabinet-nav-item.is-soon { cursor: default; }
+        .cabinet-nav-item.is-soon:hover { color: #1E293B; }
+        .cabinet-nav-icon {
+            width: 16px;
+            text-align: center;
+            font-size: 14px;
+            color: #334155;
+        }
+        .cabinet-nav-label { flex: 1; min-width: 0; }
+
+        .cabinet-nav-badge {
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 9999px;
+            background: var(--primary-blue);
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cabinet-soon-pill {
+            padding: 2px 8px;
+            border-radius: 9999px;
+            background: #E6F1FF;
+            border: 1px solid #B9D8FF;
+            color: var(--primary-blue);
+            font-size: 9.5px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* Profil menyusi */
+        .profile-menu { display: none; }
+        .profile-menu.is-open { display: block; }
+
+        /* Sayt footeri kabinetda yuqoridan bo'shliq bilan */
+        .footer-container-exact { margin-top: 48px; }
     </style>
+    @yield('styles')
 </head>
-<body class="min-h-screen flex flex-col bg-[#F4F6F8] text-slate-800 antialiased">
+<body class="min-h-screen flex flex-col bg-white text-slate-800 antialiased">
+
+    @php
+        $headerUser = Auth::user();
+        $unreadMessagesCount = $headerUser->unreadNotifications->count();
+        $headerRole = $headerUser->role?->name ?? $headerUser->type ?? 'client';
+        $roleLabels = ['makler' => 'Makler', 'client' => 'Jismoniy shaxs', 'owner' => 'Uy egasi', 'hotel' => 'Mehmonxona', 'builder' => 'Quruvchi'];
+        $headerRoleLabel = $roleLabels[$headerRole] ?? ucfirst($headerRole);
+        $headerFirstName = $headerUser->first_name ?: ($headerUser->name ?? 'Foydalanuvchi');
+        $headerPublicUrl = route('users.show', $headerUser->username ?? $headerUser->id);
+    @endphp
 
     <!-- Header Navigation -->
-    <header class="bg-white border-b border-slate-200/90 sticky top-0 z-40 shadow-xs">
-        <div class="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-            
+    <header class="bg-white sticky top-0 z-40">
+        <div class="max-w-[1240px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-4 border-b border-slate-300">
+
             <!-- Left Side: Hamburger & Logo -->
-            <div class="flex items-center gap-4 sm:gap-6 min-w-0">
-                <button type="button" onclick="toggleMobileNavDrawer()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all focus:outline-none flex items-center justify-center border border-slate-200 lg:hidden" title="Menyu">
+            <div class="flex items-center gap-3 min-w-0">
+                <button type="button" onclick="toggleMobileNavDrawer()" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all focus:outline-none flex items-center justify-center border border-slate-300 lg:hidden" title="Menyu">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
 
-                <a href="{{ route('maniDashboard') }}" class="flex items-center gap-2.5 flex-shrink-0 group hover:opacity-90 transition-opacity" title="ESTORA Real Estate">
+                <a href="{{ route('maniDashboard') }}" class="flex items-center flex-shrink-0 hover:opacity-90 transition-opacity" title="ESTORA Real Estate">
                     <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-10 w-auto object-contain">
                 </a>
             </div>
 
             <!-- Middle: Search Bar -->
-            <div class="flex-1 max-w-lg mx-4 hidden lg:block">
+            <form action="{{ route('maniDashboard') }}" method="GET" class="flex-1 max-w-[290px] hidden lg:block">
                 <div class="relative">
-                    <input type="text" 
-                           placeholder="E'lonlar, manzil yoki kalit so'z..." 
-                           class="w-full bg-slate-50/90 border border-slate-200 rounded-xl py-2 pl-4 pr-10 text-xs sm:text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-all shadow-xs">
-                    <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors">
+                    <input type="text" name="product_id" inputmode="numeric"
+                           placeholder="E'lon ID bo'yicha qidirish..."
+                           class="w-full bg-white border border-slate-300 rounded-full py-1.5 pl-4 pr-10 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#0077FE] transition-all">
+                    <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#0077FE] cursor-pointer" title="Qidirish">
                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                     </button>
                 </div>
-            </div>
+            </form>
 
             <!-- Right Side Actions & Profile -->
-            <div class="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
 
-                <!-- Chatlar Button -->
-                @php
-                    $unreadMessagesCount = Auth::check() ? Auth::user()->unreadNotifications->count() : 0;
-                @endphp
-                <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all hidden sm:flex items-center gap-1.5 text-xs font-semibold" title="Chatlar">
-                    <i class="fa-regular fa-comments text-base"></i>
+                <!-- Estora AI Agent (tez orada) -->
+                <span class="relative hidden sm:inline-flex items-center gap-1.5 bg-[#0077FE] text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full cursor-default" title="Tez orada">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                    <span>Estora AI Agent</span>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 ring-2 ring-white"></span>
+                </span>
+
+                <!-- Chatlar -->
+                <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="relative hidden sm:flex items-center gap-1 text-[11px] font-semibold text-slate-600 hover:text-[#0077FE] transition-colors" title="Chatlar">
+                    <i class="fa-regular fa-comments text-sm text-[#0077FE]"></i>
                     <span>Chatlar</span>
-                    @if($unreadMessagesCount > 0)
-                        <span class="bg-red-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full absolute -top-1 -right-1 shadow-xs animate-pulse">{{ $unreadMessagesCount }}</span>
-                    @endif
                 </a>
 
-                <!-- Yangiliklar Notification Bell -->
-                <a href="{{ route('client.dashboard', ['section' => 'news']) }}" class="relative p-2.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold" title="Yangiliklar">
-                    <div class="relative">
-                        <i class="fa-regular fa-bell text-base"></i>
-                    </div>
+                <!-- Yangiliklar -->
+                <a href="{{ route('client.dashboard', ['section' => 'news']) }}" class="relative flex items-center gap-1 text-[11px] font-semibold text-slate-600 hover:text-[#0077FE] transition-colors" title="Yangiliklar">
+                    <span class="relative">
+                        <i class="fa-regular fa-bell text-sm text-[#0077FE]"></i>
+                        @if($unreadMessagesCount > 0)
+                            <span class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[9px] font-black min-w-[15px] h-[15px] px-1 rounded-full flex items-center justify-center">{{ $unreadMessagesCount }}</span>
+                        @endif
+                    </span>
                     <span class="hidden md:inline">Yangiliklar</span>
                 </a>
 
-                <!-- User Profile Header Pill -->
-                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="flex items-center gap-3 pl-2 border-l border-slate-200 hover:opacity-90 transition-opacity">
-                    <div class="relative">
-                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-sm ring-2 ring-blue-500/30 uppercase shadow-xs">
-                            {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
-                        </div>
-                        <div class="absolute -bottom-0.5 -right-0.5 bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] ring-2 ring-white" title="Tasdiqlangan Makler">
-                            <i class="fa-solid fa-check"></i>
-                        </div>
-                    </div>
+                <!-- User Profile Pill + Dropdown -->
+                <div class="relative pl-3 sm:pl-4 border-l border-slate-300">
+                    <button type="button" onclick="toggleProfileMenu(event)" class="flex items-center gap-2 cursor-pointer">
+                        <span class="relative w-8 h-8 rounded-full bg-[#0077FE] text-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                            @if($headerUser->avatar)
+                                <img src="{{ $headerUser->avatar }}" alt="" class="w-full h-full object-cover">
+                            @else
+                                <i class="fa-solid fa-user text-sm"></i>
+                            @endif
+                        </span>
+                        <span class="hidden md:block text-left leading-tight">
+                            <span class="flex items-center gap-1">
+                                <span class="font-extrabold text-sm text-slate-900">{{ $headerFirstName }}</span>
+                                <i class="fa-solid fa-chevron-down text-[9px] text-amber-500"></i>
+                            </span>
+                            <span class="block text-[10px] font-semibold text-slate-500">{{ $headerRoleLabel }}</span>
+                        </span>
+                    </button>
 
-                    <div class="hidden md:block text-left">
-                        <div class="flex items-center gap-1">
-                            <span class="font-extrabold text-xs sm:text-sm text-slate-900">{{ Auth::user()->name ?? 'Foydalanuvchi' }}</span>
-                            <i class="fa-solid fa-circle-check text-blue-600 text-xs" title="Verified"></i>
-                            <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] ml-1"></i>
-                        </div>
-                        <span class="text-[11px] font-bold text-slate-500 capitalize">{{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Makler' }}</span>
+                    <div id="profileMenu" class="profile-menu absolute right-0 top-full mt-3 w-56 bg-white border border-slate-300 rounded-2xl shadow-xl p-2 z-50">
+                        <a href="{{ $headerPublicUrl }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                            <i class="fa-regular fa-circle-user w-4 text-[#0077FE]"></i> Mening sahifam
+                        </a>
+                        <a href="{{ route('client.dashboard', ['section' => 'account']) }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                            <i class="fa-regular fa-id-card w-4 text-[#0077FE]"></i> Hisob ma'lumotlari
+                        </a>
+                        <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                            <i class="fa-solid fa-crown w-4 text-[#0077FE]"></i> Tariflar
+                        </a>
+                        <div class="border-t border-slate-300 my-1"></div>
+                        <button type="button" onclick="openLogoutConfirmModal()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 cursor-pointer text-left">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Chiqish
+                        </button>
                     </div>
-                </a>
-
-                <!-- Quick Logout Button in Header -->
-                <button type="button" onclick="openLogoutConfirmModal()" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer flex items-center justify-center" title="Profildan chiqish">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
-                </button>
+                </div>
 
             </div>
         </div>
@@ -158,85 +279,28 @@
     <!-- Mobile Drawer Menu Modal with Smooth Slide Animation -->
     <div id="mobileNavDrawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none lg:hidden" onclick="toggleMobileNavDrawer()">
         <div id="mobileNavContent" class="w-72 max-w-[85vw] bg-white h-full shadow-2xl p-5 overflow-y-auto space-y-5 transform -translate-x-full transition-transform duration-300 ease-in-out" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <img src="/images/logo.svg" alt="Estora" class="h-8 w-auto">
-                </div>
+            <div class="flex items-center justify-between border-b border-slate-300 pb-3">
+                <img src="/images/logo.svg" alt="Estora" class="h-8 w-auto">
                 <button type="button" onclick="toggleMobileNavDrawer()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-lg hover:bg-slate-200 transition-all">
                     &times;
                 </button>
             </div>
 
-            @auth
             <!-- User Info Card in Drawer -->
             <div class="bg-blue-50/70 border border-blue-100 rounded-2xl p-3.5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-extrabold flex items-center justify-center text-sm">
-                    {{ mb_substr(Auth::user()->name ?? 'M', 0, 1) }}
+                <div class="w-10 h-10 rounded-full bg-[#0077FE] text-white flex items-center justify-center text-sm flex-shrink-0">
+                    <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <h4 class="font-extrabold text-xs text-slate-900 truncate">{{ Auth::user()->name ?? 'Foydalanuvchi' }}</h4>
-                    <p class="text-[11px] text-slate-500 capitalize">{{ Auth::user()->role?->name ?? Auth::user()->type ?? 'Client' }}</p>
+                    <h4 class="font-extrabold text-xs text-slate-900 truncate">{{ $headerUser->name ?? 'Foydalanuvchi' }}</h4>
+                    <p class="text-[11px] text-slate-500">{{ $headerRoleLabel }}</p>
                 </div>
             </div>
-            @endauth
 
-            <!-- Drawer Links -->
-            <div class="space-y-1">
-                <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-house-chimney text-blue-600"></i>
-                        <span>Bosh sahifa</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'my_products']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-regular fa-folder-open text-blue-600"></i>
-                        <span>E'lonlarim</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'chats']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-regular fa-comments text-blue-600"></i>
-                        <span>Chatlar</span>
-                    </div>
-                    @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
-                        <span class="bg-red-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full animate-pulse">{{ $unreadMessagesCount }}</span>
-                    @endif
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'stats']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-chart-line text-blue-600"></i>
-                        <span>Statistika</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-regular fa-credit-card text-blue-600"></i>
-                        <span>Obuna va to'lovlar</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'my_page']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-globe text-blue-600"></i>
-                        <span>Mening sahifam</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'news']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-regular fa-bell text-blue-600"></i>
-                        <span>Yangiliklar</span>
-                    </div>
-                </a>
-                <a href="{{ route('client.dashboard', ['section' => 'settings']) }}" class="flex items-center justify-between p-3 rounded-xl font-bold text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-sliders text-blue-600"></i>
-                        <span>Sozlamalar</span>
-                    </div>
-                </a>
-            </div>
+            @include('client.partials.nav')
 
-            <div class="pt-3 border-t border-slate-100">
-                <button type="button" onclick="openLogoutConfirmModal()" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl p-3 flex items-center gap-3 text-xs text-left transition-colors">
+            <div class="pt-3 border-t border-slate-300">
+                <button type="button" onclick="openLogoutConfirmModal()" class="w-full text-red-600 hover:bg-red-50 font-bold rounded-xl p-3 flex items-center gap-3 text-xs text-left transition-colors cursor-pointer">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     <span>Profildan chiqish</span>
                 </button>
@@ -264,6 +328,16 @@
                 }
             }
         }
+
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            document.getElementById('profileMenu').classList.toggle('is-open');
+        }
+
+        document.addEventListener('click', function (e) {
+            const menu = document.getElementById('profileMenu');
+            if (menu && !menu.contains(e.target)) menu.classList.remove('is-open');
+        });
 
         function openLogoutConfirmModal() {
             const modal = document.getElementById('logoutConfirmModal');
@@ -300,7 +374,7 @@
                 <button type="button" onclick="closeLogoutConfirmModal()" style="flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px; background: #f1f5f9; color: #334155; border: none; cursor: pointer;">
                     Yo'q, qolaman
                 </button>
-                
+
                 <form method="POST" action="{{ route('logout') }}" style="flex: 1; margin: 0;">
                     @csrf
                     <button type="submit" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; background: #ef4444; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
@@ -311,9 +385,9 @@
         </div>
     </div>
 
-    <!-- Main Container Layout (Optimized for Mobile Margin & Spacing) -->
-    <div class="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 w-full min-w-0 box-border">
-        
+    <!-- Main Container Layout -->
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 py-5 sm:py-6 flex-1 w-full min-w-0 box-border">
+
         <!-- Toast Notifications -->
         @if(session('success'))
             <div class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-3 shadow-xs text-xs sm:text-sm animate-fade-in">
@@ -339,12 +413,12 @@
         @yield('content')
     </div>
 
-    <!-- Minimal Clean Footer -->
-    <footer class="bg-white border-t border-slate-200/80 py-4 mt-auto">
-        <div class="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 font-medium">
-            &copy; {{ date('Y') }} Estora Real Estate. Barcha huquqlar himoyalangan.
-        </div>
-    </footer>
+    <!-- Sayt footeri (yordam vidjeti bilan) -->
+    @include('partials.footer')
+
+    @include('partials.favorite-toggle-script')
+
+    @stack('cabinet-scripts')
 
 </body>
 </html>

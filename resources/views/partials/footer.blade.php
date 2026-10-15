@@ -55,7 +55,7 @@
                         <div style="width: 48px; height: 48px; border: 2px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900;">
                             7/24
                         </div>
-                        <a href="tel:+998903066446" class="footer-phone-big">+998 (90) 306 64-46</a>
+                        <a href="tel:+998951606446" class="footer-phone-big">+998 (95) 160 64-46</a>
                     </div>
 
                     <div class="footer-social-row-exact">
@@ -163,15 +163,17 @@
 </div>
 
 <script>
-    function openSupportModal() {
+    function openSupportModal(message) {
         const overlay = document.getElementById('supportModalOverlay');
         const form = document.getElementById('supportInquiryForm');
         const successAlert = document.getElementById('supportSuccessAlert');
         const errorDiv = document.getElementById('supportFormError');
+        const description = document.getElementById('inquiry_description');
 
         if (errorDiv) errorDiv.style.display = 'none';
         if (form) form.style.display = 'flex';
         if (successAlert) successAlert.style.display = 'none';
+        if (description && typeof message === 'string') description.value = message;
 
         if (overlay) {
             overlay.classList.add('active');

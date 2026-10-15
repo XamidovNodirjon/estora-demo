@@ -94,7 +94,11 @@ class DashboardController extends Controller
         $isLimitReached = ($userRole === 'client' && $productCount >= 2);
         $canCreateProduct = app(\App\Services\ProductService::class)->canUserCreateProduct($user);
 
-        $section = $request->query('section', 'my_products');
+        $section = $request->query('section', 'home');
+        // Eski havolalar: "Mening sahifam" endi ommaviy sahifa, profil formasi esa "Hisob ma'lumotlari"
+        if ($section === 'my_page') {
+            $section = 'account';
+        }
 
         $conversations = collect();
         $unreadNotificationCount = $user->unreadNotifications->count();

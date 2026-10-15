@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        // "2 soat avval" kabi sanalar o'zbek (lotin) tilida chiqsin
+        \Carbon\Carbon::setLocale('uz_Latn');
+
         Relation::morphMap([
             'lead' => Lead::class,
             'product' => Product::class,
