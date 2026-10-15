@@ -158,15 +158,6 @@
                 </div>
             @endif
 
-            {{-- Faqat SMS test (mock) rejimida: haqiqiy SMS ketmagani uchun yangi ma'lumotlar shu yerda ko'rsatiladi --}}
-            @if (session('reset_mock_credentials'))
-                <div class="mb-5 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold space-y-1">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-flask"></i> SMS test rejimi — yangi ma'lumotlar:</div>
-                    <div>Login: <b class="font-mono">{{ session('reset_mock_credentials')['username'] }}</b></div>
-                    <div>Parol: <b class="font-mono">{{ session('reset_mock_credentials')['password'] }}</b></div>
-                </div>
-            @endif
-
             <form action="{{ route('login') }}" method="POST" class="space-y-4">
                 @csrf
 

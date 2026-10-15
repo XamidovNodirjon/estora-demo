@@ -3,25 +3,37 @@
 namespace App\Services;
 
 use App\Http\Controllers\Auth\VerificationController;
-use App\Jobs\SendCredentialsSmsJob;
+use App\Jobs\SendSmsJob;
+use App\Mail\PasswordResetCodeMail;
 use App\Models\SmsNotification;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Parolni tiklash: telefon raqam tizimda bo'lsa, foydalanuvchiga
- * username va yangi generatsiya qilingan parol SMS orqali yuboriladi.
+ * Parolni tiklash (3 bosqich):
+ *  1. Foydalanuvchi username yoki telefon raqam orqali topiladi va tasdiqlash kodi yuboriladi:
+ *     - username bo'yicha: email bo'lsa emailga, bo'lmasa telefon raqamga (SMS);
+ *     - telefon bo'yicha: SMS orqali.
+ *  2. Kod tasdiqlanadi va foydalanuvchining username'i qaytariladi.
+ *  3. Foydalanuvchi yangi parol (xohlasa yangi username) o'rnatadi.
+ *
+ * Jarayon holati sessiyada, kod esa (hash ko'rinishida) cache'da saqlanadi.
  */
 class PasswordResetService
 {
+    public const SESSION_KEY = 'password_reset';
+
+    private const CODE_PREFIX = 'password_reset_code_';
     private const COOLDOWN_PREFIX = 'password_reset_cooldown_';
     private const DAILY_PREFIX = 'password_reset_daily_';
-    private const PASSWORD_LENGTH = 8;
+    private const MAX_ATTEMPTS = 5;
+    private const VERIFIED_TTL = 900; // kod tasdiqlangandan keyin parolni yangilash uchun 15 daqiqa
 
     public function __construct(
         protected UserRepository $userRepository,
@@ -30,127 +42,270 @@ class PasswordResetService
     ) {}
 
     /**
-     * @return array{phone: string, username: string, password: ?string} password is returned only in SMS mock mode
+     * @param  'username'|'phone' $method
+     * @return array{channel: string, destination: string, expires_in: int, retry_after: int, mock_code?: string}
      */
-    public function resetByPhone(string $rawPhone): array
+    public function sendCode(string $method, string $value): array
     {
-        $phone = VerificationController::formatPhone($rawPhone);
+        $user = $method === 'username'
+            ? $this->findByUsername($value)
+            : $this->findByPhone($value);
 
-        $this->ensureCredentialsCanBeDelivered();
+        $channel = $method === 'username' && filled($user->email) ? 'email' : 'sms';
 
-        $user = $this->userRepository->findByPhone($phone);
+        if ($channel === 'sms' && blank($user->phone)) {
+            throw ValidationException::withMessages([
+                $method => "Hisobingizga email ham, telefon raqam ham bog'lanmagan. Iltimos, administrator bilan bog'laning.",
+            ]);
+        }
+
+        $this->ensureNotThrottled($user, $method);
+
+        $code = (string) random_int(100000, 999999);
+        $ttl = (int) config('usms.password_reset_code_ttl_seconds', 300);
+
+        $channel === 'email'
+            ? $this->sendEmail($user, $code, $ttl, $method)
+            : $this->sendSms($user, $code);
+
+        Cache::put(self::CODE_PREFIX . $user->id, [
+            'hash' => Hash::make($code),
+            'attempts' => 0,
+            'expires_at' => time() + $ttl,
+        ], $ttl);
+
+        session()->put(self::SESSION_KEY, [
+            'user_id' => $user->id,
+            'channel' => $channel,
+            'verified_until' => null,
+        ]);
+
+        $retryAfter = $this->hitThrottle($user);
+
+        Log::info("[PASSWORD RESET] Code sent to user #{$user->id} via {$channel}");
+
+        $result = [
+            'channel' => $channel,
+            'destination' => $channel === 'email' ? $this->maskEmail($user->email) : $this->maskPhone($user->phone),
+            'expires_in' => $ttl,
+            'retry_after' => $retryAfter,
+        ];
+
+        // Test rejimida haqiqiy xabar ketmaydi - kodni ekranda ko'rsatamiz
+        if ($this->isMockChannel($channel)) {
+            $result['mock_code'] = $code;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array{username: string}
+     */
+    public function verifyCode(string $code): array
+    {
+        $user = $this->pendingUser();
+        $cacheKey = self::CODE_PREFIX . $user->id;
+        $data = Cache::get($cacheKey);
+
+        if (!$data || $data['expires_at'] <= time()) {
+            throw ValidationException::withMessages([
+                'code' => "Kodning amal qilish muddati tugagan. Iltimos, yangi kod so'rang.",
+            ]);
+        }
+
+        if ($data['attempts'] >= self::MAX_ATTEMPTS) {
+            Cache::forget($cacheKey);
+            throw ValidationException::withMessages([
+                'code' => "Urinishlar soni tugadi. Iltimos, yangi kod so'rang.",
+            ]);
+        }
+
+        if (!Hash::check($code, $data['hash'])) {
+            $data['attempts']++;
+            Cache::put($cacheKey, $data, max(1, $data['expires_at'] - time()));
+
+            $left = self::MAX_ATTEMPTS - $data['attempts'];
+            throw ValidationException::withMessages([
+                'code' => $left > 0
+                    ? "Kod noto'g'ri. Qolgan urinishlar: {$left}."
+                    : "Kod noto'g'ri. Urinishlar soni tugadi, iltimos yangi kod so'rang.",
+            ]);
+        }
+
+        Cache::forget($cacheKey);
+        session()->put(self::SESSION_KEY . '.verified_until', time() + self::VERIFIED_TTL);
+
+        return ['username' => $this->usernameFor($user)];
+    }
+
+    /**
+     * Kod tasdiqlangan foydalanuvchi (parolni yangilash bosqichi uchun).
+     */
+    public function verifiedUser(): User
+    {
+        $state = session(self::SESSION_KEY);
+
+        if (!$state || !$state['verified_until'] || $state['verified_until'] < time()) {
+            throw ValidationException::withMessages([
+                'password' => "Tasdiqlash muddati tugagan. Iltimos, parolni tiklashni qaytadan boshlang.",
+            ]);
+        }
+
+        return $this->userRepository->findById($state['user_id']);
+    }
+
+    public function resetPassword(User $user, string $username, string $password): void
+    {
+        $this->userRepository->update($user, [
+            'username' => $username,
+            'password' => Hash::make($password),
+        ]);
+
+        // Eski "meni eslab qol" sessiyalari bekor bo'ladi
+        $user->forceFill(['remember_token' => Str::random(60)])->save();
+
+        session()->forget(self::SESSION_KEY);
+
+        Log::info("[PASSWORD RESET] Password updated for user #{$user->id}");
+    }
+
+    protected function findByUsername(string $username): User
+    {
+        $user = $this->userRepository->findByUsername(ltrim(trim($username), '@'));
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'username' => 'Bunday username bilan foydalanuvchi topilmadi.',
+            ]);
+        }
+
+        return $user;
+    }
+
+    protected function findByPhone(string $rawPhone): User
+    {
+        $user = $this->userRepository->findByPhone(VerificationController::formatPhone($rawPhone));
+
         if (!$user) {
             throw ValidationException::withMessages([
                 'phone' => "Bu telefon raqam bilan ro'yxatdan o'tgan foydalanuvchi topilmadi.",
             ]);
         }
 
-        $this->ensureNotThrottled($phone);
+        return $user;
+    }
 
-        $password = $this->generatePassword();
+    protected function pendingUser(): User
+    {
+        $state = session(self::SESSION_KEY);
 
-        $username = DB::transaction(function () use ($user, $password) {
-            $username = $user->username ?: $this->authService->generateUniqueUsername(
-                (string) ($user->first_name ?: 'user'),
-                (string) ($user->last_name ?? '')
-            );
-
-            $this->userRepository->update($user, [
-                'username' => $username,
-                'password' => Hash::make($password),
+        if (!$state) {
+            throw ValidationException::withMessages([
+                'code' => "Sessiya muddati tugagan. Iltimos, parolni tiklashni qaytadan boshlang.",
             ]);
+        }
 
-            // Eski "meni eslab qol" sessiyalari bekor bo'ladi
-            $user->forceFill(['remember_token' => Str::random(60)])->save();
+        return $this->userRepository->findById($state['user_id']);
+    }
 
-            return $username;
-        });
+    /**
+     * Username bo'lmasa - taklif qilinadi (saqlanmaydi, foydalanuvchi o'zi tasdiqlaydi).
+     */
+    protected function usernameFor(User $user): string
+    {
+        return $user->username ?: $this->authService->generateUniqueUsername(
+            (string) ($user->first_name ?: 'user'),
+            (string) ($user->last_name ?? '')
+        );
+    }
 
-        $this->hitThrottle($phone);
+    protected function sendEmail(User $user, string $code, int $ttl, string $errorKey): void
+    {
+        try {
+            Mail::to($user->email)->send(new PasswordResetCodeMail(
+                $code,
+                trim("{$user->first_name} {$user->last_name}") ?: 'Foydalanuvchi',
+                (int) ceil($ttl / 60)
+            ));
+        } catch (\Throwable $e) {
+            Log::error("[PASSWORD RESET] Email send error for user #{$user->id}: " . $e->getMessage());
+            throw ValidationException::withMessages([
+                $errorKey => "Emailga kod yuborishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.",
+            ]);
+        }
+    }
+
+    protected function sendSms(User $user, string $code): void
+    {
+        $phone = VerificationController::formatPhone($user->phone);
 
         $record = SmsNotification::create([
             'phone' => $phone,
-            'message' => "Parol tiklandi. Login: {$username}, yangi parol SMS orqali yuborildi.",
+            'code' => $code,
+            'message' => "Parolni tiklash kodi: {$code}",
             'status' => 'pending',
         ]);
-        SendCredentialsSmsJob::dispatch($phone, $username, $password, $record->id);
 
-        Log::info("[PASSWORD RESET] Password reset for user #{$user->id}, credentials SMS queued to {$phone}");
+        SendSmsJob::dispatch($phone, $code, $record->id);
+    }
 
-        return [
-            'phone' => $phone,
-            'username' => $username,
-            'password' => $this->smsService->isMockMode() ? $password : null,
-        ];
+    protected function isMockChannel(string $channel): bool
+    {
+        if ($channel === 'sms') {
+            return $this->smsService->isMockMode();
+        }
+
+        return !app()->isProduction() && in_array(config('mail.default'), ['log', 'array'], true);
     }
 
     /**
-     * Readable random password: letters + digits, without ambiguous chars (0/O, 1/l/I).
+     * Qayta yuborish orasidagi kutish va kunlik limit (SMS/email spam bo'lmasligi uchun).
      */
-    public function generatePassword(): string
+    protected function ensureNotThrottled(User $user, string $errorKey): void
     {
-        $letters = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
-        $digits = '23456789';
-        $all = $letters . $digits;
-
-        $chars = [
-            $letters[random_int(0, strlen($letters) - 1)],
-            $digits[random_int(0, strlen($digits) - 1)],
-        ];
-        while (count($chars) < self::PASSWORD_LENGTH) {
-            $chars[] = $all[random_int(0, strlen($all) - 1)];
-        }
-
-        // Kriptografik xavfsiz aralashtirish
-        for ($i = count($chars) - 1; $i > 0; $i--) {
-            $j = random_int(0, $i);
-            [$chars[$i], $chars[$j]] = [$chars[$j], $chars[$i]];
-        }
-
-        return implode('', $chars);
-    }
-
-    /**
-     * Begona odam boshqa birovning parolini qayta-qayta almashtira olmasligi uchun.
-     */
-    protected function ensureNotThrottled(string $phone): void
-    {
-        $cooldownUntil = (int) Cache::get(self::COOLDOWN_PREFIX . md5($phone), 0);
+        $cooldownUntil = (int) Cache::get(self::COOLDOWN_PREFIX . $user->id, 0);
         if ($cooldownUntil > time()) {
-            $minutes = (int) ceil(($cooldownUntil - time()) / 60);
+            $seconds = $cooldownUntil - time();
             throw ValidationException::withMessages([
-                'phone' => "Bu raqamga yangi parol yaqinda yuborilgan. {$minutes} daqiqadan keyin qayta urinib ko'ring.",
+                $errorKey => "Kod yaqinda yuborilgan. Qayta yuborish uchun {$seconds} soniya kuting.",
             ]);
         }
 
-        $dailyLimit = (int) config('usms.password_reset_daily_limit', 3);
-        if ((int) Cache::get(self::DAILY_PREFIX . md5($phone), 0) >= $dailyLimit) {
+        $dailyLimit = (int) config('usms.password_reset_daily_limit', 5);
+        if ((int) Cache::get(self::DAILY_PREFIX . $user->id, 0) >= $dailyLimit) {
             throw ValidationException::withMessages([
-                'phone' => "Bugun bu raqam uchun parolni tiklash limiti ({$dailyLimit} marta) tugadi. Ertaga qayta urinib ko'ring.",
+                $errorKey => "Bugun parolni tiklash limiti ({$dailyLimit} marta) tugadi. Ertaga qayta urinib ko'ring.",
             ]);
         }
-    }
-
-    protected function hitThrottle(string $phone): void
-    {
-        $cooldown = (int) config('usms.password_reset_cooldown_seconds', 300);
-        Cache::put(self::COOLDOWN_PREFIX . md5($phone), time() + $cooldown, $cooldown);
-
-        $dailyKey = self::DAILY_PREFIX . md5($phone);
-        Cache::put($dailyKey, (int) Cache::get($dailyKey, 0) + 1, now()->endOfDay());
     }
 
     /**
-     * Shablon sozlanmagan bo'lsa parol o'zgarib, foydalanuvchi uni ololmay qoladi -
-     * shuning uchun bunday holatda parol umuman o'zgartirilmaydi.
+     * @return int qayta yuborishgacha qolgan soniyalar
      */
-    protected function ensureCredentialsCanBeDelivered(): void
+    protected function hitThrottle(User $user): int
     {
-        if (!$this->smsService->isMockMode() && (int) config('usms.password_reset_template_id', 0) <= 0) {
-            Log::error('[PASSWORD RESET] USMS_PASSWORD_RESET_TEMPLATE_ID is not configured.');
-            throw ValidationException::withMessages([
-                'phone' => "Parolni tiklash xizmati vaqtincha ishlamayapti. Iltimos, administrator bilan bog'laning.",
-            ]);
-        }
+        $cooldown = (int) config('usms.password_reset_resend_seconds', 60);
+        Cache::put(self::COOLDOWN_PREFIX . $user->id, time() + $cooldown, $cooldown);
+
+        $dailyKey = self::DAILY_PREFIX . $user->id;
+        Cache::put($dailyKey, (int) Cache::get($dailyKey, 0) + 1, now()->endOfDay());
+
+        return $cooldown;
+    }
+
+    protected function maskEmail(string $email): string
+    {
+        [$name, $domain] = explode('@', $email, 2) + [1 => ''];
+        $visible = mb_strlen($name) <= 2 ? mb_substr($name, 0, 1) : mb_substr($name, 0, 2);
+
+        return $visible . str_repeat('*', max(3, mb_strlen($name) - mb_strlen($visible))) . '@' . $domain;
+    }
+
+    protected function maskPhone(string $phone): string
+    {
+        $digits = substr(preg_replace('/[^\d]/', '', $phone), -9);
+
+        return '+998 ' . substr($digits, 0, 2) . ' *** ** ' . substr($digits, -2);
     }
 }

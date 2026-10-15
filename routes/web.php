@@ -144,9 +144,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
-    // Parolni tiklash: username va yangi parol SMS orqali yuboriladi
+    // Parolni tiklash: kod (email yoki SMS) -> tasdiqlash -> yangi parol
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])->middleware('throttle:5,1')->name('password.send');
+    Route::post('/forgot-password/send-code', [ForgotPasswordController::class, 'sendCode'])->middleware('throttle:5,1')->name('password.send-code');
+    Route::post('/forgot-password/verify-code', [ForgotPasswordController::class, 'verifyCode'])->middleware('throttle:10,1')->name('password.verify-code');
+    Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1')->name('password.reset');
 
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');

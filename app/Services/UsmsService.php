@@ -51,42 +51,6 @@ class UsmsService
         return $this->sendTemplate($normalizedPhone, $this->templateId, ['code' => $code], 'SMS kod muvaffaqiyatli yuborildi.');
     }
 
-    /**
-     * Send login (username) and new password after password reset.
-     * Requires a USMS template with {username} and {password} params.
-     *
-     * @return array{success: bool, message: string}
-     */
-    public function sendCredentials(string $phone, string $username, string $password): array
-    {
-        $normalizedPhone = $this->normalizePhone($phone);
-
-        if ($this->isMock) {
-            // Parol logga yozilmaydi
-            Log::info("[USMS Mock] Credentials SMS sent to {$normalizedPhone}: username={$username}");
-            return [
-                'success' => true,
-                'message' => 'Login va parol SMS orqali yuborildi (Test rejimi).',
-            ];
-        }
-
-        $templateId = (int) config('usms.password_reset_template_id', 0);
-        if ($templateId <= 0) {
-            Log::error('[USMS] USMS_PASSWORD_RESET_TEMPLATE_ID is not configured.');
-            return [
-                'success' => false,
-                'message' => 'Parolni tiklash SMS shabloni sozlanmagan.',
-            ];
-        }
-
-        return $this->sendTemplate(
-            $normalizedPhone,
-            $templateId,
-            ['username' => $username, 'password' => $password],
-            'Login va parol SMS orqali yuborildi.'
-        );
-    }
-
     public function isMockMode(): bool
     {
         return $this->isMock;

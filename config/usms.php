@@ -33,17 +33,10 @@ return [
     'resend_cooldown_seconds' => 120, // 2 daqiqa qayta yuborish kutish vaqti
 
     /**
-     * Parolni tiklash: login va yangi parol yuboriladigan SMS shabloni.
-     * USMS kabinetida {username} va {password} parametrli shablon yaratilib,
-     * uning ID si USMS_PASSWORD_RESET_TEMPLATE_ID ga yoziladi.
-     * Masalan: "Estora: login: {username}, yangi parol: {password}"
+     * Parolni tiklash kodi (email yoki SMS): amal qilish muddati,
+     * qayta yuborish orasidagi kutish va bitta foydalanuvchi uchun kunlik limit.
      */
-    'password_reset_template_id' => (int) env('USMS_PASSWORD_RESET_TEMPLATE_ID', 0),
-
-    /**
-     * Bitta raqam uchun parolni tiklash orasidagi kutish vaqti va kunlik limit
-     * (begona odam boshqaning parolini qayta-qayta almashtira olmasligi uchun).
-     */
-    'password_reset_cooldown_seconds' => 300, // 5 daqiqa
-    'password_reset_daily_limit'      => 3,
+    'password_reset_code_ttl_seconds' => 300, // 5 daqiqa
+    'password_reset_resend_seconds'   => 60,
+    'password_reset_daily_limit'      => 5,
 ];
