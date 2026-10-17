@@ -11,7 +11,7 @@
 
     <div class="relative flex items-start justify-between">
         <span class="text-xs font-extrabold tracking-wide">BALANS</span>
-        <span class="text-[10px] font-bold tracking-widest text-white">FREE</span>
+        <span class="text-[10px] font-bold tracking-widest text-white">{{ $user->planInfo()['name'] === 'START' ? 'FREE' : $user->planInfo()['name'] }}</span>
     </div>
 
     <div class="relative flex items-center gap-2 mt-3">

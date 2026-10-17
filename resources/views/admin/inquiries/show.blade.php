@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends($layout)
 
 @section('title', 'Murojaat Tafsilotlari')
 @section('header_title', 'Murojaat Tafsilotlari')
@@ -6,7 +6,7 @@
 @section('content')
 
 <div class="mb-6">
-    <a href="{{ route('admin.inquiries.index') }}" class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-950 font-semibold text-sm transition-colors">
+    <a href="{{ route($routePrefix . '.inquiries.index') }}" class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-950 font-semibold text-sm transition-colors">
         <i class="fa-solid fa-arrow-left-long"></i>
         Ortga, ro'yxatga qaytish
     </a>
@@ -80,10 +80,43 @@
                 </div>
             </div>
 
+            <!-- Obuna so'rovi / foydalanuvchi tarifi -->
+            @if($inquiry->user || $inquiry->isSubscriptionRequest())
+                <div class="rounded-xl border {{ $inquiry->isSubscriptionRequest() ? 'border-amber-300 bg-amber-50/60' : 'border-gray-200 bg-gray-50' }} p-4 md:p-5 space-y-3">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">
+                        {{ $inquiry->isSubscriptionRequest() ? "Obuna so'rovi" : 'Foydalanuvchi obunasi' }}
+                    </span>
+
+                    @if($inquiry->isSubscriptionRequest())
+                        <p class="text-sm font-semibold text-gray-800">
+                            So'ralgan tarif:
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-white text-amber-700 border border-amber-300">
+                                <i class="fa-solid fa-crown text-[10px]"></i>
+                                {{ config("subscriptions.plans.{$inquiry->requested_plan}.name") }} &middot; {{ config("subscriptions.periods.{$inquiry->requested_period}.label") }}
+                            </span>
+                        </p>
+                    @endif
+
+                    @if($inquiry->user)
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <a href="{{ route('users.show', $inquiry->user->username ?? $inquiry->user->id) }}" target="_blank" class="text-sm font-bold text-[#061c3f] hover:text-[#0084ff]">
+                                {{ $inquiry->user->name }} <span class="text-xs text-[#0084ff]">&#64;{{ $inquiry->user->username ?? $inquiry->user->id }}</span>
+                            </a>
+                            @include('partials.staff.subscription-badge', [
+                                'user' => $inquiry->user,
+                                'inquiry' => $inquiry->isSubscriptionRequest() && $inquiry->status !== 'completed' ? $inquiry : null,
+                            ])
+                        </div>
+                    @else
+                        <p class="text-xs text-gray-500">Ariza tizimga kirmasdan yuborilgan - foydalanuvchini "Foydalanuvchilar" bo'limidan topib, obunani o'sha yerda o'zgartiring.</p>
+                    @endif
+                </div>
+            @endif
+
             <!-- 4. Update Status form -->
             <div class="border-t border-gray-100 pt-6 mt-8">
                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-3">Holatni o'zgartirish</span>
-                <form action="{{ route('admin.inquiries.update', $inquiry->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <form action="{{ route($routePrefix . '.inquiries.update', $inquiry->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                     @csrf
                     @method('PUT')
                     
@@ -103,5 +136,7 @@
         </div>
     </div>
 </div>
+
+@include('partials.staff.subscription-modal')
 
 @endsection

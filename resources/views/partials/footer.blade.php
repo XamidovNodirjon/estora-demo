@@ -115,12 +115,15 @@
         <!-- Form Body -->
         <form id="supportInquiryForm" onsubmit="submitSupportInquiry(event)" class="support-modal-form">
             @csrf
+            <!-- Tarifga obuna so'rovi (kabinetdagi "Obuna olish" tugmasidan to'ldiriladi) -->
+            <input type="hidden" id="inquiry_requested_plan" name="requested_plan" value="">
+            <input type="hidden" id="inquiry_requested_period" name="requested_period" value="">
             <!-- Name Field -->
             <div class="support-form-field">
                 <label for="inquiry_name">Ismingiz</label>
                 <div class="support-input-wrap">
                     <i class="fa-regular fa-user support-input-icon"></i>
-                    <input type="text" id="inquiry_name" name="name" placeholder="Masalan: Nodirbek" class="support-input" autocomplete="name">
+                    <input type="text" id="inquiry_name" name="name" value="{{ auth()->user()?->name }}" placeholder="Masalan: Nodirbek" class="support-input" autocomplete="name">
                 </div>
             </div>
 
@@ -129,7 +132,7 @@
                 <label for="inquiry_phone">Telefon raqamingiz <span class="required-star">*</span></label>
                 <div class="support-input-wrap">
                     <i class="fa-solid fa-phone support-input-icon"></i>
-                    <input type="tel" id="inquiry_phone" name="phone" required placeholder="+998 90 123 45 67" class="support-input" autocomplete="tel">
+                    <input type="tel" id="inquiry_phone" name="phone" value="{{ auth()->user()?->phone }}" required placeholder="+998 90 123 45 67" class="support-input" autocomplete="tel">
                 </div>
             </div>
 
@@ -163,7 +166,7 @@
 </div>
 
 <script>
-    function openSupportModal(message) {
+    function openSupportModal(message, requestedPlan, requestedPeriod) {
         const overlay = document.getElementById('supportModalOverlay');
         const form = document.getElementById('supportInquiryForm');
         const successAlert = document.getElementById('supportSuccessAlert');
@@ -174,6 +177,9 @@
         if (form) form.style.display = 'flex';
         if (successAlert) successAlert.style.display = 'none';
         if (description && typeof message === 'string') description.value = message;
+        // Oddiy murojaatda obuna maydonlari bo'sh qoladi
+        document.getElementById('inquiry_requested_plan').value = requestedPlan || '';
+        document.getElementById('inquiry_requested_period').value = requestedPeriod || '';
 
         if (overlay) {
             overlay.classList.add('active');

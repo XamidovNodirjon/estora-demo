@@ -18,7 +18,8 @@ class AdminController extends Controller
         $tab = $request->query('tab', 'staff');
 
         if ($tab === 'clients') {
-            $users = User::where('type', 'client')
+            // Kabinet foydalanuvchilari: mijoz, makler, uy egasi va h.k. (obunasi boshqariladiganlar)
+            $users = User::whereIn('type', config('subscriptions.roles'))
                 ->where(function ($query) {
                     $query->whereHas('role', function ($qr) {
                         $qr->where('name', '!=', 'dev');

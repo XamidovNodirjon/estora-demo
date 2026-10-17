@@ -35,8 +35,8 @@
                     <span class="block text-[11px] font-black text-slate-800">{{ $trust }}% <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i></span>
                     <span class="block text-[10px] font-semibold text-slate-600">Ishonch</span>
                 </a>
-                <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="border border-[#0077FE] bg-blue-50 text-[#0077FE] rounded-md px-3 py-1 text-[10px] font-bold flex items-center gap-1.5" title="Tarifingiz">
-                    <i class="fa-solid fa-shield-halved"></i> Free
+                <a href="{{ route('client.dashboard', ['section' => 'subscription']) }}" class="border border-[#0077FE] bg-blue-50 text-[#0077FE] rounded-md px-3 py-1 text-[10px] font-bold flex items-center gap-1.5" title="{{ $user->hasPaidPlan() ? 'Tarif ' . $user->subscription_expires_at->format('d.m.Y') . ' gacha' : 'Tarifingiz' }}">
+                    <i class="fa-solid {{ $user->hasPaidPlan() ? 'fa-crown' : 'fa-shield-halved' }}"></i> {{ $user->planInfo()['badge'] }}
                 </a>
             </div>
         </div>

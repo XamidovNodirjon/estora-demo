@@ -1,52 +1,9 @@
-{{-- Tariflar: oylik / yillik (-50%). To'lov tizimi ulanmaguncha obuna so'rovi murojaat orqali yuboriladi. --}}
+{{-- Tariflar (config/subscriptions.php): oylik / yillik. To'lov tizimi ulanmaguncha obuna so'rovi ariza sifatida yuboriladi, admin/dev uni panelda faollashtiradi. --}}
 @php
-    $plans = [
-        [
-            'key' => 'start', 'name' => 'START', 'monthly' => 0,
-            'subtitle' => "Talabalar va asosiy uy-joy ehtiyojlari uchun.",
-            'features' => [
-                "Xonadosh qidirish va e'lon joylashtirish",
-                "Uy-joy e'lonlarini ko'rish",
-                'Vositachili va vositachisiz uylarni qidirish',
-                "To'liq qidiruv va filtr imkoniyatlari",
-                'Xarita orqali qidirish',
-                "Uy egasi yoki boshqa foydalanuvchi bilan to'g'ridan-to'g'ri aloqa",
-                "E'lon bo'yicha asosiy ma'lumotlarni ko'rish",
-            ],
-        ],
-        [
-            'key' => 'basic', 'name' => 'BASIC', 'monthly' => 4990, 'featured' => true,
-            'subtitle' => "Kengaytirilgan uy-joy qidiruvi va boshqaruvi.",
-            'features' => [
-                'FREE tarifidagi barcha imkoniyatlar +',
-                "10 tagacha aktiv e'lon",
-                "Metro va universitetlar atrofida yoki istalgan nuqta belgilagan holda radius bo'yicha uy qidirish",
-                "Tekshiruvdan o'tgan ishonchli maklerlar",
-                '3D va video tur',
-                "Bozor narxini avtomatik baholash, narx bo'yicha bepul tavsiyalar",
-                'Uy bron qilish',
-                'Narx taklifi yuborish',
-                'ESTORA AI Agent (cheklangan)',
-            ],
-        ],
-        [
-            'key' => 'plus', 'name' => 'PLUS', 'monthly' => 9990,
-            'subtitle' => "Ko'chmas mulk va investitsiyalar uchun kengaytirilgan imkoniyatlar",
-            'features' => [
-                'BASIC tarifidagi barcha imkoniyatlar +',
-                "ESTORA AI Agent (to'liq boshqaruv)",
-                "To'liq bozor tahlili",
-                'Investitsiya indeksi',
-                "Daromadlilik va ishonchlilik ko'rsatkichlari",
-                'Ijara va sotuv daromadlari statistikasi',
-                'Investitsiya uchun obyektlarni AI orqali tahlil qilish',
-                'Bepul mutaxassis maslahatlari',
-                'Uy qiymati va bozor istiqboli tahlili',
-                'Auksion orqali savdo',
-            ],
-        ],
-    ];
-    $currentPlan = 'start';
+    $plans = config('subscriptions.plans');
+    $defaultPlan = config('subscriptions.default', 'start');
+    $currentPlan = $user->currentPlan();
+    $discount = (float) config('subscriptions.yearly_discount', 0.5);
     $formatPrice = fn (int $amount) => number_format($amount, 0, '', ' ');
 @endphp
 
@@ -62,13 +19,26 @@
     </div>
     <p class="text-center text-[11px] text-slate-500 mt-3">Estora imkoniyatlaridan o'zingizga mos tarif orqali foydalaning.</p>
 
+    <!-- Joriy obuna holati -->
+    @if($user->hasPaidPlan())
+        <div class="max-w-[680px] mx-auto mt-5 p-3 rounded-xl bg-blue-50 border border-blue-200 text-[11px] font-semibold text-blue-800 flex items-center gap-2">
+            <i class="fa-solid fa-crown text-[#0077FE]"></i>
+            <span>Joriy tarif: <b>{{ $plans[$currentPlan]['name'] }}</b> &mdash; {{ $user->subscription_expires_at->format('d.m.Y') }} gacha amal qiladi.</span>
+        </div>
+    @elseif($user->subscriptionExpired())
+        <div class="max-w-[680px] mx-auto mt-5 p-3 rounded-xl bg-amber-50 border border-amber-300 text-[11px] font-semibold text-amber-800 flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>{{ $plans[$user->subscription_plan]['name'] ?? '' }} tarifingiz muddati {{ $user->subscription_expires_at->format('d.m.Y') }} da tugagan. Uzaytirish uchun obuna so'rovini yuboring.</span>
+        </div>
+    @endif
+
     <!-- Tarif kartalari -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-4 mt-8 md:items-start max-w-[680px] mx-auto">
-        @foreach($plans as $plan)
+        @foreach($plans as $planKey => $plan)
             @php
-                $yearly = (int) round($plan['monthly'] * 12 * 0.5);
+                $yearly = (int) round($plan['monthly'] * 12 * (1 - $discount));
                 $isFeatured = !empty($plan['featured']);
-                $isCurrent = $plan['key'] === $currentPlan;
+                $isCurrent = $planKey === $currentPlan;
             @endphp
             <div class="bg-white border border-slate-300 rounded-2xl p-5 flex flex-col shadow-[0_8px_24px_-12px_rgba(15,23,42,0.25)] {{ $isFeatured ? 'md:-mt-6 md:pb-6' : 'md:mt-6' }}">
                 <div class="text-[#0077FE] font-black leading-none">
@@ -93,12 +63,21 @@
                     @endforeach
                 </ul>
 
-                @if($isCurrent)
+                @if($isCurrent && $planKey === $defaultPlan)
                     <span class="mt-5 w-full text-center border-2 border-[#0077FE] text-[#0077FE] font-black text-xs py-2.5 rounded-full">
                         JORIY TARIF
                     </span>
+                @elseif($planKey === $defaultPlan)
+                    <span class="mt-5 w-full text-center border-2 border-slate-300 text-slate-500 font-black text-xs py-2.5 rounded-full">
+                        BEPUL
+                    </span>
+                @elseif($isCurrent)
+                    <button type="button" data-subscribe="{{ $planKey }}" data-plan-name="{{ $plan['name'] }}"
+                            class="mt-5 w-full border-2 border-[#0077FE] text-[#0077FE] hover:bg-blue-50 font-black text-xs py-2.5 rounded-full cursor-pointer transition-colors">
+                        JORIY TARIF &middot; UZAYTIRISH
+                    </button>
                 @else
-                    <button type="button" data-subscribe="{{ $plan['name'] }}"
+                    <button type="button" data-subscribe="{{ $planKey }}" data-plan-name="{{ $plan['name'] }}"
                             class="mt-5 w-full bg-[#0077FE] hover:bg-blue-600 text-white font-black text-xs py-2.5 rounded-full cursor-pointer transition-colors">
                         OBUNA OLISH
                     </button>
@@ -133,7 +112,7 @@
                 // To'lov tizimi ulanmaguncha - obuna so'rovi "Savollaringiz bormi?" modali orqali yuboriladi
                 root.querySelectorAll('[data-subscribe]').forEach(btn => btn.addEventListener('click', function () {
                     const label = period === 'monthly' ? 'oylik' : 'yillik';
-                    openSupportModal(`${this.dataset.subscribe} tarifiga (${label}) obuna bo'lmoqchiman.`);
+                    openSupportModal(`${this.dataset.planName} tarifiga (${label}) obuna bo'lmoqchiman.`, this.dataset.subscribe, period);
                 }));
             });
         </script>

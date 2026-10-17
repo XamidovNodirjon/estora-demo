@@ -9,20 +9,20 @@
             </div>
 
             <div class="header-actions">
-                <a href="{{ route('add.ad') }}" class="btn-add-ad">
+                <a href="{{ route('add.ad') }}" class="btn-add-ad" title="E'lon joylashtirish" aria-label="E'lon joylashtirish">
                     <i class="fas fa-plus"></i>
                     <span>E'lon joylashtirish</span>
                 </a>
 
                 @auth
-                    <a href="{{ route('dashboard') }}" class="btn-login">
-                        <i class="fas fa-user-circle" style="color: #FF9800; font-size: 18px;"></i>
+                    <a href="{{ route('dashboard') }}" class="btn-login" title="Kabinet">
+                        <i class="fas fa-user-circle"></i>
                         <span>Kabinet</span>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn-login">
-                        <i class="fas fa-user-circle" style="color: #FF9800; font-size: 18px;"></i>
-                        <span>Login</span>
+                    <a href="{{ route('login') }}" class="btn-login" title="Kirish">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Kirish</span>
                     </a>
                 @endauth
             </div>

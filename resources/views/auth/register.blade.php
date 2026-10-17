@@ -203,7 +203,7 @@
     <!-- ============================================================ -->
     <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2 flex items-center justify-between z-10">
         <a href="/" class="flex items-center group hover:opacity-95 transition-opacity">
-            <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-11 w-auto object-contain">
+            <img src="{{ asset('image/orginal.png') }}" alt="ESTORA Real Estate" class="h-9 sm:h-11 w-auto object-contain">
         </a>
 
         <!-- Language Selector -->

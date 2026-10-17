@@ -5,23 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
 
+/**
+ * Murojaatlar (arizalar): admin va dev panellar uchun umumiy.
+ */
 class AdminInquiryController extends Controller
 {
     /**
      * Display a listing of inquiries.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $inquiries = Inquiry::orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.inquiries.index', compact('inquiries'));
+        $query = Inquiry::with('user')->orderBy('created_at', 'desc');
+
+        // Faqat obuna so'rovlari
+        if ($request->query('type') === 'subscription') {
+            $query->whereNotNull('requested_plan');
+        }
+
+        $inquiries = $query->paginate(15)->withQueryString();
+        $pendingSubscriptions = Inquiry::whereNotNull('requested_plan')->where('status', '!=', 'completed')->count();
+
+        return view('admin.inquiries.index', $this->panel($request) + compact('inquiries', 'pendingSubscriptions'));
     }
 
     /**
      * Display the specified inquiry.
      */
-    public function show(Inquiry $inquiry)
+    public function show(Request $request, Inquiry $inquiry)
     {
-        return view('admin.inquiries.show', compact('inquiry'));
+        $inquiry->load('user');
+
+        return view('admin.inquiries.show', $this->panel($request) + compact('inquiry'));
     }
 
     /**
@@ -37,7 +51,20 @@ class AdminInquiryController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return redirect()->route('admin.inquiries.index')
+        return redirect()->route($this->panel($request)['routePrefix'] . '.inquiries.index')
             ->with('success', 'Murojaat holati muvaffaqiyatli yangilandi!');
+    }
+
+    /**
+     * Qaysi panel (admin yoki dev) ichida ochilgani: layout va route prefiksi.
+     */
+    protected function panel(Request $request): array
+    {
+        $isDeveloper = $request->routeIs('developer.*');
+
+        return [
+            'layout' => $isDeveloper ? 'layouts.developer' : 'layouts.admin',
+            'routePrefix' => $isDeveloper ? 'developer' : 'admin',
+        ];
     }
 }

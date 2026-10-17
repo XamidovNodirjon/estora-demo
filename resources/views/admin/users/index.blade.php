@@ -41,6 +41,7 @@
                         <th class="px-6 py-4">Username & Email</th>
                         <th class="px-6 py-4">Telefon</th>
                         <th class="px-6 py-4">Roli (Turi)</th>
+                        <th class="px-6 py-4">Obuna</th>
                         <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4">Yaratilgan sana</th>
                         <th class="px-6 py-4 text-right">Amallar</th>
@@ -71,6 +72,9 @@
                                     </span>
                                     <span class="text-xs text-gray-400">({{ $user->type }})</span>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                @include('partials.staff.subscription-badge', ['user' => $user, 'routePrefix' => 'admin'])
                             </td>
                             <td class="px-6 py-4">
                                 @if($user->status === 1)
@@ -118,7 +122,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-400 font-medium">
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-400 font-medium">
                                 <i class="fa-regular fa-folder-open text-3xl mb-3 block"></i>
                                 Foydalanuvchilar mavjud emas.
                             </td>
@@ -371,4 +375,5 @@
         });
     });
 </script>
+@include('partials.staff.subscription-modal')
 @endsection

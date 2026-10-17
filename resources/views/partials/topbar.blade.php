@@ -12,9 +12,10 @@
         </div>
         
         <!-- Soft, eye-friendly test mode badge (Image 2) -->
-        <div class="test-mode-badge desktop-center-badge" title="Tizim sinov rejimida ishlamoqda">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>The site works in test mode</span>
+        <div class="test-mode-badge desktop-center-badge" title="Tizim sinov rejimida ishlamoqda" role="status">
+            <span class="test-mode-dot" aria-hidden="true"></span>
+            <span class="test-mode-text-full">The site works in test mode</span>
+            <span class="test-mode-text-short">Test rejimi</span>
         </div>
 
         <div class="top-bar-right">

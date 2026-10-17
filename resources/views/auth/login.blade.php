@@ -107,7 +107,7 @@
     <!-- TOP BAR (BRAND & LANGUAGE) -->
     <header class="w-full max-w-6xl mx-auto flex items-center justify-between py-2 sm:py-4 mb-2 sm:mb-4">
         <a href="/" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
-            <img src="/images/logo.svg" alt="ESTORA Real Estate" class="h-9 sm:h-11 w-auto object-contain">
+            <img src="{{ asset('image/orginal.png') }}" alt="ESTORA Real Estate" class="h-9 sm:h-11 w-auto object-contain">
         </a>
 
         {{-- Til tanlash vaqtincha yashirilgan

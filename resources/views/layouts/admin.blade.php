@@ -94,7 +94,11 @@
 
             <a href="{{ route('admin.inquiries.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('admin.inquiries*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">
                 <i class="fa-solid fa-envelope-open-text text-lg"></i>
-                <span>Murojaatlar</span>
+                <span class="flex-1">Murojaatlar</span>
+                @php $pendingSubscriptionCount = \App\Models\Inquiry::whereNotNull('requested_plan')->where('status', '!=', 'completed')->count(); @endphp
+                @if($pendingSubscriptionCount > 0)
+                    <span class="bg-amber-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full" title="Kutilayotgan obuna so'rovlari">{{ $pendingSubscriptionCount }}</span>
+                @endif
             </a>
 
             <a href="{{ route('admin.leads') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all {{ request()->routeIs('admin.leads*') ? 'bg-[#0084ff]/20 text-[#0084ff] border-l-4 border-[#0084ff]' : '' }}">

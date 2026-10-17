@@ -96,6 +96,47 @@ class User extends Authenticatable
         return !$this->isMakler();
     }
 
+    /**
+     * Amaldagi tarif: pullik tarif muddati tugagan bo'lsa - bepul (start) tarif.
+     * Obuna maydonlari $fillable'da yo'q: ularni faqat admin/dev SubscriptionService orqali o'zgartiradi.
+     */
+    public function currentPlan(): string
+    {
+        $default = config('subscriptions.default', 'start');
+        $plan = $this->subscription_plan ?: $default;
+
+        if ($plan === $default || !array_key_exists($plan, config('subscriptions.plans', []))) {
+            return $default;
+        }
+
+        return $this->subscription_expires_at?->isFuture() ? $plan : $default;
+    }
+
+    public function hasPaidPlan(): bool
+    {
+        return $this->currentPlan() !== config('subscriptions.default', 'start');
+    }
+
+    /**
+     * Joriy tarif sozlamalari (config/subscriptions.php dan) + kalit.
+     */
+    public function planInfo(): array
+    {
+        $key = $this->currentPlan();
+
+        return ['key' => $key] + config("subscriptions.plans.{$key}", []);
+    }
+
+    /**
+     * Pullik tarif muddati o'tib ketgan (admin uzaytirishi kerak).
+     */
+    public function subscriptionExpired(): bool
+    {
+        return $this->subscription_plan
+            && $this->subscription_plan !== config('subscriptions.default', 'start')
+            && $this->subscription_expires_at?->isPast();
+    }
+
     protected static function booted(): void
     {
         static::saving(function (User $user) {
@@ -120,6 +161,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'subscription_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

@@ -148,71 +148,54 @@
                     <div class="market-region-selector-wrapper">
                         <i class="fas fa-map-marker-alt"></i>
                         <select id="analyticsRegionSelect" aria-label="Viloyatni tanlang">
-                            @if(isset($regionAnalytics))
-                                @foreach($regionAnalytics as $reg)
-                                    <option value="{{ $reg['id'] }}" {{ $reg['id'] == 1 ? 'selected' : '' }}>{{ $reg['name'] }}</option>
-                                @endforeach
-                            @endif
+                            @foreach($regionAnalytics ?? [] as $reg)
+                                <option value="{{ $reg['id'] }}" {{ $reg['id'] == ($defaultAnalyticsRegionId ?? 1) ? 'selected' : '' }}>
+                                    {{ $reg['name'] }}{{ $reg['count'] > 0 ? ' (' . $reg['count'] . ')' : '' }}
+                                </option>
+                            @endforeach
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
 
-                <!-- Bottom Floating Glassmorphic Analytics Widgets -->
+                <!-- Bottom Floating Glassmorphic Analytics Widgets (filled by JS from real listings) -->
                 <div class="market-map-bottom-widgets">
                     <div class="market-widgets-grid">
-                        <!-- Widget 1: Price Trend & Average M2 -->
+                        <!-- Widget 1: Average price per m² + monthly trend -->
                         <div class="market-stat-card trend-widget">
                             <div class="stat-card-header">
-                                <span class="stat-card-title">O'rtacha bozor narxi</span>
-                                <i class="fas fa-info-circle stat-info-icon" title="Tanlangan hududdagi 1 m² ko'chmas mulkning o'rtacha narxi"></i>
+                                <span class="stat-card-title">O'rtacha 1 m² narxi</span>
+                                <i class="fas fa-info-circle stat-info-icon" title="Tanlangan hududda sotuvdagi kvartira va hovlilarning 1 m² o'rtacha narxi (faol e'lonlar asosida)"></i>
                             </div>
                             <div class="stat-meta-row">
-                                <span class="stat-main-price" id="widgetAvgM2Price">$1,350/m²</span>
-                                <span class="stat-badge badge-green" id="widgetTrendBadge"><i class="fas fa-arrow-up"></i> 2.8%</span>
+                                <span class="stat-main-price" id="widgetAvgM2Price">—</span>
+                                <span class="stat-badge" id="widgetTrendBadge" title="Oxirgi 3 oy, undan oldingi 3 oyga nisbatan" hidden></span>
                             </div>
-                            <div class="stat-period" id="widgetActiveAdsInfo">Faol e'lonlar: 12 ta &bull; O'tgan 3 oy</div>
-                            <div class="stat-chart-container">
-                                <svg viewBox="0 0 160 42" class="stat-trend-svg" preserveAspectRatio="none">
+                            <div class="stat-period" id="widgetActiveAdsInfo">Ma'lumotlar yuklanmoqda…</div>
+                            <div class="stat-chart-container" id="widgetTrendChart" hidden>
+                                <svg viewBox="0 0 160 42" class="stat-trend-svg" preserveAspectRatio="none" aria-hidden="true">
                                     <defs>
                                         <linearGradient id="trendGradientLive" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="0%" stop-color="#2563eb" stop-opacity="0.35"/>
                                             <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"/>
                                         </linearGradient>
                                     </defs>
-                                    <path d="M0,38 Q20,35 40,28 T80,24 T120,16 T160,8 L160,42 L0,42 Z" fill="url(#trendGradientLive)" />
-                                    <path d="M0,38 Q20,35 40,28 T80,24 T120,16 T160,8" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" />
+                                    <path id="widgetTrendArea" fill="url(#trendGradientLive)" />
+                                    <path id="widgetTrendLine" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
                                 </svg>
                             </div>
                         </div>
 
-                        <!-- Widget 2: Most Expensive Districts Ranking -->
+                        <!-- Widget 2: Most expensive districts by average price per m² -->
                         <div class="market-stat-card ranking-widget">
                             <div class="stat-card-header">
-                                <span class="stat-card-title">Eng qimmat hududlar</span>
+                                <span class="stat-card-title">Eng qimmat tumanlar</span>
                                 <div class="ranking-header-right">
-                                    <span class="stat-badge badge-green"><i class="fas fa-arrow-up"></i> 14.3%</span>
-                                    <i class="fas fa-info-circle stat-info-icon" title="Tumanlar kesimida o'rtacha 1 m² narxi"></i>
+                                    <span class="stat-badge badge-muted" id="widgetDistrictsCount" hidden></span>
+                                    <i class="fas fa-info-circle stat-info-icon" title="Tumanlar kesimida 1 m² o'rtacha narxi"></i>
                                 </div>
                             </div>
-                            <div class="districts-ranking-list" id="widgetDistrictsList">
-                                <!-- Populated dynamically by JavaScript -->
-                                <div class="ranking-item">
-                                    <span class="ranking-num">01</span>
-                                    <span class="ranking-name">Mirobod</span>
-                                    <span class="ranking-price">$1,750/m²</span>
-                                </div>
-                                <div class="ranking-item">
-                                    <span class="ranking-num">02</span>
-                                    <span class="ranking-name">Yakkasaroy</span>
-                                    <span class="ranking-price">$1,600/m²</span>
-                                </div>
-                                <div class="ranking-item">
-                                    <span class="ranking-num">03</span>
-                                    <span class="ranking-name">Mirzo Ulug‘bek</span>
-                                    <span class="ranking-price">$1,500/m²</span>
-                                </div>
-                            </div>
+                            <div class="districts-ranking-list" id="widgetDistrictsList"></div>
                         </div>
                     </div>
                 </div>
@@ -316,23 +299,34 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const analyticsData = @json($regionAnalytics ?? []);
+    const defaultRegionId = @json($defaultAnalyticsRegionId ?? null);
+    const listingsUrl = @json(route('maniDashboard'));
     if (!analyticsData || !analyticsData.length) return;
 
-    let marketMap = null;
-    let currentMarkers = [];
     const mapContainer = document.getElementById('marketAnalyticsLeafletMap');
     const regionSelect = document.getElementById('analyticsRegionSelect');
     const avgM2PriceEl = document.getElementById('widgetAvgM2Price');
+    const trendBadgeEl = document.getElementById('widgetTrendBadge');
     const activeAdsInfoEl = document.getElementById('widgetActiveAdsInfo');
+    const trendChartEl = document.getElementById('widgetTrendChart');
+    const trendLineEl = document.getElementById('widgetTrendLine');
+    const trendAreaEl = document.getElementById('widgetTrendArea');
     const districtsListEl = document.getElementById('widgetDistrictsList');
+    const districtsCountEl = document.getElementById('widgetDistrictsCount');
 
     if (!mapContainer || typeof L === 'undefined') return;
 
-    // Find default region (Tashkent city id: 1 or first)
-    let activeRegion = analyticsData.find(r => r.id == 1) || analyticsData[0];
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
 
-    // Initialize Leaflet Map
-    marketMap = L.map('marketAnalyticsLeafletMap', {
+    const districtUrl = (region, district) =>
+        `${listingsUrl}?transaction_type=Sotuv&region_id=${region.id}&city_id=${district.id}`;
+
+    let activeRegion = analyticsData.find(r => r.id == defaultRegionId) || analyticsData[0];
+    let currentMarkers = [];
+
+    const marketMap = L.map('marketAnalyticsLeafletMap', {
         zoomControl: false,
         attributionControl: false,
         scrollWheelZoom: false, // Don't hijack page scroll
@@ -347,120 +341,166 @@ document.addEventListener('DOMContentLoaded', function() {
         opacity: 0.95
     }).addTo(marketMap);
 
-    // Add minimal zoom control at top-left
     L.control.zoom({ position: 'topleft' }).addTo(marketMap);
 
-    // Function to render markers and widgets for a given region
-    function updateAnalyticsView(region) {
-        if (!region) return;
+    function renderTrend(region) {
+        if (!trendBadgeEl) return;
+        if (region.trend === null || region.trend === undefined) {
+            trendBadgeEl.hidden = true;
+            return;
+        }
+        const up = region.trend >= 0;
+        trendBadgeEl.className = 'stat-badge ' + (up ? 'badge-green' : 'badge-red');
+        trendBadgeEl.innerHTML = `<i class="fas fa-arrow-${up ? 'up' : 'down'}"></i> ${Math.abs(region.trend).toFixed(1)}%`;
+        trendBadgeEl.hidden = false;
+    }
 
-        // Clear existing markers
+    // Sparkline of monthly average $/m²; hidden until there are at least two months of data
+    function renderSparkline(region) {
+        if (!trendChartEl) return;
+        const series = region.series || [];
+        if (series.length < 2) {
+            trendChartEl.hidden = true;
+            return;
+        }
+        const values = series.map(p => p.value);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const range = max - min || 1;
+        const points = values.map((v, i) => {
+            const x = (i / (values.length - 1)) * 160;
+            const y = 36 - ((v - min) / range) * 30;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        });
+        trendLineEl.setAttribute('d', 'M' + points.join(' L'));
+        trendAreaEl.setAttribute('d', 'M' + points.join(' L') + ' L160,42 L0,42 Z');
+        trendChartEl.hidden = false;
+    }
+
+    function renderDistrictList(region) {
+        if (!districtsListEl) return;
+        const districts = region.districts || [];
+
+        if (districtsCountEl) {
+            districtsCountEl.textContent = `${districts.length} ta tuman`;
+            districtsCountEl.hidden = districts.length === 0;
+        }
+
+        if (!districts.length) {
+            districtsListEl.innerHTML = `
+                <div class="ranking-empty">
+                    <i class="far fa-folder-open"></i>
+                    <span>Bu hududda hali sotuvdagi uy e'lonlari yo'q</span>
+                </div>`;
+            return;
+        }
+
+        districtsListEl.innerHTML = '';
+        districts.slice(0, 3).forEach((district, idx) => {
+            const itemEl = document.createElement('button');
+            itemEl.type = 'button';
+            itemEl.className = 'ranking-item';
+            itemEl.title = `${district.name}: ${district.count} ta e'lon`;
+            itemEl.innerHTML = `
+                <span class="ranking-num">0${idx + 1}</span>
+                <span class="ranking-name">${escapeHtml(district.short_name)}</span>
+                <span class="ranking-price">${escapeHtml(district.m2_formatted)}</span>
+            `;
+            itemEl.addEventListener('click', function() {
+                marketMap.flyTo([district.lat, district.lng], Math.max(region.zoom + 2, 12), { duration: 0.8 });
+                const targetMarker = currentMarkers.find(m => m.districtId === district.id);
+                if (targetMarker) targetMarker.openPopup();
+            });
+            districtsListEl.appendChild(itemEl);
+        });
+    }
+
+    function renderMarkers(region) {
         currentMarkers.forEach(m => marketMap.removeLayer(m));
         currentMarkers = [];
 
-        // Fly to region center
-        marketMap.flyTo([region.lat, region.lng], region.zoom, {
-            duration: 1.2,
-            easeLinearity: 0.25
-        });
+        (region.districts || []).forEach(district => {
+            if (!district.lat || !district.lng) return;
 
-        // Update Widget 1: Average Market Price
+            const icon = L.divIcon({
+                className: 'district-price-pin',
+                html: `
+                    <div class="district-price-tag">
+                        <span class="d-dot"></span>
+                        <span class="d-name">${escapeHtml(district.short_name)}</span>
+                        <span class="d-price">${escapeHtml(district.m2_formatted)}</span>
+                    </div>
+                `,
+                iconSize: [0, 0],
+                iconAnchor: [0, 0]
+            });
+
+            const popupHtml = `
+                <div class="district-popup-box">
+                    <div class="popup-district-title">
+                        <span><i class="fas fa-building" style="color:#2563eb; margin-right:6px;"></i>${escapeHtml(district.name)}</span>
+                    </div>
+                    <div class="popup-stat-row">
+                        <span>1 m² o'rtacha:</span>
+                        <strong>${escapeHtml(district.m2_formatted)}</strong>
+                    </div>
+                    <div class="popup-stat-row">
+                        <span>O'rtacha umumiy narx:</span>
+                        <strong>${escapeHtml(district.price_formatted)}</strong>
+                    </div>
+                    <div class="popup-stat-row">
+                        <span>Sotuvdagi e'lonlar:</span>
+                        <strong style="color: #2563eb;">${district.count} ta</strong>
+                    </div>
+                    <a href="${districtUrl(region, district)}" class="popup-btn-link">
+                        E'lonlarni ko'rish &rarr;
+                    </a>
+                </div>
+            `;
+
+            const marker = L.marker([district.lat, district.lng], { icon })
+                .bindPopup(popupHtml, { offset: [0, -14], closeButton: false })
+                .addTo(marketMap);
+
+            marker.districtId = district.id;
+            currentMarkers.push(marker);
+        });
+    }
+
+    function updateAnalyticsView(region, animate) {
+        if (!region) return;
+        activeRegion = region;
+
+        if (animate) {
+            marketMap.flyTo([region.lat, region.lng], region.zoom, { duration: 1.2, easeLinearity: 0.25 });
+        }
+
         if (avgM2PriceEl) {
             avgM2PriceEl.textContent = region.avg_m2_formatted;
         }
         if (activeAdsInfoEl) {
-            activeAdsInfoEl.innerHTML = `Faol e'lonlar: <strong>${region.count} ta</strong> &bull; O'tgan 3 oy`;
+            activeAdsInfoEl.innerHTML = region.count > 0
+                ? `Sotuvdagi kvartira va hovlilar: <strong>${region.count} ta</strong>`
+                : `Hozircha sotuvdagi uy e'lonlari yo'q`;
         }
 
-        // Update Widget 2: Top Districts List
-        if (districtsListEl) {
-            districtsListEl.innerHTML = '';
-            const topList = region.top_districts || region.cities.slice(0, 3);
-            topList.forEach((district, idx) => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'ranking-item';
-                itemEl.innerHTML = `
-                    <span class="ranking-num">0${idx + 1}</span>
-                    <span class="ranking-name">${district.short_name}</span>
-                    <span class="ranking-price">${district.m2_formatted}</span>
-                `;
-                itemEl.addEventListener('click', function() {
-                    marketMap.flyTo([district.lat, district.lng], Math.max(region.zoom + 2, 13), { duration: 0.8 });
-                    const targetMarker = currentMarkers.find(m => m.districtId === district.id);
-                    if (targetMarker) {
-                        targetMarker.openPopup();
-                    }
-                });
-                districtsListEl.appendChild(itemEl);
-            });
-        }
-
-        // Add custom price markers for each district
-        if (region.cities && region.cities.length) {
-            region.cities.forEach(city => {
-                const customPriceIcon = L.divIcon({
-                    className: 'district-price-pin',
-                    html: `
-                        <div class="district-price-tag">
-                            <span class="d-dot"></span>
-                            <span class="d-name">${city.short_name}</span>
-                            <span class="d-price">${city.m2_formatted}</span>
-                        </div>
-                    `,
-                    iconSize: [120, 32],
-                    iconAnchor: [60, 16]
-                });
-
-                const popupHtml = `
-                    <div class="district-popup-box">
-                        <div class="popup-district-title">
-                            <span><i class="fas fa-building" style="color:#2563eb; margin-right:6px;"></i>${city.name}</span>
-                        </div>
-                        <div class="popup-stat-row">
-                            <span>1 m² o'rtacha:</span>
-                            <strong>${city.m2_formatted}</strong>
-                        </div>
-                        <div class="popup-stat-row">
-                            <span>O'rtacha umumiy narx:</span>
-                            <strong>${city.price_formatted}</strong>
-                        </div>
-                        <div class="popup-stat-row">
-                            <span>Faol e'lonlar:</span>
-                            <strong style="color: #2563eb;">${city.count} ta</strong>
-                        </div>
-                        <a href="{{ route('maniDashboard') }}?city_id=${city.id}" class="popup-btn-link">
-                            E'lonlarni ko'rish &rarr;
-                        </a>
-                    </div>
-                `;
-
-                const marker = L.marker([city.lat, city.lng], { icon: customPriceIcon })
-                    .bindPopup(popupHtml, {
-                        offset: [0, -10],
-                        closeButton: false
-                    })
-                    .addTo(marketMap);
-
-                marker.districtId = city.id;
-                currentMarkers.push(marker);
-            });
-        }
+        renderTrend(region);
+        renderSparkline(region);
+        renderDistrictList(region);
+        renderMarkers(region);
     }
 
-    // Initial render
-    updateAnalyticsView(activeRegion);
+    updateAnalyticsView(activeRegion, false);
 
-    // Handle Region Select change
     if (regionSelect) {
         regionSelect.addEventListener('change', function() {
-            const selectedId = this.value;
-            const region = analyticsData.find(r => r.id == selectedId);
-            if (region) {
-                updateAnalyticsView(region);
-            }
+            const region = analyticsData.find(r => r.id == this.value);
+            updateAnalyticsView(region, true);
         });
     }
+
+    // The map may be laid out after Leaflet initialises (fonts, responsive grid) — re-measure once.
+    window.addEventListener('load', () => marketMap.invalidateSize());
 });
 </script>
 @endsection
-

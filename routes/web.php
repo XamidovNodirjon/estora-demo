@@ -34,7 +34,9 @@ use App\Http\Controllers\ProductAssignmentController;
 use App\Http\Controllers\ProductPhoneController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SmsNotificationController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserController;
+use App\Services\MarketAnalyticsService;
 use App\Models\Category;
 use App\Models\Metro;
 use App\Models\Product;
@@ -87,37 +89,13 @@ Route::get('/', function () {
         ->take(8)
         ->get();
 
-    $allActiveProducts = Product::with(['region', 'city'])->where('status', 'active')->get();
-    
-    $regionAnalytics = Region::with('cities')->get()->map(function ($region) use ($allActiveProducts) {
-        $regionProducts = $allActiveProducts->where('region_id', $region->id);
-        $count = $regionProducts->count();
-        $avgPrice = $count > 0 ? round($regionProducts->avg('price')) : rand(35000, 75000);
-        
-        $citiesData = $region->cities->map(function ($city) use ($regionProducts) {
-            $cityProducts = $regionProducts->where('city_id', $city->id);
-            $cityCount = $cityProducts->count();
-            $cityAvg = $cityCount > 0 ? round($cityProducts->avg('price')) : rand(25000, 65000);
-            return [
-                'id' => $city->id,
-                'name' => $city->name_uz ?? $city->name,
-                'avg_price' => $cityAvg,
-                'count' => $cityCount,
-            ];
-        })->sortByDesc('avg_price')->values();
+    $marketAnalytics = app(MarketAnalyticsService::class);
+    $regionAnalytics = $marketAnalytics->regionAnalytics();
+    $defaultAnalyticsRegionId = $marketAnalytics->defaultRegionId($regionAnalytics);
 
-        return [
-            'id' => $region->id,
-            'name' => $region->name,
-            'count' => $count,
-            'avg_price' => $avgPrice,
-            'cities' => $citiesData,
-        ];
-    });
+    $totalActiveProductsCount = $mapProducts->count();
 
-    $totalActiveProductsCount = $allActiveProducts->count();
-
-    return view('welcome', compact('regions', 'metros', 'universities', 'categories', 'propertyTypes', 'mapProducts', 'topProducts', 'regionAnalytics', 'totalActiveProductsCount'));
+    return view('welcome', compact('regions', 'metros', 'universities', 'categories', 'propertyTypes', 'mapProducts', 'topProducts', 'regionAnalytics', 'defaultAnalyticsRegionId', 'totalActiveProductsCount'));
 });
 
 Route::get('/maniDashboard', [SearchController::class, 'maniDashboard'])->name('maniDashboard');
@@ -223,6 +201,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/developer/leads/{lead}', [LeadController::class, 'destroy'])->name('developer.leads.delete');
 
         Route::put('/developer/products/{product}/managers', [ProductAssignmentController::class, 'update'])->name('developer.products.managers');
+
+        // Arizalar va obunani tez o'zgartirish (admin bilan bir xil)
+        Route::get('/developer/inquiries', [AdminInquiryController::class, 'index'])->name('developer.inquiries.index');
+        Route::get('/developer/inquiries/{inquiry}', [AdminInquiryController::class, 'show'])->name('developer.inquiries.show');
+        Route::put('/developer/inquiries/{inquiry}', [AdminInquiryController::class, 'update'])->name('developer.inquiries.update');
+        Route::post('/developer/users/{user}/subscription', [SubscriptionController::class, 'update'])->name('developer.users.subscription');
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -270,6 +254,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/inquiries', [AdminInquiryController::class, 'index'])->name('admin.inquiries.index');
         Route::get('/admin/inquiries/{inquiry}', [AdminInquiryController::class, 'show'])->name('admin.inquiries.show');
         Route::put('/admin/inquiries/{inquiry}', [AdminInquiryController::class, 'update'])->name('admin.inquiries.update');
+        Route::post('/admin/users/{user}/subscription', [SubscriptionController::class, 'update'])->name('admin.users.subscription');
 
         Route::get('/admin/sms-notifications', [SmsNotificationController::class, 'adminIndex'])->name('admin.sms-notifications.index');
         Route::post('/admin/sms-notifications/balance', [SmsNotificationController::class, 'refreshBalance'])->name('admin.sms-notifications.balance');
